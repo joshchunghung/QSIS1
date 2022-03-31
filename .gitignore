@@ -1,0 +1,15 @@
+db.sqlite3
+*pyc
+*png
+*jpg
+*log
+.env
+qsis/settings.py
+backend/migrations/*
+
+*/__pycache__/*
+frontend/dist/*
+frontend/node_modules/*
+*static/*
+
+
