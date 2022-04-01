@@ -13,39 +13,53 @@
         :maxZoom="mapState.maxZoom"
       />
       <LControlLayers />
-      <LCircleMarker
-        v-for="sta in pAlert"
-        :key="sta.name"
-        :lat-lng="[sta.lat, sta.lon]"
-        :radius="3"
-        color="red"
-      >
-        <LPopup>
-          {{ sta.name }}<br />
-          lat: {{ sta.lat }}<br />
-          lon:{{ sta.lon }}
-        </LPopup>
-      </LCircleMarker>
 
-      <LCircleMarker
-        v-for="sta in buildArray"
-        :key="sta.name"
-        :lat-lng="[sta.lat, sta.lon]"
-        :radius="5"
-        color="yellow"
-      >
-        <LPopup>
-          {{ sta.name }}<br />
-          lat: {{ sta.lat }}<br />
-          lon:{{ sta.lon }}
-        </LPopup>
-      </LCircleMarker>
+      <!-- event  -->
+      <div v-if="isEventOpen">
+        <LCircleMarker
+          v-for="event in eventArray"
+          :key="event.id"
+          :lat-lng="[event.lat, event.lon]"
+          :radius="5"
+          color="yellow"
+        >
+          <LPopup>
+            {{ event.date }}<br />
+            {{ event.time }}<br />
+            lat: {{ event.lat }}<br />
+            lon:{{ event.lon }}<br />
+            <div v-if="event.haveData" @click="openSitePage(event)">More Data</div>
+          </LPopup>
+        </LCircleMarker>
+      </div>
+
+      <!-- <div v-if="!isEventOpen"> -->
+      <div v-else>
+        <div v-for="sta in stationArray" :key="sta.id">
+          <LCircleMarker
+            v-if="sta.isOpen"
+            :lat-lng="[sta.lat, sta.lon]"
+            :radius="5"
+            color="red"
+          >
+            <LPopup>
+              {{ sta.name }}<br />
+              lat: {{ sta.lat }}<br />
+              lon:{{ sta.lon }}<br />
+              <!-- <div v-if="event.haveData" @click="openSitePage()">More Data</div> -->
+            </LPopup>
+          </LCircleMarker>
+        </div>
+      </div>
     </LMap>
   </div>
+  <button type="button" class="btn btn-primary" @click="isEventOpen = true">
+    eventList
+  </button>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, reactive, ref } from 'vue'
 import 'leaflet/dist/leaflet.css'
 import {
   LMap,
@@ -55,8 +69,8 @@ import {
   LPopup
 } from '@vue-leaflet/vue-leaflet'
 import { tileProviders } from '../../public/data/mapUrl'
-import { buildingArray } from '../../public/data/building'
-
+// import { buildingArray } from '../../public/data/building'
+import { event } from '../../public/data/event'
 export default defineComponent({
   name: 'twMap',
   components: {
@@ -69,23 +83,24 @@ export default defineComponent({
   setup () {
     const mapStates = ref(tileProviders)
     const pAlert = ref({})
-    // axios.get('/data/palert.json').then((res) => {
-    //   pAlert.value = res.data;
-    // });
+    const isEventOpen = ref(true)
+    const eventArray = reactive(event)
+    const stationArray = ref({})
+    // const showArray = reactive(JSON.parse(JSON.stringify(eventArray)))
 
-    const buildArray = ref(buildingArray)
-
-    // const svg = d3
-    //   .create('svg')
-    //   .attr('width', 20)
-    //   .attr('height', 10)
-    //   .attr('viewBox', [0, 0, 20, 10])
-    //   .attr('style', 'max-width: 100%; height: auto; height: intrinsic;');
+    const openSitePage = (event: any) => {
+      stationArray.value = event.site
+      console.log(stationArray)
+      isEventOpen.value = false
+    }
 
     return {
       mapStates,
       pAlert,
-      buildArray
+      eventArray,
+      openSitePage,
+      isEventOpen,
+      stationArray
     }
   }
 })
