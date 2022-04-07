@@ -5,7 +5,7 @@
       <LTileLayer
         v-for="mapState in mapStates"
         layer-type="base"
-        minZoom="6"
+        :minZoom="6"
         :key="mapState.name"
         :url="mapState.url"
         :attribution="mapState.attribution"
@@ -28,39 +28,40 @@
             {{ event.time }}<br />
             lat: {{ event.lat }}<br />
             lon:{{ event.lon }}<br />
-            <div v-if="event.haveData" @click="openSitePage(event)">More Data</div>
+            <div v-if="event.haveData" class="myMouse" @click="openSitePage(event)">
+              More Data
+            </div>
           </LPopup>
         </LCircleMarker>
       </div>
 
-      <!-- <div v-if="!isEventOpen"> -->
+      <!-- 選event 之後，station 才會出現-->
       <div v-else>
-        <div v-for="sta in stationArray" :key="sta.id">
+        <div v-for="site in stationArray" :key="site.id">
           <LCircleMarker
-            v-if="sta.isOpen"
-            :lat-lng="[sta.lat, sta.lon]"
+            v-if="site.isOpen"
+            :lat-lng="[site.lat, site.lon]"
             :radius="5"
             color="red"
+            @click="changeSiteID(site.id)"
           >
             <LPopup>
-              {{ sta.name }}<br />
-              lat: {{ sta.lat }}<br />
-              lon:{{ sta.lon }}<br />
-              <!-- <div v-if="event.haveData" @click="openSitePage()">More Data</div> -->
+              {{ site.name }}<br />
+              lat: {{ site.lat }}<br />
+              lon:{{ site.lon }}<br />
             </LPopup>
           </LCircleMarker>
         </div>
       </div>
     </LMap>
   </div>
-  <button type="button" class="btn btn-primary" @click="isEventOpen = true">
-    eventList
-  </button>
+  <button type="button" class="btn btn-primary" @click="eventList">eventList</button>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, ref } from 'vue'
 import 'leaflet/dist/leaflet.css'
+import { useStore } from 'vuex'
 import {
   LMap,
   LTileLayer,
@@ -70,7 +71,7 @@ import {
 } from '@vue-leaflet/vue-leaflet'
 import { tileProviders } from '../../public/data/mapUrl'
 // import { buildingArray } from '../../public/data/building'
-import { event } from '../../public/data/event'
+
 export default defineComponent({
   name: 'twMap',
   components: {
@@ -81,26 +82,35 @@ export default defineComponent({
     LPopup
   },
   setup () {
+    const store = useStore()
+    const event = store.getters.event
     const mapStates = ref(tileProviders)
-    const pAlert = ref({})
     const isEventOpen = ref(true)
     const eventArray = reactive(event)
     const stationArray = ref({})
-    // const showArray = reactive(JSON.parse(JSON.stringify(eventArray)))
 
+    const eventList = () => {
+      isEventOpen.value = true
+      store.commit('getEventID', '')
+      store.commit('getSiteID', '')
+    }
     const openSitePage = (event: any) => {
       stationArray.value = event.site
-      console.log(stationArray)
       isEventOpen.value = false
+      store.commit('getEventID', event.id)
+    }
+    const changeSiteID = (siteID: number) => {
+      store.commit('getSiteID', siteID)
     }
 
     return {
       mapStates,
-      pAlert,
       eventArray,
       openSitePage,
       isEventOpen,
-      stationArray
+      stationArray,
+      eventList,
+      changeSiteID
     }
   }
 })
@@ -109,5 +119,9 @@ export default defineComponent({
 <style scoped>
 .container {
   height: 500px;
+}
+.myMouse {
+  cursor: pointer;
+  color: blue;
 }
 </style>

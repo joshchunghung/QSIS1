@@ -12,7 +12,7 @@ export const event = [
       {
         id: 1,
         isArray: true,
-        isOpen: false,
+        isOpen: true,
         name: 'RCEC',
         lat: 25.03978999,
         lon: 121.6136098,
@@ -20,8 +20,29 @@ export const event = [
         basement: 3,
         stations: [
           {
-            floor: 1,
-            PGA: 100,
+            id: 1,
+            floor: 3,
+            PGA: 5000,
+            PGV: 0,
+            x: 0,
+            y: 0
+          }
+        ]
+      },
+      {
+        id: 2,
+        isArray: true,
+        isOpen: true,
+        name: 'RCECT3',
+        lat: 24,
+        lon: 121,
+        height: 2,
+        basement: 6,
+        stations: [
+          {
+            id: 1,
+            floor: -5,
+            PGA: 500,
             PGV: 0,
             x: 0,
             y: 0
@@ -41,18 +62,19 @@ export const event = [
     haveData: true,
     site: [
       {
-        id: 2,
+        id: 1,
         isArray: true,
         isOpen: true,
         name: 'RCECTT',
         lat: 25,
         lon: 121,
-        height: 9,
-        basement: 3,
+        height: 12,
+        basement: 1,
         stations: [
           {
+            id: 1,
             floor: 1,
-            PGA: 100,
+            PGA: 50,
             PGV: 0,
             x: 0,
             y: 0
