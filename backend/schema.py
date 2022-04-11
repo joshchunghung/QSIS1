@@ -12,12 +12,12 @@ class Query(graphene.ObjectType):
 
     def resolve_building(self, info, **kwargs):
         # 這裡可以定義 query 方式
-        print("self",self)
-        print("info",info.context)
-        print('(schema.py) info.context.headers: ', info.context.headers)
+        #print("self",self)
+        #print("info",info.context)
+        #print('(schema.py) info.context.headers: ', info.context.headers)
         # ip = info.context.headers.get('REMOTE_ADDR')
-        ip = info.context.headers.get('Origin')
-        print('(schema.py) ip: ', ip)
+        #ip = info.context.headers.get('Origin')
+        #print('(schema.py) ip: ', ip)
         title = kwargs.get('name')
         if title is not None:
             return Building.objects.filter(name__contains=title)

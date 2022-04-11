@@ -123,30 +123,21 @@ class DjangoSession(models.Model):
 
 
 class Building(models.Model):
-    id = models.CharField(db_column='ID', max_length=4, blank=True,primary_key=True)  # Field name made lowercase.
-    name = models.CharField(db_column='Name', max_length=13, blank=True, null=True)  # Field name made lowercase.
-    abbreviation = models.CharField(max_length=4, blank=True, null=True)
+    id = models.CharField(max_length=11, blank=True,primary_key=True)  # Field name made lowercase.
+    name = models.CharField(max_length=255, blank=True, null=True)  # Field name made lowercase.
+    abbreviation = models.CharField(max_length=10, blank=True, null=True)
     latitude = models.DecimalField(max_digits=10, decimal_places=8, blank=True, null=True)
     longitude = models.DecimalField(max_digits=11, decimal_places=8, blank=True, null=True)
-    elevation = models.CharField(max_length=10, blank=True, null=True)
-    public_ip = models.CharField(db_column='public_IP', max_length=10, blank=True, null=True)  # Field name made lowercase.
-    address = models.CharField(max_length=16, blank=True, null=True)
-    material = models.CharField(db_column='Material', max_length=10, blank=True, null=True)  # Field name made lowercase.
-    geology = models.CharField(max_length=10, blank=True, null=True)
+    public_ip = models.CharField(max_length=16, blank=True, null=True)  # Field name made lowercase.
+    address = models.CharField(max_length=255, blank=True, null=True)
     basement = models.IntegerField(blank=True, null=True)
-    floor_above_ground = models.IntegerField(blank=True, null=True)
-    total_height = models.CharField(max_length=10, blank=True, null=True)
-    outlook = models.CharField(max_length=10, blank=True, null=True)
-    section_view = models.CharField(max_length=10, blank=True, null=True)
-    building_date = models.CharField(max_length=10, blank=True, null=True)
-    substantial_completion_date = models.CharField(max_length=10, blank=True, null=True)
-    activation_date = models.CharField(max_length=10, blank=True, null=True)
+    floor = models.IntegerField(db_column="floor",blank=True, null=True)
     contact_person = models.CharField(max_length=10, blank=True, null=True)
-    remark = models.CharField(max_length=10, blank=True, null=True)
+    remark = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'qsis_db_building'
+        db_table = 'building'
 
 
 class QsisDbFloor(models.Model):
