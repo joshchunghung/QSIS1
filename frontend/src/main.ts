@@ -17,7 +17,7 @@ import {
 // HTTP connection to the API
 const httpLink = createHttpLink({
     // You should use an absolute URL here
-    uri: 'http://140.109.82.44:8012/graphql'
+    uri: 'http://140.109.82.44:8012/graphql/'
 })
 
 // Cache implementation
