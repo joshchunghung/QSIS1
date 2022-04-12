@@ -123,7 +123,8 @@ class DjangoSession(models.Model):
 
 
 class Building(models.Model):
-    id = models.CharField(max_length=11, blank=True,primary_key=True)  # Field name made lowercase.
+    id = models.IntegerField(blank=True,primary_key=True,auto_created=True, editable=False)  # Field name made lowercase.
+    #id = models.UUIDField(primary_key=True, default=uuid4(), auto_created=True, editable=False)
     name = models.CharField(max_length=255, blank=True, null=True)  # Field name made lowercase.
     abbreviation = models.CharField(max_length=10, blank=True, null=True)
     latitude = models.DecimalField(max_digits=10, decimal_places=8, blank=True, null=True)
@@ -136,7 +137,7 @@ class Building(models.Model):
     remark = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = False #對現有的表進行操作，而不會自動根據模型類生成對映的資料庫表
         db_table = 'building'
 
 
