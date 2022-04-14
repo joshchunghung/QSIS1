@@ -1,24 +1,32 @@
 import graphene
 from graphene_django.types import DjangoObjectType
 
-from backend.models import Building
+from backend.models import Building,Station
 
 class buildingType(DjangoObjectType):
     class Meta:
         model = Building
 
-class Query(graphene.ObjectType):
-    building = graphene.List(buildingType, name=graphene.String())
+class stationType(DjangoObjectType):
+    class Meta:
+        model = Station
 
+
+class Query(graphene.ObjectType):
+    building = graphene.List(buildingType, id=graphene.Int(),name=graphene.String())
     def resolve_building(self, info, **kwargs):
-        # 這裡可以定義 query 方式
-        #print("self",self)
-        #print("info",info.context)
-        #print('(schema.py) info.context.headers: ', info.context.headers)
-        # ip = info.context.headers.get('REMOTE_ADDR')
-        #ip = info.context.headers.get('Origin')
-        #print('(schema.py) ip: ', ip)
-        title = kwargs.get('name')
-        if title is not None:
-            return Building.objects.filter(name__contains=title)
+        id = kwargs.get('id')
+        name = kwargs.get('name')
+        if id is not None:
+            return Building.objects.filter(id__contains=id)
+        if name is not None:
+            return Building.objects.filter(name__contains=name)
         return Building.objects.all()
+    
+    ### station
+    station = graphene.List(stationType, id=graphene.Int())
+    def resolve_station(self, info, **kwargs):
+        id = kwargs.get('id')
+        if id is not None:
+            return Station.objects.filter(id__contains=id)
+        return Station.objects.all()

@@ -123,7 +123,7 @@ class DjangoSession(models.Model):
 
 
 class Building(models.Model):
-    id = models.IntegerField(blank=True,primary_key=True,auto_created=True, editable=False)  # Field name made lowercase.
+    id = models.IntegerField(primary_key=True,auto_created=True, editable=False)  # Field name made lowercase.
     #id = models.UUIDField(primary_key=True, default=uuid4(), auto_created=True, editable=False)
     name = models.CharField(max_length=255, blank=True, null=True)  # Field name made lowercase.
     abbreviation = models.CharField(max_length=10, blank=True, null=True)
@@ -134,67 +134,33 @@ class Building(models.Model):
     basement = models.IntegerField(blank=True, null=True)
     floor = models.IntegerField(db_column="floor",blank=True, null=True)
     contact_person = models.CharField(max_length=10, blank=True, null=True)
+    isOpen=models.BooleanField(blank=True, null=True)
+    isArray=models.BooleanField(blank=True, null=True)
     remark = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         managed = False #對現有的表進行操作，而不會自動根據模型類生成對映的資料庫表
         db_table = 'building'
-
-
-class QsisDbFloor(models.Model):
-    id = models.CharField(db_column='ID', max_length=4, blank=True, primary_key=True)  # Field name made lowercase.
-    building_id = models.CharField(db_column='building_ID', max_length=4, blank=True, null=True)  # Field name made lowercase.
-    sub_building = models.CharField(max_length=1, blank=True, null=True)
-    floor = models.IntegerField(blank=True, null=True)
-    height = models.CharField(max_length=10, blank=True, null=True)
-    map_view = models.CharField(max_length=10, blank=True, null=True)
-    remark = models.CharField(max_length=10, blank=True, null=True)
-
+        
+class Station(models.Model):
+    id = models.IntegerField(primary_key=True,auto_created=True, editable=False)
+    SN= models.IntegerField(blank=False)
+    code=models.CharField(max_length=5, blank=True, null=True)
+    building=models.CharField(max_length=10, blank=False, null=True)
+    floor=models.IntegerField(blank=False)
+    installation=models.CharField(
+        max_length=1,
+        choices=[('w','wall'),('c','ceiling'),('f','floor')],
+        default='f',
+    )
+    location=models.CharField(max_length=3,blank=False)
+    latitude = models.DecimalField(max_digits=10, decimal_places=8, blank=True, null=True)
+    longitude = models.DecimalField(max_digits=11, decimal_places=8, blank=True, null=True)
+    starttime=models.DateTimeField(blank=True, null=True)
+    endtime=models.DateTimeField(blank=True, null=True)
+    isOpen=models.BooleanField(blank=True, null=True)
+    remark = models.CharField(max_length=255, blank=True, null=True)
     class Meta:
         managed = False
-        db_table = 'qsis_db_floor'
-
-
-class QsisDbInstrumentPool(models.Model):
-    id = models.CharField(db_column='ID', max_length=4, blank=True, primary_key=True)  # Field name made lowercase.
-    s_n = models.IntegerField(db_column='S_N', blank=True, null=True)  # Field name made lowercase.
-    inst_code = models.CharField(max_length=5, blank=True, null=True)
-    sensor = models.CharField(max_length=21, blank=True, null=True)
-    sensor_model = models.CharField(max_length=7, blank=True, null=True)
-    datalogger = models.CharField(max_length=15, blank=True, null=True)
-    mac_address = models.CharField(db_column='MAC_address', max_length=17, blank=True, null=True)  # Field name made lowercase.
-    constant = models.CharField(max_length=10, blank=True, null=True)
-    type = models.CharField(max_length=10, blank=True, null=True)
-    remark = models.CharField(max_length=10, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'qsis_db_instrument_pool'
-
-
-class QsisDbStation(models.Model):
-    id = models.CharField(db_column='ID', max_length=4, blank=True,primary_key=True)  # Field name made lowercase.
-    floor_id = models.CharField(db_column='floor_ID', max_length=4, blank=True, null=True)  # Field name made lowercase.
-    location = models.CharField(max_length=3, blank=True, null=True)
-    installation = models.CharField(max_length=5, blank=True, null=True)
-    internet_connect = models.CharField(max_length=5, blank=True, null=True)
-    ip = models.CharField(max_length=16, blank=True, null=True)
-    remark = models.CharField(max_length=18, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'qsis_db_station'
-
-
-class QsisDbStationInstrument(models.Model):
-    id = models.CharField(db_column='ID', max_length=4, blank=True, primary_key=True)  # Field name made lowercase.
-    sta_id = models.CharField(db_column='sta_ID', max_length=4, blank=True, null=True)  # Field name made lowercase.
-    instrument_id = models.CharField(db_column='instrument_ID', max_length=4, blank=True, null=True)  # Field name made lowercase.
-    on_date_utc = models.CharField(db_column='on_date_UTC', max_length=19, blank=True, null=True)  # Field name made lowercase.
-    off_date_utc = models.CharField(db_column='off_date_UTC', max_length=4, blank=True, null=True)  # Field name made lowercase.
-    azimuth = models.CharField(max_length=10, blank=True, null=True)
-    remark = models.CharField(max_length=10, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'qsis_db_station_instrument'
+        db_table = 'station'
+        unique_together = (('building', 'floor','location'),)
