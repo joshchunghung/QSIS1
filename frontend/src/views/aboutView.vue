@@ -2,7 +2,7 @@
     <div class="about">
         <h1>This is an project detail page</h1>
         <div v-if="result && result.building">
-            <h2 v-for=" building of result.building" :key="building.id">{{ building.id }},{{ building.name }}</h2>
+            <h2 v-for=" building in result.building" :key="building.id">{{ building.id }},{{ building.name }}</h2>
         </div>
     </div>
 </template>
