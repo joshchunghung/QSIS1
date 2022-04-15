@@ -6,6 +6,7 @@ from backend.models import Building,Station
 class buildingType(DjangoObjectType):
     class Meta:
         model = Building
+        exclude = ['address','contact_Person','remark']
 
 class stationType(DjangoObjectType):
     class Meta:

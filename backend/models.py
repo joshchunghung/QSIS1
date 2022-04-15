@@ -133,7 +133,7 @@ class Building(models.Model):
     address = models.CharField(max_length=255, blank=True, null=True)
     basement = models.IntegerField(blank=True, null=True)
     floor = models.IntegerField(db_column="floor",blank=True, null=True)
-    contact_person = models.CharField(max_length=10, blank=True, null=True)
+    contact_Person = models.CharField(max_length=10, blank=True, null=True)
     isOpen=models.BooleanField(blank=True, null=True)
     isArray=models.BooleanField(blank=True, null=True)
     remark = models.CharField(max_length=255, blank=True, null=True)

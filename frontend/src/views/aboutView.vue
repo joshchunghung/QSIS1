@@ -22,13 +22,13 @@ import gql from 'graphql-tag'
 export default {
     setup () {
         const { result, loading, error } = useQuery(gql`
-    query getbuilding {
-        building {
-            id
-            name
-        }
-    }
-`)
+            query getBuilding {
+                building {
+                    id
+                    name
+                }
+            }
+        `)
 
         const buildings = useResult(result, null, data => data.building)
         return {
