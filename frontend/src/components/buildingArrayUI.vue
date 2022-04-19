@@ -54,7 +54,7 @@
 
 <script lang="ts">
 import {
-    computed, defineComponent, onUpdated
+    computed, defineComponent
 } from 'vue'
 import {
     useStore
@@ -68,19 +68,6 @@ export default defineComponent({
         const eventID = computed(() => store.getters.targetEvent)
         const buildingArray = computed(() => store.getters.site)
 
-        // 資料改變時才會出現
-        onUpdated(() => {
-            // const svg = d3.select("#building");
-            // svg
-            //   .append("rect")
-            //   .attr("width", 12)
-            //   .attr("height", 12)
-            //   .attr("x", 0)
-            //   .attr("y", 0)
-            //   .attr("fill", "red")
-            //   .attr("stroke", "black")
-            //   .attr("stroke-width", 1);
-        })
         return {
             buildingArray,
             siteID,

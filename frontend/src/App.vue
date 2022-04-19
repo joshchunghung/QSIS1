@@ -49,7 +49,7 @@ export default defineComponent({
     padding-right: 40px;
 }
 
-h2>p {
+h2 > p {
     padding: 0;
     margin: 0;
 }

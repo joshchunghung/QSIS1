@@ -60,7 +60,7 @@
 
 <script lang="ts">
 import {
-    defineComponent, reactive, ref
+    defineComponent, reactive, ref, onBeforeUnmount
 } from 'vue'
 import 'leaflet/dist/leaflet.css'
 import {
@@ -110,6 +110,9 @@ export default defineComponent({
             store.commit('getSiteID', siteID)
         }
 
+        // 清空building array的東西
+        onBeforeUnmount(() => eventList())
+
         return {
             mapStates,
             eventArray,
@@ -121,10 +124,12 @@ export default defineComponent({
         }
     }
 })
+
 </script>
 
 <style scoped>
 .container {
+    width: 80%;
     height: 500px;
 }
 

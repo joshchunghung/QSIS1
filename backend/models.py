@@ -123,7 +123,7 @@ class DjangoSession(models.Model):
 
 
 class Building(models.Model):
-    id = models.IntegerField(db_column="buildingID",primary_key=True,auto_created=True, editable=False)  # Field name made lowercase.
+    id = models.AutoField(db_column="buildingID",primary_key=True,auto_created=True, editable=False)  # Field name made lowercase.
     #id = models.UUIDField(primary_key=True, default=uuid4(), auto_created=True, editable=False)
     name = models.CharField(max_length=255, blank=True, null=True)  # Field name made lowercase.
     abbreviation = models.CharField(max_length=10, blank=True, null=True)
@@ -137,16 +137,21 @@ class Building(models.Model):
     isOpen=models.BooleanField(blank=True, null=True)
     isArray=models.BooleanField(blank=True, null=True)
     remark = models.CharField(max_length=255, blank=True, null=True)
-
+    
+    def __str__(self):
+        return self.abbreviation
+    
     class Meta:
-        managed = False #對現有的表進行操作，而不會自動根據模型類生成對映的資料庫表
+        managed = True #對現有的表進行操作，而不會自動根據模型類生成對映的資料庫表
         db_table = 'building'
-        
+
+    
 class Station(models.Model):
-    id = models.IntegerField(db_column="stationID",primary_key=True,auto_created=True, editable=False)
+    id = models.AutoField(db_column="stationID",primary_key=True,auto_created=True, editable=False)
     SN= models.IntegerField(blank=False)
     code=models.CharField(max_length=5, blank=True, null=True)
-    building=models.CharField(max_length=10, blank=False, null=True)
+    #buildingID=models.CharField(max_length=10, blank=False, null=True)
+    building=models.ForeignKey('Building',related_name='station', on_delete=models.CASCADE)
     floor=models.IntegerField(blank=False)
     installation=models.CharField(
         max_length=1,
@@ -161,6 +166,5 @@ class Station(models.Model):
     isOpen=models.BooleanField(blank=True, null=True)
     remark = models.CharField(max_length=255, blank=True, null=True)
     class Meta:
-        managed = False
+        managed = True
         db_table = 'station'
-        unique_together = (('building', 'floor','location'),)
