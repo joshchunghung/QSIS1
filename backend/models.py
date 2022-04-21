@@ -151,14 +151,16 @@ class Station(models.Model):
     SN= models.IntegerField(blank=False)
     code=models.CharField(max_length=5, blank=True, null=True)
     #buildingID=models.CharField(max_length=10, blank=False, null=True)
-    building=models.ForeignKey('Building',related_name='station', on_delete=models.CASCADE)
-    floor=models.IntegerField(blank=False)
+    building=models.ForeignKey('Building',related_name='station', on_delete=models.CASCADE,null=True)
+    
+    floor=models.IntegerField(blank=True,null=True)
     installation=models.CharField(
         max_length=1,
         choices=[('w','wall'),('c','ceiling'),('f','floor')],
         default='f',
     )
-    location=models.CharField(max_length=3,blank=False)
+    location=models.CharField(max_length=3,blank=True,null=True)
+    ip=models.CharField(max_length=11,blank=True,null=True)
     latitude = models.DecimalField(max_digits=10, decimal_places=8, blank=True, null=True)
     longitude = models.DecimalField(max_digits=11, decimal_places=8, blank=True, null=True)
     starttime=models.DateTimeField(blank=True, null=True)
@@ -168,3 +170,16 @@ class Station(models.Model):
     class Meta:
         managed = True
         db_table = 'station'
+        
+class Event(models.Model):
+    id = models.AutoField(db_column="eventID",primary_key=True,auto_created=True, editable=False)
+    date=models.DateField(blank=True, null=True)
+    time = models.TimeField(blank=True, null=True)
+    latitude = models.DecimalField(max_digits=10, decimal_places=8, blank=True, null=True)
+    longitude = models.DecimalField(max_digits=11, decimal_places=8, blank=True, null=True)
+    depth=models.DecimalField(max_digits=5, decimal_places=1, blank=True, null=True)
+    ML=models.DecimalField(max_digits=3, decimal_places=1, blank=True, null=True)
+    isOpen=models.BooleanField(blank=True, null=True)
+    class Meta:
+        managed = True
+        db_table = 'event'
