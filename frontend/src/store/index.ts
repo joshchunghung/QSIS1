@@ -4,6 +4,9 @@ import {
 import {
     event
 } from '../../public/data/event'
+
+import axios from '../../node_modules/axios'
+
 export default createStore({
     strict: true,
     state: {
@@ -26,7 +29,26 @@ export default createStore({
         }
     },
     actions: {
+        getTest (context) {
+            axios.post('http://140.109.82.44:8012/graphql/', {
+                query: `query {
+                    building (name: "地球"){
+                      id,
+                      name,
+                    },
+                      event (isOpen : true){
+                      latitude
+                      longitude
+                      isOpen
+                    }
+                  }`
+            }).then((response) => {
+                console.log('123 ', response.data)
+            }).catch((err) => { console.log('456 ', err) })
+        }
+
     },
+
     modules: {
     }
 })

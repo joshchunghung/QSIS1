@@ -76,7 +76,6 @@ import {
 import {
     tileProviders
 } from '../../public/data/mapUrl'
-// import { buildingArray } from '../../public/data/building'
 
 export default defineComponent({
     name: 'twMap',
@@ -100,6 +99,7 @@ export default defineComponent({
             isEventOpen.value = true
             store.commit('getEventID', '')
             store.commit('getSiteID', '')
+            store.dispatch('getTest')
         }
         const openSitePage = (event: any) => {
             stationArray.value = event.site
