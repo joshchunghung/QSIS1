@@ -1,7 +1,7 @@
 <template>
     <div class="home">
         <twMap />
-        <buildingArrayUI />
+        <!-- <buildingArrayUI /> -->
     </div>
 </template>
 
@@ -10,12 +10,12 @@ import {
     defineComponent
 } from 'vue'
 import twMap from '@/components/taiwanMap.vue' // @ is an alias to /src
-import buildingArrayUI from '@/components/buildingArrayUI.vue'
+// import buildingArrayUI from '@/components/buildingArrayUI.vue'
 export default defineComponent({
     name: 'HomeView',
     components: {
-        twMap,
-        buildingArrayUI
+        twMap
+
     }
 })
 </script>
