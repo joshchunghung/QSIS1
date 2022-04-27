@@ -13,7 +13,8 @@
                 :maxZoom="mapState.maxZoom"
             />
             <LControlLayers />
-            <div>
+            <!-- event  -->
+            <div v-if="isEventOpen">
                 <LCircleMarker
                     v-for="event in events"
                     :key="event.id"
@@ -28,14 +29,29 @@
                         lon:{{ event.longitude }} <br />
                         dep:{{event.depth}} km <br />
                         ML:{{event.ML }} <br />
-                        <div class="myMouse" @click="openSitePage(event)">
+                        <div class="myMouse" @click="openSitePage(event.id)">
                             Stations
                         </div>
                     </LPopup>
                 </LCircleMarker>
             </div>
+            <div v-else>
+                <div v-for="(site, name,index ) in sites" :key="index">
+                    <LCircleMarker
+                        :lat-lng="[site.latitude, site.longitude]"
+                        :radius="5"
+                        color="red"
+                    >
+                        <LPopup>
+                            {{name }}<br />
+                            MaxPGA: {{site.MAXpga}} gal
+                        </LPopup>
+                    </LCircleMarker>
+                </div>
+            </div>
         </LMap>
     </div>
+    <button type="button" class="btn btn-primary" @click="eventList">eventList</button>
 </template>
 
 <script lang="ts">
@@ -68,14 +84,28 @@ export default defineComponent({
         LPopup
     },
     setup () {
+        const mapStates = ref(tileProviders)
         const store = useStore()
         store.dispatch('getDBEvent')
         const events = computed(() => store.getters.event)
-        const mapStates = ref(tileProviders)
+        const sites = computed(() => store.getters.site)
+        const isEventOpen = ref(true)
+
+        const openSitePage = (eventid: number) => {
+            isEventOpen.value = false
+            store.dispatch('getDBStation', eventid)
+        }
+        const eventList = () => {
+            isEventOpen.value = true
+        }
 
         return {
             mapStates,
-            events
+            events,
+            isEventOpen,
+            openSitePage,
+            sites,
+            eventList
         }
     }
 })
