@@ -7,18 +7,30 @@ export default createStore({
     strict: true,
     state: {
         event: null,
-        site: null
+        site: null,
+        buildingState: null,
+        singleSite: null
     },
     getters: {
         event: (state) => state.event,
-        site: (state) => state.site
+        site: (state) => state.site,
+        buildingState: (state) => state.buildingState,
+        singleSiteName: (state) => state.singleSite,
+        singleSite: (state) => state.site[state.singleSite]
     },
     mutations: {
         getEvent (state, event) {
-            state.event = event.event
+            state.event = event
         },
         getSite (state, site) {
             state.site = site
+        },
+        getSingleSite (state, name) {
+            // state.singleSite = state.site[name]
+            state.singleSite = name
+        },
+        changeBuildingState (state, isOpen) {
+            state.buildingState = isOpen
         }
     },
     actions: {
@@ -36,7 +48,7 @@ export default createStore({
                     }
                 }`
             }).then((response) => {
-                commit('getEvent', response.data.data)
+                commit('getEvent', response.data.data.event)
             }).catch((err) => { console.log(err) })
         },
         getDBStation ({ dispatch }, eventid) {
