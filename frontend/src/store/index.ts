@@ -26,13 +26,14 @@ export default createStore({
                         longitude
                         date
                         time
+                        depth
                         ML
                     }
                 }`
             }).then((response) => {
                 commit('getEvent', response.data.data)
             }).catch((err) => { console.log('456 ', err) })
-        },
+        }
 
     },
 

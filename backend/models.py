@@ -152,7 +152,6 @@ class Station(models.Model):
     code=models.CharField(max_length=5, blank=True, null=True)
     #buildingID=models.CharField(max_length=10, blank=False, null=True)
     building=models.ForeignKey('Building',related_name='station', on_delete=models.CASCADE,null=True)
-    
     floor=models.IntegerField(blank=True,null=True)
     installation=models.CharField(
         max_length=1,
@@ -167,6 +166,10 @@ class Station(models.Model):
     endtime=models.DateTimeField(blank=True, null=True)
     isOpen=models.BooleanField(blank=True, null=True)
     remark = models.CharField(max_length=255, blank=True, null=True)
+    
+    def __str__(self):
+        return self.code
+    
     class Meta:
         managed = True
         db_table = 'station'
@@ -180,6 +183,23 @@ class Event(models.Model):
     depth=models.DecimalField(max_digits=5, decimal_places=1, blank=True, null=True)
     ML=models.DecimalField(max_digits=3, decimal_places=1, blank=True, null=True)
     isOpen=models.BooleanField(blank=True, null=True)
+    def __str__(self):
+        return self.id
+    
     class Meta:
         managed = True
         db_table = 'event'
+
+class PGA(models.Model):
+    id = models.AutoField(db_column="id",primary_key=True,auto_created=True, editable=False)
+    event=models.ForeignKey('Event', related_name='pga', on_delete=models.CASCADE,null=True)
+    station=models.ForeignKey('Station', on_delete=models.CASCADE,null=True)
+    pgaz=models.DecimalField(max_digits=7, decimal_places=3, blank=True, null=True)
+    pgax=models.DecimalField(max_digits=7, decimal_places=3, blank=True, null=True)
+    pgay =models.DecimalField(max_digits=7, decimal_places=3, blank=True, null=True)
+    pga3comp=models.DecimalField(max_digits=7, decimal_places=3, blank=True, null=True)
+    pgaHorizontal=models.DecimalField(max_digits=7, decimal_places=3, blank=True, null=True)
+    
+    class Meta:
+        managed = True
+        db_table = 'event_station_PGA'

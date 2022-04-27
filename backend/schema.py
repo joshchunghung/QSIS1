@@ -1,7 +1,7 @@
 import graphene
 from graphene_django.types import DjangoObjectType
-
-from backend.models import Building,Station,Event
+from django.db.models import Q
+from backend.models import Building,Station,Event,PGA
 
 class buildingType(DjangoObjectType):
     class Meta:
@@ -15,6 +15,10 @@ class stationType(DjangoObjectType):
 class eventType(DjangoObjectType):
     class Meta:
         model = Event
+
+class pgaType(DjangoObjectType):
+    class Meta:
+        model = PGA
 
 class Query(graphene.ObjectType):
     building = graphene.List(buildingType, id=graphene.Int(),name=graphene.String())
@@ -38,7 +42,12 @@ class Query(graphene.ObjectType):
     event = graphene.List(eventType, isOpen=graphene.Boolean())
     def resolve_event(self, info, **kwargs):
         isopen = kwargs.get('isOpen')
-        print(isopen)
         if isopen is not None:
             return Event.objects.filter(isOpen__exact=isopen)
         return Event.objects.all()
+    
+    pga = graphene.List(pgaType, event=graphene.ID())
+    def resolve_pga(self, info, event=None ,**kwargs):
+        if event:
+            return PGA.objects.filter(event__id=event)
+        return PGA.objects.all()

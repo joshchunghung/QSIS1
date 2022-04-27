@@ -1,6 +1,6 @@
 from django.contrib import admin
 # Register your models here.
-from .models import  Building, Station,Event
+from .models import  Building, Station,Event,PGA
 
 admin.site.site_header = 'Quake Structural Integrity System Backend'
 admin.site.index_title = 'QSIS'
@@ -18,3 +18,7 @@ class BuildingAdmin(admin.ModelAdmin):
 class StationAdmin(admin.ModelAdmin):
     list_display =[f.name for f in Station._meta.fields]
     list_per_page = 25
+    
+@admin.register(PGA)
+class EventStationPGAAdmin(admin.ModelAdmin):
+    list_display =[f.name for f in PGA._meta.fields]

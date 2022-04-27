@@ -25,8 +25,7 @@ urlpatterns = [
     path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True)))
 ]
 
-#vue的前端
+#vue的前端，
 urlpatterns += [
-    path('',  TemplateView.as_view(template_name="index.html")),
-    #re_path(r'^.*$', TemplateView.as_view(template_name="index.html")),
+    re_path(r'^.*$', TemplateView.as_view(template_name="index.html")),
 ]
