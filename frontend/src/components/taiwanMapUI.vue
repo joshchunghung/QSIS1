@@ -45,7 +45,7 @@
 <script lang="ts">
 import {
     computed,
-    defineComponent, ref
+    defineComponent, onBeforeUnmount, ref
 } from 'vue'
 import 'leaflet/dist/leaflet.css'
 import {
@@ -63,7 +63,7 @@ import {
 } from '../../public/data/mapUrl'
 
 export default defineComponent({
-    name: 'twMap',
+    name: 'twMapUI',
     components: {
         LMap,
         LTileLayer,
@@ -86,12 +86,14 @@ export default defineComponent({
         const eventList = () => {
             isEventOpen.value = true
             store.commit('changeBuildingState', false)
+            store.commit('changeFloorMapViewState', false)
         }
         const changeSite = (site: string) => {
             store.commit('getSingleSite', site)
             store.commit('changeBuildingState', true)
+            store.commit('changeFloorMapViewState', false)
         }
-
+        onBeforeUnmount(() => eventList())
         return {
             mapStates,
             events,

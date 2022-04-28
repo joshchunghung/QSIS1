@@ -159,9 +159,9 @@ class Station(models.Model):
         default='f',
     )
     location=models.CharField(max_length=3,blank=True,null=True)
-    ip=models.CharField(max_length=11,blank=True,null=True)
-    latitude = models.DecimalField(max_digits=10, decimal_places=8, blank=True, null=True)
-    longitude = models.DecimalField(max_digits=11, decimal_places=8, blank=True, null=True)
+    ip=models.CharField(max_length=15,blank=True,null=True)
+    rx = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
+    ry = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
     starttime=models.DateTimeField(blank=True, null=True)
     endtime=models.DateTimeField(blank=True, null=True)
     isOpen=models.BooleanField(blank=True, null=True)

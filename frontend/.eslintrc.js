@@ -17,6 +17,7 @@ module.exports = {
         semi: [2, 'never'], // 句尾是否加上 ";"
         '@typescript-eslint/no-non-null-assertion': 0,
         'no-use-before-define': [2, 'nofunc'], // 變數是否一定要宣告賦值
+
         'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off', // 是否留下 console.log
         'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off', // 是否留下 debugger
         'comma-spacing': [2, { // 關於 , 的規則，前後是否有空格

@@ -9,14 +9,18 @@ export default createStore({
         event: null,
         site: null,
         buildingState: null,
-        singleSite: null
+        singleSite: null,
+        floorMapViewState: null,
+        floor: null
     },
     getters: {
         event: (state) => state.event,
         site: (state) => state.site,
         buildingState: (state) => state.buildingState,
         singleSiteName: (state) => state.singleSite,
-        singleSite: (state) => state.site[state.singleSite]
+        singleSite: (state) => state.site[state.singleSite],
+        floorMapViewState: (state) => state.floorMapViewState,
+        floor: (state) => state.floor
     },
     mutations: {
         getEvent (state, event) {
@@ -31,7 +35,14 @@ export default createStore({
         },
         changeBuildingState (state, isOpen) {
             state.buildingState = isOpen
+        },
+        changeFloorMapViewState (state, isOpen) {
+            state.floorMapViewState = isOpen
+        },
+        getFloor (state, floor) {
+            state.floor = floor
         }
+
     },
     actions: {
         getDBEvent ({ commit }) {
@@ -58,6 +69,8 @@ export default createStore({
                         station{
                             code
                             floor
+                            rx
+                            ry
                             building{
                             abbreviation
                             latitude
@@ -79,7 +92,7 @@ export default createStore({
             }
             pga.forEach(({ station, pga3comp }) => {
                 const MAXpga = -1
-                const { code, floor, building } = station
+                const { code, floor, rx, ry, building } = station
                 const { abbreviation, latitude, longitude, basement, floor: height } = building
                 if (!buidings[abbreviation]) {
                     buidings[abbreviation] = {
@@ -88,14 +101,16 @@ export default createStore({
                         MAXpga,
                         height,
                         basement,
-                        stations: {
-                        }
+                        stations: []
                     }
                 }
-                buidings[abbreviation].stations[code] = {
+                buidings[abbreviation].stations.push({
+                    code,
                     floor,
+                    rx,
+                    ry,
                     pga3comp
-                }
+                })
                 if (pga3comp > buidings[abbreviation].MAXpga) { buidings[abbreviation].MAXpga = pga3comp }
             })
             commit('getSite', buidings)

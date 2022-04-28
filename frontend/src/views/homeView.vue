@@ -1,8 +1,11 @@
 <template>
     <div class="home">
-        <twMap />
+        <twMapUI />
         <div v-if="buildingState">
             <buildingArrayUI />
+        </div>
+        <div v-if="floorMapViewState">
+            <floorMapViewUI />
         </div>
     </div>
 </template>
@@ -12,22 +15,27 @@ import {
     computed,
     defineComponent
 } from 'vue'
-import twMap from '@/components/taiwanMap.vue' // @ is an alias to /src
+import twMapUI from '@/components/taiwanMapUI.vue' // @ is an alias to /src
 import buildingArrayUI from '@/components/buildingArrayUI.vue'
+import floorMapViewUI from '@/components/floorMapViewUI.vue'
 import {
     useStore
 } from 'vuex'
 export default defineComponent({
     name: 'HomeView',
     components: {
-        twMap,
-        buildingArrayUI
+        twMapUI,
+        buildingArrayUI,
+        floorMapViewUI
     },
     setup () {
         const store = useStore()
         const buildingState = computed(() => store.getters.buildingState)
+        const floorMapViewState = computed(() => store.getters.floorMapViewState)
+
         return {
-            buildingState
+            buildingState,
+            floorMapViewState
         }
     }
 })
