@@ -3,15 +3,13 @@
         <LMap ref="map" :center="[23, 121]" :zoom="7">
             <!--layer-type="base" for LControlLayers  -->
             <LTileLayer v-for="mapState in mapStates" layer-type="base" :minZoom="6" :key="mapState.name"
-                        :url="mapState.url" :attribution="mapState.attribution" :name="mapState.name"
-                        :maxZoom="mapState.maxZoom"
-            />
+                :url="mapState.url" :attribution="mapState.attribution" :name="mapState.name"
+                :maxZoom="mapState.maxZoom" />
             <LControlLayers />
             <!-- event  -->
             <div v-if="isEventOpen">
                 <LCircleMarker v-for="event in events" :key="event.id" :lat-lng="[event.latitude, event.longitude]"
-                               :radius="6" color="yellow"
-                >
+                    :radius="6" color="yellow">
                     <LPopup>
                         {{ event.date }}<br />
                         {{ event.time }} (UTC+8)<br />
@@ -28,8 +26,7 @@
             <div v-else>
                 <div v-for="(site, name, index ) in sites" :key="index">
                     <LCircleMarker :lat-lng="[site.latitude, site.longitude]" :radius="5" color="red"
-                                   @click="changeSite(name)"
-                    >
+                        @click="changeSite(name)">
                         <LPopup>
                             {{ name }}<br />
                             MaxPGA: {{ site.MAXpga }} gal
@@ -40,12 +37,13 @@
         </LMap>
     </div>
     <button type="button" class="btn btn-primary" @click="eventList">eventList</button>
+    <div v-if="isEventOpen">Please choose a event!</div>
 </template>
 
 <script lang="ts">
 import {
     computed,
-    defineComponent, onBeforeUnmount, ref
+    defineComponent, onBeforeUnmount, onUpdated, ref
 } from 'vue'
 import 'leaflet/dist/leaflet.css'
 import {
@@ -71,13 +69,14 @@ export default defineComponent({
         LCircleMarker,
         LPopup
     },
-    setup () {
+    setup() {
         const mapStates = ref(tileProviders)
         const store = useStore()
         store.dispatch('getDBEvent')
         const events = computed(() => store.getters.event)
         const sites = computed(() => store.getters.site)
         const isEventOpen = ref(true)
+
 
         const openSitePage = (event) => {
             isEventOpen.value = false
@@ -87,11 +86,13 @@ export default defineComponent({
             isEventOpen.value = true
             store.commit('changeBuildingState', false)
             store.commit('changeFloorMapViewState', false)
+            store.commit('changeWaveFormState', false)
         }
         const changeSite = (site: string) => {
             store.commit('getSingleSite', site)
             store.commit('changeBuildingState', true)
             store.commit('changeFloorMapViewState', false)
+            store.commit('changeWaveFormState', false)
         }
         onBeforeUnmount(() => eventList())
         return {
@@ -101,7 +102,7 @@ export default defineComponent({
             openSitePage,
             sites,
             eventList,
-            changeSite
+            changeSite,
         }
     }
 })

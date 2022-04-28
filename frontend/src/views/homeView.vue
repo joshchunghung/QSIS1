@@ -7,6 +7,9 @@
         <div v-if="floorMapViewState">
             <floorMapViewUI />
         </div>
+        <div v-if="waveFormState">
+            <sacPlotUI />
+        </div>
     </div>
 </template>
 
@@ -18,6 +21,7 @@ import {
 import twMapUI from '@/components/taiwanMapUI.vue' // @ is an alias to /src
 import buildingArrayUI from '@/components/buildingArrayUI.vue'
 import floorMapViewUI from '@/components/floorMapViewUI.vue'
+import sacPlotUI from '@/components/sacPlotUI.vue'
 import {
     useStore
 } from 'vuex'
@@ -26,16 +30,18 @@ export default defineComponent({
     components: {
         twMapUI,
         buildingArrayUI,
-        floorMapViewUI
+        floorMapViewUI,
+        sacPlotUI
     },
     setup () {
         const store = useStore()
         const buildingState = computed(() => store.getters.buildingState)
         const floorMapViewState = computed(() => store.getters.floorMapViewState)
-
+        const waveFormState = computed(() => store.getters.waveFormState)
         return {
             buildingState,
-            floorMapViewState
+            floorMapViewState,
+            waveFormState
         }
     }
 })

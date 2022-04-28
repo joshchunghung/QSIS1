@@ -1,74 +1,35 @@
 <template>
+    <div>{{ targetEvent }}</div>
     <div>{{ name }}</div>
     <div id="building">
         <svg height="300" width="600" viewbox="0,0,900,900">
             <g :transform="`translate(0,${buildingArray.height * (20 + 0.5)})`">
-                <rect
-                    v-for="index in [...Array(buildingArray.height).keys()]"
-                    :key="index"
-                    :x="0"
-                    :y="-1 * (index + 1) * (20 + 0.5)"
-                    :width="200"
-                    :height="20"
-                    :fill="color(index + 1)"
-                    :stroke="'red'"
-                    stroke-width="0.5"
-                    @click="openFloor(index + 1)"
-                ></rect>
-                <text
-                    v-for="index in [...Array(buildingArray.height).keys()]"
-                    :key="index"
-                    :x="15"
-                    :y="-1 * (index) * (20 + 0.3)"
-                    class="text"
-                >
-                    {{index + 1}}F,
+                <rect v-for="index in [...Array(buildingArray.height).keys()]" :key="index" :x="0"
+                    :y="-1 * (index + 1) * (20 + 0.5)" :width="200" :height="20"
+                    :fill="pgaColor('maxPGA', buildingArray.stations, index + 1)" :stroke="'red'" stroke-width="0.5"
+                    @click="openFloor(index + 1)"></rect>
+                <text v-for="index in [...Array(buildingArray.height).keys()]" :key="index" :x="15"
+                    :y="-1 * (index) * (20 + 0.3)" class="text">
+                    {{ index + 1 }}F,
                 </text>
                 <!-- 地下室 -->
-                <rect
-                    v-for="index in [...Array(buildingArray.basement).keys()]"
-                    :key="index"
-                    :x="0"
-                    :y="index * (20 + 0.5)"
-                    :width="200"
-                    :height="20"
-                    :fill="color(-(index + 1))"
-                    :stroke="'red'"
-                    stroke-width="0.5"
-                    @click="openFloor(-(index + 1))"
-                ></rect>
-                <text
-                    v-for="index in [...Array(buildingArray.basement).keys()]"
-                    :key="index"
-                    :x="15"
-                    :y="(index+1) * (20 + 0.3)"
-                    class="text"
-                >
-                    B{{index + 1}}
+                <rect v-for="index in [...Array(buildingArray.basement).keys()]" :key="index" :x="0"
+                    :y="index * (20 + 0.5)" :width="200" :height="20"
+                    :fill="pgaColor('maxPGA', buildingArray.stations, -(index + 1))" :stroke="'red'" stroke-width="0.5"
+                    @click="openFloor(-(index + 1))"></rect>
+                <text v-for="index in [...Array(buildingArray.basement).keys()]" :key="index" :x="15"
+                    :y="(index + 1) * (20 + 0.3)" class="text">
+                    B{{ index + 1 }}
                 </text>
-                <line
-                    x1="0"
-                    y1="0"
-                    x2="300"
-                    y2="0"
-                    style="stroke: rgb(0, 0, 0); stroke-width: 2;"
-                />
-                <text
-                    x="305"
-                    align="center"
-                    y="0"
-                    fill="currentColor"
-                    text-anchor="start"
-                    alignment-baseline="middle"
-                    font-weight="bold"
-                    font-size="15"
-                >
+                <line x1="0" y1="0" x2="300" y2="0" style="stroke: rgb(0, 0, 0); stroke-width: 2;" />
+                <text x="305" align="center" y="0" fill="currentColor" text-anchor="start" alignment-baseline="middle"
+                    font-weight="bold" font-size="15">
                     ground
                 </text>
             </g>
         </svg>
     </div>
-    <div>{{buildingArray}}</div>
+    <div>{{ buildingArray }}</div>
 </template>
 
 <script lang="ts">
@@ -79,44 +40,27 @@ import {
     useStore
 } from 'vuex'
 import {
-    colorTable
-} from '../../public/data/pgaColorBar'
+    pgaColor
+} from './color.js'
 export default defineComponent({
     name: 'buildingArrayUI',
 
-    setup () {
+    setup() {
         const store = useStore()
         const buildingArray = computed(() => store.getters.singleSite)
         const name = computed(() => store.getters.singleSiteName)
-
-        const color = (floor) => {
-            let maxPga = -1
-            buildingArray.value.stations
-                .filter((item) => item.floor === floor)
-                .forEach((sta) => {
-                    if (sta.pga3comp > maxPga) {
-                        maxPga = sta.pga3comp
-                    }
-                })
-
-            if (maxPga === -1) {
-                return 'grey'
-            } else {
-                const colorArray = colorTable.filter((item) => item[0] <= maxPga)
-                const [_, ...targetColor] = colorArray[colorArray.length - 1]
-                return `rgb(${targetColor})`
-            }
-        }
-
+        const targetEvent = computed(() => store.getters.targetEvent)
         const openFloor = (floor) => {
             store.commit('changeFloorMapViewState', true)
             store.commit('getFloor', floor)
+            store.commit('changeWaveFormState', false)
         }
         return {
             buildingArray,
             name,
-            color,
-            openFloor
+            pgaColor,
+            openFloor,
+            targetEvent
         }
     }
 })
@@ -126,7 +70,7 @@ export default defineComponent({
 /* svg :hover {
     fill: red;
 } */
-svg:hover {
+rect:hover {
     stroke-width: 1px solid black;
     cursor: pointer;
 }

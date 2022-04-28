@@ -4,5 +4,10 @@ module.exports = defineConfig({
 })
 
 module.exports = {
-    assetsDir: 'static'
+    assetsDir: 'static',
+    lintOnSave: false
 }
+
+// module.exports = {
+//     lintOnSave: false
+// }

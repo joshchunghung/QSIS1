@@ -15,8 +15,8 @@ module.exports = {
         indent: [2, 4], // 縮排規則，index[0] 的數字代表含意為 關閉(0), 警告(1), 錯誤(2)
         quotes: [2, 'single'], // 單引號, 雙引號
         semi: [2, 'never'], // 句尾是否加上 ";"
-        '@typescript-eslint/no-non-null-assertion': 0,
-        'no-use-before-define': [2, 'nofunc'], // 變數是否一定要宣告賦值
+        // '@typescript-eslint/no-non-null-assertion': 0,
+        // 'no-use-before-define': [2, 'nofunc'], // 變數是否一定要宣告賦值
 
         'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off', // 是否留下 console.log
         'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off', // 是否留下 debugger
