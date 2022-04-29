@@ -2,14 +2,26 @@
     <div class="container">
         <LMap ref="map" :center="[23, 121]" :zoom="7">
             <!--layer-type="base" for LControlLayers  -->
-            <LTileLayer v-for="mapState in mapStates" layer-type="base" :minZoom="6" :key="mapState.name"
-                :url="mapState.url" :attribution="mapState.attribution" :name="mapState.name"
-                :maxZoom="mapState.maxZoom" />
+            <LTileLayer
+                v-for="mapState in mapStates"
+                layer-type="base"
+                :minZoom="6"
+                :key="mapState.name"
+                :url="mapState.url"
+                :attribution="mapState.attribution"
+                :name="mapState.name"
+                :maxZoom="mapState.maxZoom"
+            />
             <LControlLayers />
             <!-- event  -->
             <div v-if="isEventOpen">
-                <LCircleMarker v-for="event in events" :key="event.id" :lat-lng="[event.latitude, event.longitude]"
-                    :radius="6" color="yellow">
+                <LCircleMarker
+                    v-for="event in events"
+                    :key="event.id"
+                    :lat-lng="[event.latitude, event.longitude]"
+                    :radius="6"
+                    color="yellow"
+                >
                     <LPopup>
                         {{ event.date }}<br />
                         {{ event.time }} (UTC+8)<br />
@@ -17,16 +29,18 @@
                         lon:{{ event.longitude }} <br />
                         dep:{{ event.depth }} km <br />
                         ML:{{ event.ML }} <br />
-                        <div class="myMouse" @click="openSitePage(event.id)">
-                            Stations
-                        </div>
+                        <div class="myMouse" @click="openSitePage(event.id)">Stations</div>
                     </LPopup>
                 </LCircleMarker>
             </div>
             <div v-else>
-                <div v-for="(site, name, index ) in sites" :key="index">
-                    <LCircleMarker :lat-lng="[site.latitude, site.longitude]" :radius="5" color="red"
-                        @click="changeSite(name)">
+                <div v-for="(site, name, index) in sites" :key="index">
+                    <LCircleMarker
+                        :lat-lng="[site.latitude, site.longitude]"
+                        :radius="5"
+                        color="red"
+                        @click="changeSite(name)"
+                    >
                         <LPopup>
                             {{ name }}<br />
                             MaxPGA: {{ site.MAXpga }} gal
@@ -42,8 +56,7 @@
 
 <script lang="ts">
 import {
-    computed,
-    defineComponent, onBeforeUnmount, onUpdated, ref
+    computed, defineComponent, onBeforeUnmount, ref
 } from 'vue'
 import 'leaflet/dist/leaflet.css'
 import {
@@ -69,14 +82,13 @@ export default defineComponent({
         LCircleMarker,
         LPopup
     },
-    setup() {
+    setup () {
         const mapStates = ref(tileProviders)
         const store = useStore()
         store.dispatch('getDBEvent')
         const events = computed(() => store.getters.event)
         const sites = computed(() => store.getters.site)
         const isEventOpen = ref(true)
-
 
         const openSitePage = (event) => {
             isEventOpen.value = false
@@ -102,21 +114,20 @@ export default defineComponent({
             openSitePage,
             sites,
             eventList,
-            changeSite,
+            changeSite
         }
     }
 })
-
 </script>
 
 <style scoped>
 .container {
-    width: 80%;
-    height: 500px;
+  width: 80%;
+  height: 500px;
 }
 
 .myMouse {
-    cursor: pointer;
-    color: blue;
+  cursor: pointer;
+  color: blue;
 }
 </style>

@@ -184,7 +184,7 @@ class Event(models.Model):
     ML=models.DecimalField(max_digits=3, decimal_places=1, blank=True, null=True)
     isOpen=models.BooleanField(blank=True, null=True)
     def __str__(self):
-        return self.id
+        return str(self.id)
     
     class Meta:
         managed = True

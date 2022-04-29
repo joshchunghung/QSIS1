@@ -17,7 +17,7 @@ export default createStore({
     },
     getters: {
         event: (state) => state.event,
-        targetEvent: (state) => state.event[state.eventid],
+        targetEvent: (state) => state.event[state.eventid - 1],
         site: (state) => state.site,
         buildingState: (state) => state.buildingState,
         singleSiteName: (state) => state.singleSite,
@@ -27,35 +27,35 @@ export default createStore({
         waveFormState: (state) => state.waveFormState
     },
     mutations: {
-        getEvent(state, event) {
+        getEvent (state, event) {
             state.event = event
         },
-        getEventID(state, eventID) {
+        getEventID (state, eventID) {
             state.eventid = eventID
         },
-        getSite(state, site) {
+        getSite (state, site) {
             state.site = site
         },
-        getSingleSite(state, name) {
+        getSingleSite (state, name) {
             // state.singleSite = state.site[name]
             state.singleSite = name
         },
-        changeBuildingState(state, isOpen) {
+        changeBuildingState (state, isOpen) {
             state.buildingState = isOpen
         },
-        changeFloorMapViewState(state, isOpen) {
+        changeFloorMapViewState (state, isOpen) {
             state.floorMapViewState = isOpen
         },
-        getFloor(state, floor) {
+        getFloor (state, floor) {
             state.floor = floor
         },
-        changeWaveFormState(state, isOpen) {
+        changeWaveFormState (state, isOpen) {
             state.waveFormState = isOpen
         }
 
     },
     actions: {
-        getDBEvent({ commit }) {
+        getDBEvent ({ commit }) {
             axios.post('http://140.109.82.44:8012/graphql/', {
                 query: `query {
                     event (isOpen : true){
@@ -72,7 +72,7 @@ export default createStore({
                 commit('getEvent', response.data.data.event)
             }).catch((err) => { console.log(err) })
         },
-        getDBStation({ dispatch, commit }, eventid) {
+        getDBStation ({ dispatch, commit }, eventid) {
             commit('getEventID', eventid)
             axios.post('http://140.109.82.44:8012/graphql/', {
                 query: `query {
@@ -98,7 +98,7 @@ export default createStore({
                 dispatch('filterPGA', response.data.data.pga)
             }).catch((err) => { console.log(err) })
         },
-        filterPGA({ commit }, pga) {
+        filterPGA ({ commit }, pga) {
             const buidings = {
             }
             pga.forEach(({ station, pga3comp }) => {
