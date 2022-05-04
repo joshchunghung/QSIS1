@@ -1,5 +1,5 @@
 <template>
-    <div id="sacplot"  class='container'></div>
+    <div id="sacplot" class='container'></div>
 </template>
 
 <script lang="ts">
@@ -12,11 +12,11 @@ import {
 
 export default defineComponent({
     name: 'sacPlotUI',
-    setup () {
+    setup() {
         // console.debug(sacPlots)
         // console.log(window.location.pathname)
         onMounted(() => {
-            const paths = ['/data/data/A002.10.HLE', '/data/data/A002.10.HLN', '/data/data/A002.10.HLZ']
+            const paths = ['/data/data/A002.10.HLE.n0xy', '/data/data/A002.10.HLN.n0xy', '/data/data/A002.10.HLZ.n0xy']
             const chart = sacPlots()
                 .data(paths)
                 .title('TSMIP 10 A002 2020-01-01T00:00:00')
@@ -30,6 +30,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.chart {
+    padding: 10px 15px;
+}
+
 .toggle-menu {
     position: relative;
     display: inline-block;

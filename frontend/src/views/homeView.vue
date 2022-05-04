@@ -2,6 +2,7 @@
     <div class="home">
         <twMapUI />
         <div v-if="buildingState">
+            <br />
             <buildingArrayUI />
         </div>
         <div v-if="floorMapViewState">
@@ -33,7 +34,7 @@ export default defineComponent({
         floorMapViewUI,
         sacPlotUI
     },
-    setup () {
+    setup() {
         const store = useStore()
         const buildingState = computed(() => store.getters.buildingState)
         const floorMapViewState = computed(() => store.getters.floorMapViewState)
