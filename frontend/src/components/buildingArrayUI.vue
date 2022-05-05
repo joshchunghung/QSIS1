@@ -10,7 +10,7 @@
                     :fill="pgaColor('maxPGA', buildingArray.stations, index + 1)" :stroke="'red'" stroke-width="0.5"
                     @click="openFloor(index + 1)"></rect>
                 <text v-for="index in [...Array(buildingArray.height).keys()]" :key="index" :x="15"
-                    :y="-1 * index * (20 + 0.7)">
+                    :y="-1 * index * (20 + 0.7)" class="floorText">
                     {{ index + 1 }}F,
                 </text>
                 <!-- 地下室 -->
@@ -19,11 +19,11 @@
                     :fill="pgaColor('maxPGA', buildingArray.stations, -(index + 1))" :stroke="'red'" stroke-width="0.5"
                     @click="openFloor(-(index + 1))"></rect>
                 <text v-for="index in [...Array(buildingArray.basement).keys()]" :key="index" :x="15"
-                    :y="(index + 1) * (20 + 0.3)" class="text">
+                    :y="(index + 1) * (20 + 0.3)" class="floorText">
                     B{{ index + 1 }}
                 </text>
-                <line x1="0" y1="0" x2="300" y2="0" style="stroke: rgb(0, 0, 0); stroke-width: 2" />
-                <text x="305" align="center" y="0" fill="currentColor" text-anchor="start" alignment-baseline="middle"
+                <line x1="0" y1="0" x2="205" y2="0" style="stroke: rgb(0, 0, 0); stroke-width: 2" />
+                <text x="210" align="center" y="0" fill="currentColor" text-anchor="start" alignment-baseline="middle"
                     font-weight="bold" font-size="15">
                     ground
                 </text>
@@ -76,11 +76,11 @@ rect:hover {
     cursor: pointer;
 }
 
-g .text {
+g .floorText {
     display: none;
 }
 
-g:hover .text {
+g:hover .floorText {
     display: block;
 }
 </style>

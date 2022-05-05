@@ -12,7 +12,7 @@ import {
 
 export default defineComponent({
     name: 'sacPlotUI',
-    setup() {
+    setup () {
         // console.debug(sacPlots)
         // console.log(window.location.pathname)
         onMounted(() => {

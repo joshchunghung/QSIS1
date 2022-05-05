@@ -15,14 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from django.conf.urls import url, include, re_path
+from django.conf.urls import  include, re_path
 from django.views.generic import TemplateView
 
 from graphene_django.views import GraphQLView
 from django.views.decorators.csrf import csrf_exempt
+
+# from .  import readPGA
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True)))
+    path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True))),
+    path('api/',include('readPGA.urls'))
 ]
 
 #vue的前端，

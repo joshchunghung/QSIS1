@@ -5,13 +5,15 @@
         <LMap ref="map" :center="[23, 121]" :zoom="7">
             <!--layer-type="base" for LControlLayers  -->
             <LTileLayer v-for="mapState in mapStates" layer-type="base" :minZoom="6" :key="mapState.name"
-                :url="mapState.url" :attribution="mapState.attribution" :name="mapState.name"
-                :maxZoom="mapState.maxZoom" />
+                        :url="mapState.url" :attribution="mapState.attribution" :name="mapState.name"
+                        :maxZoom="mapState.maxZoom"
+            />
             <LControlLayers />
             <!-- event  -->
             <div v-if="isEventOpen">
                 <LCircle v-for="event in events" :key="event.id" :lat-lng="[event.latitude, event.longitude]"
-                    :weight="13" color="yellow">
+                         :weight="13" color="yellow"
+                >
                     <LPopup>
                         {{ event.date }}<br />
                         {{ event.time }} (UTC+8)<br />
@@ -26,7 +28,8 @@
             <div v-else>
                 <div v-for="(site, name, index) in sites" :key="index">
                     <LCircle :lat-lng="[site.latitude, site.longitude]" :weight="8" color="red" fill="red"
-                        @click="changeSite(name)">
+                             @click="changeSite(name)"
+                    >
                         <LPopup>
                             {{ name }}<br />
                             MaxPGA: {{ site.MAXpga }} gal
@@ -67,7 +70,7 @@ export default defineComponent({
         LCircle,
         LPopup
     },
-    setup() {
+    setup () {
         const mapStates = ref(tileProviders)
         const store = useStore()
         store.dispatch('getDBEvent')
