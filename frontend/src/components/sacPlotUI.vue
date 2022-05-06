@@ -1,20 +1,26 @@
 <template>
     <div id="sacplot" class='container'></div>
+    <hr />
+    <div>sonsor{{ sonsor }}</div>
 </template>
 
 <script lang="ts">
 import {
+    computed,
     defineComponent, onMounted
 } from 'vue'
 import {
     sacPlots
 } from './sacPlot.js'
-
+import {
+    useStore
+} from 'vuex'
 export default defineComponent({
     name: 'sacPlotUI',
-    setup () {
-        // console.debug(sacPlots)
-        // console.log(window.location.pathname)
+    setup() {
+        const store = useStore();
+        const sonsor = computed(() => store.getters.sensor)
+
         onMounted(() => {
             const paths = ['/data/data/A002.10.HLE.n0xy', '/data/data/A002.10.HLN.n0xy', '/data/data/A002.10.HLZ.n0xy']
             const chart = sacPlots()
@@ -24,6 +30,9 @@ export default defineComponent({
                 .selector('#sacplot')
             chart()
         })
+        return {
+            sonsor
+        }
     }
 
 })

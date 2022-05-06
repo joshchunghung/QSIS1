@@ -37,6 +37,7 @@ export default defineComponent({
         const buildingArray = computed(() => store.getters.singleSite)
         const openWaveform = (sensor) => {
             store.commit('changeWaveFormState', true)
+            store.commit('getSensor', sensor)
         }
         return {
             name,

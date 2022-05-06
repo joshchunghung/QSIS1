@@ -1,12 +1,17 @@
 from rest_framework.views import APIView
-from rest_framework.response import Response
+from django.http import StreamingHttpResponse
 import os
+def file2Stream(filepath, chunk_size = 512):
+    with open(filepath, 'rb') as f:
+        while True:
+            con = f.read(chunk_size)
+            if con:
+                yield con
+            else:
+                break
 
 class Sacfile(APIView):
-    def get(self,request):
-        print(request)
-        log_content=[]
+    def post(self,request):
         file = os.path.join('/Users/chunghung/django/data','A002.10.HLZ.n1xy')
-        log_content += [line for line in open(file, 'r', encoding='UTF-8')]
-        response = Response(log_content)
+        response = StreamingHttpResponse(file2Stream(file))
         return response
