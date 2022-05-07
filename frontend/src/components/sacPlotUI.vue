@@ -1,13 +1,15 @@
 <template>
-    <div id="sacplot" class='container'></div>
-    <hr />
-    <div>sonsor{{ sonsor }}</div>
+    <br />
+    <div id="outer" class='container'>
+        <div>station {{ sensor }}</div>
+        <div id="sacplot"></div>
+    </div>
 </template>
 
 <script lang="ts">
 import {
     computed,
-    defineComponent, onMounted
+    defineComponent, onBeforeUpdate, onMounted, watch, watchEffect
 } from 'vue'
 import {
     sacPlots
@@ -19,19 +21,26 @@ export default defineComponent({
     name: 'sacPlotUI',
     setup() {
         const store = useStore();
-        const sonsor = computed(() => store.getters.sensor)
+        const sensor = computed(() => store.getters.sensor)
+        const event = computed(() => store.getters.targetEvent)
 
-        onMounted(() => {
-            const paths = ['/data/data/A002.10.HLE.n0xy', '/data/data/A002.10.HLN.n0xy', '/data/data/A002.10.HLZ.n0xy']
+        onBeforeUpdate(() => {
+            document.getElementById('sacplot').remove()
+            let newDiv = document.createElement('div');
+            newDiv.id = "sacplot"
+            document.getElementById('outer').appendChild(newDiv)
+            const stationInfo = { sensor: sensor.value, date: event.value.date, time: event.value.time }
             const chart = sacPlots()
-                .data(paths)
-                .title('TSMIP 10 A002 2020-01-01T00:00:00')
-                .legend('HLE HLN HLZ')
+                .stationURLInfo(stationInfo)
+                .data(['HNX', 'HNY', 'HNZ'])
+                .title(`${sensor.value} ${event.value.date}${event.value.time}(UTC+8)`)
+                .legend('HNX HNY HNZ')
                 .selector('#sacplot')
+
             chart()
         })
         return {
-            sonsor
+            sensor
         }
     }
 

@@ -1,23 +1,20 @@
-export function sacPlots () {
+import axios from '../../node_modules/axios'
+export function sacPlots() {
     let selector = 'body'
     let rawData = null
     let titleArr = null
     let channel = null
-
+    let stationURLInfo = {}
     // solve deviation from float calculate
     const floatCalculate = (method, ...theArgs) => {
         let result
-        function isFloat (n) {
+        function isFloat(n) {
             return n.toString().indexOf('.') >= 0
         }
 
         const powerArr = []
         theArgs.forEach(d => {
             if (isFloat(d)) {
-                // console.debug(d);
-                // let tmp = d.toString().split('.')[1].length;
-                // if (tmp > power)
-                //     power = tmp;
                 powerArr.push(d.toString().split('.')[1].length)
             } else { powerArr.push(0) }
         })
@@ -26,34 +23,34 @@ export function sacPlots () {
         const newArgs = theArgs.map((d, i) => parseInt(d.toString().replace('.', '')) * Math.pow(10, (maxPower - powerArr[i])))
         // console.debug(newArgs);
         switch (method) {
-        case 'add':
-            result = 0
-            newArgs.forEach(d => result += d)
-            result /= Math.pow(10, maxPower)
-            break
-        case 'minus':
-            result = newArgs[0] * 2
-            newArgs.forEach(d => result -= d)
-            result /= Math.pow(10, maxPower)
-            break
-        case 'times':
-            result = 1
-            newArgs.forEach(d => result *= d)
-            result /= Math.pow(Math.pow(10, maxPower), newArgs.length)
-            break
-        case 'divide':
-            result = Math.pow(newArgs[0], 2)
-            newArgs.forEach((d, i) => {
-                if (!(result == 0 && i == 0)) { result /= d }
-            })
-            // console.debug(result);
-            result *= Math.pow(Math.pow(10, maxPower), newArgs.length - 2)
-            break
-        default:
-            result = 0
-            newArgs.forEach(d => result += d)
-            result /= Math.pow(10, maxPower)
-            break
+            case 'add':
+                result = 0
+                newArgs.forEach(d => result += d)
+                result /= Math.pow(10, maxPower)
+                break
+            case 'minus':
+                result = newArgs[0] * 2
+                newArgs.forEach(d => result -= d)
+                result /= Math.pow(10, maxPower)
+                break
+            case 'times':
+                result = 1
+                newArgs.forEach(d => result *= d)
+                result /= Math.pow(Math.pow(10, maxPower), newArgs.length)
+                break
+            case 'divide':
+                result = Math.pow(newArgs[0], 2)
+                newArgs.forEach((d, i) => {
+                    if (!(result == 0 && i == 0)) { result /= d }
+                })
+                // console.debug(result);
+                result *= Math.pow(Math.pow(10, maxPower), newArgs.length - 2)
+                break
+            default:
+                result = 0
+                newArgs.forEach(d => result += d)
+                result /= Math.pow(10, maxPower)
+                break
         }
         return result
     }
@@ -61,23 +58,20 @@ export function sacPlots () {
         selector = vaule
         return chart
     }
-
+    chart.stationURLInfo = (vaule) => {
+        stationURLInfo = vaule
+        return chart
+    }
     chart.data = (vaule) => {
         const paths = vaule
 
         const promises = paths.map((path) => {
-            return $.ajax({
-                url: path,
-                dataType: 'text',
-                async: true,
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    console.debug(XMLHttpRequest, textStatus, errorThrown)
-                }
-            }).then(success => {
-                const fileName = path.substring(path.lastIndexOf('/') + 1)
+            stationURLInfo.chn = path
+            return axios.post('http://127.0.0.1:8000/api/test/', stationURLInfo
+            ).then(success => {
+                const fileName = 'test'
                 const xyArr = []
-
-                const rows = success.split('\n')
+                const rows = success.data.split('\n')
                 rows.forEach(row => {
                     if (row != '') {
                         const col = row.trim().split(/\s+/)
@@ -117,14 +111,13 @@ export function sacPlots () {
             const maxAmpArr = demeanArray.map(data => d3.max(data, d => Math.abs(d.y)))
             const maxAmp = d3.max(deGrandMeanArray, data => d3.max(data, d => Math.abs(d.y)))
 
-            console.log(tmpData)
-            console.log('demean=')
-            console.log(demeanArray, deGrandMeanArray)
-            console.log('mean=')
-            console.log(meanArr, grandMean)
-            console.log('maxAmp=')
-            console.log(maxAmpArr, maxAmp)
-
+            // console.log(tmpData)
+            // console.log('demean=')
+            // console.log(demeanArray, deGrandMeanArray)
+            // console.log('mean=')
+            // console.log(meanArr, grandMean)
+            // console.log('maxAmp=')
+            // console.log(maxAmpArr, maxAmp)
             //= ==normalize_self  Math.round(num + "e+5")  + "e-5");
             const self = demeanArray.map((data, i) =>
                 new Object({
@@ -135,7 +128,7 @@ export function sacPlots () {
                     }))
                 })
             )
-            console.log(self[0])
+            // console.log(self[0])
             //= ==normalize_all
             const all = deGrandMeanArray.map((data, i) =>
                 new Object({
@@ -168,7 +161,7 @@ export function sacPlots () {
         return chart
     }
 
-    async function chart () {
+    async function chart() {
         let normalize = 0//= =0:raw 1:self 2:all
         let pre_xdomain = []
         let title = ''
@@ -176,7 +169,7 @@ export function sacPlots () {
 
         rawData = await rawData
         let data = rawData.raw
-        console.debug(rawData, data)
+        // console.debug(rawData, data)
 
         if (titleArr) {
             for (let i = 0; i < titleArr.length - 1; i++) {
@@ -195,20 +188,20 @@ export function sacPlots () {
 
         const getLineColor = (index) => {
             switch (index % 6) {
-            case 0:
-                return 'steelblue'
-            case 1:
-                return '#AE0000'
-            case 2:
-                return '#006030'
-            case 3:
-                return '#EA7500'
-            case 4:
-                return '#4B0091'
-            case 5:
-                return '#272727'
-            default:
-                return 'steelblue'
+                case 0:
+                    return 'steelblue'
+                case 1:
+                    return '#AE0000'
+                case 2:
+                    return '#006030'
+                case 3:
+                    return '#EA7500'
+                case 4:
+                    return '#4B0091'
+                case 5:
+                    return '#272727'
+                default:
+                    return 'steelblue'
             }
         }
         const getMargin = (tickLength = 5) => {
@@ -239,29 +232,29 @@ export function sacPlots () {
                 // console.debug(constant, index);
                 return [constant, index]
             } else
-            if (numberAbs >= 10) {
-                const intLength = Math.floor(numberAbs).toString().length
-                const index = intLength - 1
-                const constant = numberAbs / Math.pow(10, index) * (singed ? -1 : 1)
-                // console.debug(constant, index);
-                return [constant, index]
-            }
-            // tickRange < 1
-            else if (numberAbs > 0 && numberAbs < 1) {
-                let constant = numberAbs
-                let index = 0
-                while (constant < 0.1) {
-                    constant *= 10
-                    index--
+                if (numberAbs >= 10) {
+                    const intLength = Math.floor(numberAbs).toString().length
+                    const index = intLength - 1
+                    const constant = numberAbs / Math.pow(10, index) * (singed ? -1 : 1)
+                    // console.debug(constant, index);
+                    return [constant, index]
                 }
-                constant *= (singed ? -1 : 1)
-                // console.debug(constant, index);
-                return [constant, index]
-            } else { return [number, 0] }
+                // tickRange < 1
+                else if (numberAbs > 0 && numberAbs < 1) {
+                    let constant = numberAbs
+                    let index = 0
+                    while (constant < 0.1) {
+                        constant *= 10
+                        index--
+                    }
+                    constant *= (singed ? -1 : 1)
+                    // console.debug(constant, index);
+                    return [constant, index]
+                } else { return [number, 0] }
         }
 
         // console.debug(channel);
-        function init () {
+        function init() {
             $(selector).append(`
                 <form id="form-chart">
             <div class="form-group" id="chartsOptions" style="display: inline;">
@@ -312,7 +305,7 @@ export function sacPlots () {
 
             $('button[name ="normalize"]').click(function (e) {
                 // console.debug(pre_xdomain);
-                // console.debug(this.value);
+
 
                 data = rawData[this.value]
                 normalize = !(this.value === 'raw')
@@ -331,7 +324,7 @@ export function sacPlots () {
                 printChart(this.value)
             })
         }
-        async function printChart (plotType) {
+        async function printChart(plotType) {
             $('#charts').children().remove()
 
             let i = 1
@@ -358,7 +351,7 @@ export function sacPlots () {
                 // ul.classList.add("active");
                 // nav.append(ul);
 
-                const chartDropDown = ['bigimg', 'svg', 'png', 'jpg']
+                // const chartDropDown = ['bigimg', 'svg', 'png', 'jpg']
                 // chartDropDown.forEach(option => {
                 //     let li = document.createElement("li");
                 //     let item = document.createElement("a");
@@ -390,7 +383,7 @@ export function sacPlots () {
                 }
 
                 // start or stop DOM event capturing
-                function chartEventControl (control) {
+                function chartEventControl(control) {
                     if (control == 'stop') {
                         // console.debug('add');
                         charts.addEventListener('mousemove', stopPropagation, true)
@@ -430,7 +423,7 @@ export function sacPlots () {
             }
             const downloadSvg = (svgArr, fileName, option) => {
                 // console.debug(svgArr, fileName, option);
-                function getSvgUrl (svgNode) {
+                function getSvgUrl(svgNode) {
                     const svgData = (new XMLSerializer()).serializeToString(svgNode)
                     const svgBlob = new Blob([svgData], {
                         type: 'image/svg+xml;charset=utf-8'
@@ -438,7 +431,7 @@ export function sacPlots () {
                     const svgUrl = URL.createObjectURL(svgBlob)
                     return svgUrl
                 }
-                function getCanvas (resize) {
+                function getCanvas(resize) {
                     // =============== canvas init
                     const canvas = document.createElement('canvas')
                     const context = canvas.getContext('2d')
@@ -474,7 +467,7 @@ export function sacPlots () {
                     context.fillRect(0, 0, canvas.width, canvas.height)
                     return [canvas, context]
                 }
-                function download (href, name) {
+                function download(href, name) {
                     const downloadLink = document.createElement('a')
                     downloadLink.href = href
                     downloadLink.download = name
@@ -482,7 +475,7 @@ export function sacPlots () {
                     downloadLink.click()
                     document.body.removeChild(downloadLink)
                 }
-                function show (width, height) {
+                function show(width, height) {
                     // $('#bigimg').attr("src", img);//设置#bigimg元素的src属性
                     // $('#outerdiv').fadeIn("fast");//淡入显示#outerdiv及.pimg
                     // $('#outerdiv').off('click');
@@ -555,7 +548,7 @@ export function sacPlots () {
             }
 
             // brush的側邊線與長方形
-            function contextSelectionSide () {
+            function contextSelectionSide() {
                 //= ================brushSide======================================
 
                 const brush_g = d3.select('.brush')
@@ -672,11 +665,11 @@ export function sacPlots () {
             }
 
             // 三種圖表
-            function trace () {
+            function trace() {
                 let extend
                 const chartNodes = []
 
-                function getExtent (dataArr) {
+                function getExtent(dataArr) {
                     // console.debug(dataArr);
                     const min = d3.min(dataArr, d => {
                         // console.debug(!isNaN(d.y) ? 'true' : 'false');
@@ -695,7 +688,7 @@ export function sacPlots () {
                     // console.debug(tick_toSN_index);
                     return [extend, tick_toSN_index]
                 }
-                function getChartNodes (index, data, tick_toSN_index) {
+                function getChartNodes(index, data, tick_toSN_index) {
                     // let y_extent = d3.extent(data, d => d.y);
                     // let minLenght = y_extent[0].toString().length;
                     // let maxLenght = y_extent[1].toString().length;
@@ -755,7 +748,7 @@ export function sacPlots () {
                                     .attr('y', -margin.top / 3)
                                     .attr('fill', 'black')
                                     .attr('text-anchor', 'start')
-                                // .attr("alignment-baseline", "before-edge")
+                                    // .attr("alignment-baseline", "before-edge")
                                     .text('( x 10')
                                     .append('tspan')
                                     .attr('dy', -5)
@@ -860,7 +853,7 @@ export function sacPlots () {
                         .text('referenceTime : ' + referenceTimeStr)
 
                     //= ===================================events=========================================================
-                    function events (svg) {
+                    function events(svg) {
                         const datesArr = data.map(d => d.x)
 
                         const lineStroke = '2px'
@@ -1273,7 +1266,7 @@ export function sacPlots () {
                 // console.debug(pre_xdomain);
                 return chartNodes
             }
-            function windowChart (data) {
+            function windowChart(data) {
                 const lastIndex = data.length - 1
                 // data.forEach(d => { console.debug(d.data[0]); console.debug(d.data[d.data.length - 1]) })
 
@@ -1283,7 +1276,7 @@ export function sacPlots () {
                 const svg = d3.create('svg')
                     .attr('viewBox', [0, 0, width, height + height2])
 
-                function getDataRange (data, assign_tickRange = undefined) {
+                function getDataRange(data, assign_tickRange = undefined) {
                     // console.debug('==new chart============');
                     // get datas max,min and range
                     const dataRangeArray = []
@@ -1591,7 +1584,7 @@ export function sacPlots () {
                 renderChart()
 
                 //= ===================================events=========================================================
-                function events (svg, focus) {
+                function events(svg, focus) {
                     const datesArr = data[0].data.map(obj => obj.x)
                     let newDatesArr = datesArr
                     let newData = data
@@ -1744,7 +1737,7 @@ export function sacPlots () {
 
                     //= ===================================context==================================================
 
-                    function getNewDataArr (x_domain) {
+                    function getNewDataArr(x_domain) {
                         const newData = []
                         let i1 = d3.bisectCenter(datesArr, x_domain[0])
                         let i2 = d3.bisectCenter(datesArr, x_domain[1])
@@ -2136,7 +2129,7 @@ export function sacPlots () {
 
                 return svg.node()
             }
-            function overlayChart () {
+            function overlayChart() {
                 const width = 800
                 const height = 500
                 const height2 = 65// for context
@@ -2218,7 +2211,7 @@ export function sacPlots () {
                                 .attr('y', -margin.top / 3)
                                 .attr('fill', 'black')
                                 .attr('text-anchor', 'start')
-                            // .attr("alignment-baseline", "before-edge")
+                                // .attr("alignment-baseline", "before-edge")
                                 .text('( x 10')
                                 .append('tspan')
                                 .attr('dy', -5)
@@ -2367,8 +2360,8 @@ export function sacPlots () {
                 //= ===================================legend=========================================================
 
                 //= ===================================events=========================================================
-                function events (svg) {
-                    function chartEvent () {
+                function events(svg) {
+                    function chartEvent() {
                         const datesArr = data[0].data.map(obj => obj.x)
                         let newDatesArr = datesArr
                         let newData = data
@@ -2533,7 +2526,7 @@ export function sacPlots () {
                                 })
 
                         //= ===================================context==================================================
-                        function getNewDataArr (x_domain) {
+                        function getNewDataArr(x_domain) {
                             const newData = []
                             let i1 = d3.bisectCenter(datesArr, x_domain[0])
                             let i2 = d3.bisectCenter(datesArr, x_domain[1])
@@ -2910,7 +2903,7 @@ export function sacPlots () {
                             renderChart(false, newData)
                         }
                     }
-                    function infoBoxDragEvent () {
+                    function infoBoxDragEvent() {
                         const raiseAndDrag = (d3_selection) => {
                             let x_fixed = 0; let y_fixed = 0
                             const legend_dragBehavior = d3.drag()
