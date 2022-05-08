@@ -7,7 +7,8 @@
         </foreignObject>
         <g v-for="station in buildingArray.stations.filter((item) => item.floor === floor)" :key="station.code">
             <rect :x="station.rx" :y="station.ry" :width="10" :height="10" :fill="pgaColor('station', station)"
-                :stroke="'red'" stroke-width="0.5" @click="openWaveform(station.code)"></rect>
+                  :stroke="'red'" stroke-width="0.5" @click="openWaveform(station.code)"
+            ></rect>
             <text :x="station.rx" :y="station.ry - 10" text-anchor="middle" class="sensorText">
                 {{ station.code }}
             </text>
@@ -30,7 +31,7 @@ import {
 export default defineComponent({
     name: 'floorMapViewUI',
 
-    setup() {
+    setup () {
         const store = useStore()
         const name = computed(() => store.getters.singleSiteName)
         const floor = computed(() => store.getters.floor)

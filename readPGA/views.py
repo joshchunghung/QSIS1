@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from django.http import StreamingHttpResponse
 from glob import glob 
-def file2Stream(filepath, chunk_size = 512):
+def file2Stream(filepath, chunk_size = 1024):
     with open(filepath, 'rb') as f:
         while True:
             con = f.read(chunk_size)
@@ -19,7 +19,8 @@ class Sacfile(APIView):
         folder=f"{date.replace('-','')}{time.replace(':','')}"
         print(chn)
         year=date.split('-')[0]
-        file = glob(f"/mnt/RESIST/{year}/{folder}/*/*{sensor}*{chn}*xy")
+        print(year)
+        file = glob(f"/mnt/RESIS/{year}/{folder}/*/*{sensor}*{chn}*xy")
         print(file)
         response = StreamingHttpResponse(file2Stream(file[0]),headers={'date':folder})
         return response

@@ -19,17 +19,21 @@ import {
 } from 'vuex'
 export default defineComponent({
     name: 'sacPlotUI',
-    setup() {
-        const store = useStore();
+    setup () {
+        const store = useStore()
         const sensor = computed(() => store.getters.sensor)
         const event = computed(() => store.getters.targetEvent)
 
         onBeforeUpdate(() => {
             document.getElementById('sacplot').remove()
-            let newDiv = document.createElement('div');
-            newDiv.id = "sacplot"
+            const newDiv = document.createElement('div')
+            newDiv.id = 'sacplot'
             document.getElementById('outer').appendChild(newDiv)
-            const stationInfo = { sensor: sensor.value, date: event.value.date, time: event.value.time }
+            const stationInfo = {
+                sensor: sensor.value,
+                date: event.value.date,
+                time: event.value.time
+            }
             const chart = sacPlots()
                 .stationURLInfo(stationInfo)
                 .data(['HNX', 'HNY', 'HNZ'])
