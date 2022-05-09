@@ -1,9 +1,10 @@
 <template>
     <br />
     <div id="outer" class='container'>
-        <div>station {{ sensor }}</div>
+        <div>station {{ sensor }}, pga3comp:{{ station[0].pga3comp }} gal</div>
         <button @click="uploadAllData">download_CSV_Data</button>
         <div v-if="isLoading"></div>
+        <br />
         <div id="sacplot"></div>
     </div>
 </template>
@@ -26,6 +27,9 @@ export default defineComponent({
         const store = useStore()
         const sensor = computed(() => store.getters.sensor)
         const event = computed(() => store.getters.targetEvent)
+        const singleSite = computed(() => store.getters.singleSite)
+        const station = computed(() => singleSite.value.stations.filter(sta => sta.code === sensor.value))
+
         let isLoading = ref(false)
         function download(data, fileName) {
             if (!data) {
@@ -89,7 +93,8 @@ export default defineComponent({
         return {
             sensor,
             uploadAllData,
-            isLoading
+            isLoading,
+            station
         }
     }
 
