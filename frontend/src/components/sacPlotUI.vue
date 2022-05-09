@@ -2,15 +2,16 @@
     <br />
     <div id="outer" class='container'>
         <div>station {{ sensor }}</div>
+        <button @click="uploadAllData">download_CSV_Data</button>
+        <div v-if="isLoading"></div>
         <div id="sacplot"></div>
     </div>
-    <button @click="uploadAllData">download_CSV_Data</button>
 </template>
 
 <script lang="ts">
 import {
     computed,
-    defineComponent, onBeforeUpdate, onMounted, watch, watchEffect
+    defineComponent, onBeforeUpdate, onMounted, ref
 } from 'vue'
 import {
     sacPlots
@@ -25,6 +26,7 @@ export default defineComponent({
         const store = useStore()
         const sensor = computed(() => store.getters.sensor)
         const event = computed(() => store.getters.targetEvent)
+        let isLoading = ref(false)
         function download(data, fileName) {
             if (!data) {
                 return
@@ -49,6 +51,7 @@ export default defineComponent({
             ['HNX', 'HNY', 'HNZ'].forEach((chn) => downloadData(chn))
         }
         onMounted(() => {
+            isLoading.value = true
             const stationInfo = {
                 sensor: sensor.value,
                 date: event.value.date,
@@ -64,6 +67,7 @@ export default defineComponent({
             chart()
         })
         onBeforeUpdate(() => {
+            isLoading.value = true
             document.getElementById('sacplot').remove()
             const newDiv = document.createElement('div')
             newDiv.id = 'sacplot'
@@ -84,7 +88,8 @@ export default defineComponent({
         })
         return {
             sensor,
-            uploadAllData
+            uploadAllData,
+            isLoading
         }
     }
 
