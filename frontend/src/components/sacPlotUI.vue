@@ -66,7 +66,7 @@ export default defineComponent({
         //     time: event.value.time
         // }
         const stationURLInfo = { 
-        "sensor": "sigma",
+        "sensor": sensor.value,
         "date": "2022-03-22",
         "time": "17:41:39"
         }
@@ -121,7 +121,6 @@ export default defineComponent({
                         .title(`${stationURLInfo.sensor} ${stationURLInfo.date}${stationURLInfo.time}(UTC)`)
                         .legend('HNX HNY HNZ')
                         .selector('#sacplot')
-
                     chart()
                 })
 
