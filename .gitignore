@@ -4,7 +4,6 @@ db.sqlite3
 *jpg
 *log
 .env
-qsis/settings.py
 backend/migrations/*
 
 */__pycache__/*
