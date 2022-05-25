@@ -1,0 +1,14 @@
+version: "3"
+services:
+  web:
+    container_name: "Django3-Vue"
+    build: .
+    init: true
+    env_file:
+      - .env
+    command: bash -c "python manage.py migrate --noinput && python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/code
+      - /mnt/RESIS:/data
+    ports:
+      - "8000:8000"

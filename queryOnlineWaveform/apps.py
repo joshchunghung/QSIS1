@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class DownloaddataConfig(AppConfig):
+class QueryonlinewaveformConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'downloadData'
+    name = 'queryOnlineWaveform'

@@ -1,10 +1,16 @@
 <template>
     <div class="home">
         <twMapUI />
-        <div v-if="buildingState">
+        <div v-if="buildingState && isArray">
             <br />
             <buildingArrayUI />
         </div>
+        <div v-else-if="buildingState !== null && buildingState">
+            <br />
+            {{ isArray }}
+            <sacPlotUI />
+        </div>
+
         <div v-if="floorMapViewState">
             <floorMapViewUI />
         </div>
@@ -17,7 +23,9 @@
 <script lang="ts">
 import {
     computed,
-    defineComponent
+    defineComponent,
+    ref,
+    watch
 } from 'vue'
 import twMapUI from '@/components/taiwanMapUI.vue' // @ is an alias to /src
 import buildingArrayUI from '@/components/buildingArrayUI.vue'
@@ -34,15 +42,19 @@ export default defineComponent({
         floorMapViewUI,
         sacPlotUI
     },
-    setup () {
+    setup() {
         const store = useStore()
         const buildingState = computed(() => store.getters.buildingState)
         const floorMapViewState = computed(() => store.getters.floorMapViewState)
         const waveFormState = computed(() => store.getters.waveFormState)
+        const isArray = computed(() => store.getters.isArray)
+        // console.log(isArray)
+
         return {
             buildingState,
             floorMapViewState,
-            waveFormState
+            waveFormState,
+            isArray
         }
     }
 })

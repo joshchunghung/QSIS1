@@ -32,11 +32,11 @@ class Query(graphene.ObjectType):
         return Building.objects.all()
     
     ### station
-    station = graphene.List(stationType, id=graphene.Int())
+    station = graphene.List(stationType, isOpen=graphene.Boolean())
     def resolve_station(self, info, **kwargs):
-        id = kwargs.get('id')
-        if id is not None:
-            return Station.objects.filter(id__contains=id)
+        isopen = kwargs.get('isOpen')
+        if isopen is not None:
+            return Station.objects.filter(isOpen__exact=isopen)
         return Station.objects.all()
     
     event = graphene.List(eventType, isOpen=graphene.Boolean())
@@ -49,5 +49,6 @@ class Query(graphene.ObjectType):
     pga = graphene.List(pgaType, event=graphene.ID())
     def resolve_pga(self, info, event=None ,**kwargs):
         if event:
-            return PGA.objects.filter(event__id=event)
+            return PGA.objects.filter(event__id=event).filter(station__isOpen__exact=True)
         return PGA.objects.all()
+

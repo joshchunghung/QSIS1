@@ -8,7 +8,7 @@
                 </p>
             </div>
             <div id="RCEC" class="col-lg-3">
-                <!-- <img src="../public/RCEC.png" style="width: 200px;" alt="RCEC" align="right" /> -->
+                <img :src="require('../public/RCEC.png')" style="width: 200px;" alt="RCEC" align="right" />
             </div>
         </div>
         <hr />
@@ -22,12 +22,12 @@ import {
     defineComponent
 } from 'vue'
 import navList from '@/components/navList.vue'
-
 export default defineComponent({
     name: 'App',
     components: {
         navList
     }
+
 })
 </script>
 <style lang="scss">
@@ -49,7 +49,7 @@ export default defineComponent({
     padding-right: 40px;
 }
 
-h2 > p {
+h2>p {
     padding: 0;
     margin: 0;
 }

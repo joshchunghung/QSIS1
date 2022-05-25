@@ -3,11 +3,12 @@
     <h3 v-else>Please choose a site</h3>
     <div class="container">
         <LMap ref="map" :center="[23, 121]" :zoom="7">
+            <LControlLayers />
             <!--layer-type="base" for LControlLayers  -->
             <LTileLayer v-for="mapState in mapStates" layer-type="base" :minZoom="6" :key="mapState.name"
                 :url="mapState.url" :attribution="mapState.attribution" :name="mapState.name"
-                :maxZoom="mapState.maxZoom" />
-            <LControlLayers />
+                :maxZoom="mapState.maxZoom" :visible="mapState.visible" />
+
             <!-- event  -->
             <div v-if="isEventOpen">
                 <LCircle v-for="event in events" :key="event.id" :lat-lng="[event.latitude, event.longitude]"
@@ -86,6 +87,7 @@ export default defineComponent({
             store.commit('changeWaveFormState', false)
         }
         const changeSite = (site: string) => {
+            console.log(site)
             store.commit('getSingleSite', site)
             store.commit('changeBuildingState', true)
             store.commit('changeFloorMapViewState', false)

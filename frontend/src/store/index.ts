@@ -14,7 +14,8 @@ export default createStore({
         floorMapViewState: null,
         floor: null,
         waveFormState: null,
-        sensor: null
+        sensor: null,
+        isArray: null
     },
     getters: {
         event: (state) => state.event,
@@ -26,42 +27,48 @@ export default createStore({
         floorMapViewState: (state) => state.floorMapViewState,
         floor: (state) => state.floor,
         waveFormState: (state) => state.waveFormState,
-        sensor: (state) => state.sensor
+        sensor: (state) => state.sensor,
+        isArray: (state) => state.isArray
     },
     mutations: {
-        getEvent (state, event) {
+        getEvent(state, event) {
             state.event = event
         },
-        getEventID (state, eventID) {
+        getEventID(state, eventID) {
             state.eventid = eventID
         },
-        getSite (state, site) {
+        getSite(state, site) {
             state.site = site
         },
-        getSingleSite (state, name) {
+        getSingleSite(state, name) {
             // state.singleSite = state.site[name]
-            state.singleSite = name
+            state.isArray = state.site[name].isArray
+            if (state.isArray) {
+                state.singleSite = name
+            } else { 
+                state.sensor = name
+            }
         },
-        getSensor (state, name) {
+        getSensor(state, name) {
             state.sensor = name
         },
-        changeBuildingState (state, isOpen) {
+        changeBuildingState(state, isOpen) {
             state.buildingState = isOpen
         },
-        changeFloorMapViewState (state, isOpen) {
+        changeFloorMapViewState(state, isOpen) {
             state.floorMapViewState = isOpen
         },
-        getFloor (state, floor) {
+        getFloor(state, floor) {
             state.floor = floor
         },
-        changeWaveFormState (state, isOpen) {
+        changeWaveFormState(state, isOpen) {
             state.waveFormState = isOpen
         }
 
     },
     actions: {
-        getDBEvent ({ commit }) {
-            axios.post('http://140.109.82.44:8012/graphql/', {
+        getDBEvent({ commit }) {
+            axios.post('http://0.0.0.0:8000/graphql/', {
                 query: `query {
                     event (isOpen : true){
                         id
@@ -77,9 +84,9 @@ export default createStore({
                 commit('getEvent', response.data.data.event)
             }).catch((err) => { console.log(err) })
         },
-        getDBStation ({ dispatch, commit }, eventid) {
+        getDBStation({ dispatch, commit }, eventid) {
             commit('getEventID', eventid)
-            axios.post('http://140.109.82.44:8012/graphql/', {
+            axios.post('http://0.0.0.0:8000/graphql/', {
                 query: `query {
                     pga(event:${eventid}){
                         station{
@@ -93,6 +100,7 @@ export default createStore({
                             longitude
                             basement
                             floor
+                            isArray
                             }
                         }
                         pga3comp
@@ -103,13 +111,13 @@ export default createStore({
                 dispatch('filterPGA', response.data.data.pga)
             }).catch((err) => { console.log(err) })
         },
-        filterPGA ({ commit }, pga) {
+        filterPGA({ commit }, pga) {
             const buidings = {
             }
             pga.forEach(({ station, pga3comp }) => {
                 const MAXpga = -1
                 const { code, floor, rx, ry, building } = station
-                const { abbreviation, latitude, longitude, basement, floor: height } = building
+                const { abbreviation, latitude, longitude, basement, floor: height, isArray } = building
                 if (!buidings[abbreviation]) {
                     buidings[abbreviation] = {
                         latitude,
@@ -117,6 +125,7 @@ export default createStore({
                         MAXpga,
                         height,
                         basement,
+                        isArray,
                         stations: []
                     }
                 }

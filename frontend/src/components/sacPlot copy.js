@@ -1,6 +1,7 @@
+import axios from '../../node_modules/axios'
 export function sacPlots() {
     let selector = 'body'
-    let rawData = {}
+    let rawData = null
     let titleArr = null
     let channel = null
     let stationURLInfo = {
@@ -63,11 +64,92 @@ export function sacPlots() {
         return chart
     }
     chart.data = (vaule) => {
-        rawData = {
-            'raw': vaule.raw,
-            'self': vaule.self,
-            'all': vaule.self
-        }
+        const paths = vaule
+
+        const promises = paths.map((path) => {
+            stationURLInfo.chn = path
+            return axios.post('http://127.0.0.1:8000/api/test/', stationURLInfo
+            ).then(success => {
+                const fileName = 'test'
+                const xyArr = []
+                const rows = success.data.split('\n')
+                rows.forEach(row => {
+                    if (row != '') {
+                        const col = row.trim().split(/\s+/)
+                        xyArr.push({
+                            x: parseFloat(col[0]),
+                            y: parseFloat(col[1])
+                        })
+                    }
+                })
+
+                return {
+                    fileName: fileName,
+                    data: xyArr
+                }
+            })
+        })
+
+        //= =將原資料算出 normalize_self 和 normalize_all
+        rawData = Promise.all(promises).then(raw => {
+            const tmpData = raw.map(s => s.data)
+
+            //= =先算出各自/全部平均
+            const meanArr = tmpData.map(data => d3.mean(data, d => d.y))
+            const grandMean = d3.mean(meanArr)
+
+            //= =扣掉各自/全部平均的振幅陣列
+            const demeanArray = tmpData.map((data, i) => data.map(d => new Object({
+                x: d.x,
+                y: floatCalculate('minus', d.y, meanArr[i])
+            })))
+            const deGrandMeanArray = tmpData.map(data => data.map(d => new Object({
+                x: d.x,
+                y: floatCalculate('minus', d.y, grandMean)
+            })))
+
+            //= =去平均完才取最大振幅
+            const maxAmpArr = demeanArray.map(data => d3.max(data, d => Math.abs(d.y)))
+            const maxAmp = d3.max(deGrandMeanArray, data => d3.max(data, d => Math.abs(d.y)))
+
+            // console.log(tmpData)
+            // console.log('demean=')
+            // console.log(demeanArray, deGrandMeanArray)
+            // console.log('mean=')
+            // console.log(meanArr, grandMean)
+            // console.log('maxAmp=')
+            // console.log(maxAmpArr, maxAmp)
+            //= ==normalize_self  Math.round(num + "e+5")  + "e-5");
+            const self = demeanArray.map((data, i) =>
+                new Object({
+                    fileName: raw[i].fileName,
+                    data: data.map(d => new Object({
+                        x: d.x,
+                        y: floatCalculate('divide', d.y, maxAmpArr[i])
+                    }))
+                })
+            )
+            // console.log(self[0])
+            //= ==normalize_all
+            const all = deGrandMeanArray.map((data, i) =>
+                new Object({
+                    fileName: raw[i].fileName,
+                    data: data.map(d => new Object({
+                        x: d.x,
+                        y: floatCalculate('divide', d.y, maxAmp)
+                    }))
+                })
+            )
+            // console.log(all);
+
+            console.log('raw', raw)
+            return {
+                raw,
+                self,
+                all
+            }
+        })
+        // console.log(rawData);
         return chart
     }
 
@@ -81,12 +163,13 @@ export function sacPlots() {
         return chart
     }
 
-    function chart() {
+    async function chart() {
         let normalize = 0//= =0:raw 1:self 2:all
         let pre_xdomain = []
         let title = ''
         let referenceTime, referenceTimeStr
 
+        rawData = await rawData
         let data = rawData.raw
         console.log("asd", rawData, data)
 

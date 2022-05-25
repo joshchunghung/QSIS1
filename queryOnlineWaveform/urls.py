@@ -17,8 +17,6 @@ router = DefaultRouter()
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('test/', views.Sacfile.as_view(), name='Sacfile')
+    path('onlineWave/', views.PalertFile.as_view(), name='PalertFile')
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
-
- 

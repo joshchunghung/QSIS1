@@ -6,3 +6,6 @@ declare module '*.vue' {
 }
 
 declare module '@vue-leaflet/vue-leaflet'
+declare let d3: any;
+declare module '*.png'
+declare module '*.jpg'
