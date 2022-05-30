@@ -51,4 +51,3 @@ class Query(graphene.ObjectType):
         if event:
             return PGA.objects.filter(event__id=event).filter(station__isOpen__exact=True)
         return PGA.objects.all()
-

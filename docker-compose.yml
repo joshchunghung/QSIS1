@@ -1,14 +1,29 @@
 version: "3"
 services:
+  nginx:
+    container_name: nginx_container
+    build: ./nginx
+    restart: always
+    ports:
+      # - "8080:80"
+      - "8001:80"
+    volumes:
+      - ../.:/code
+      - ./log:/var/log/nginx
+    depends_on:
+      - web
+
   web:
     container_name: "Django3-Vue"
     build: .
     init: true
     env_file:
       - .env
-    command: bash -c "python manage.py migrate --noinput && python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
+    # command: bash -c "python manage.py migrate --noinput && python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python manage.py migrate --noinput && python manage.py collectstatic --noinput && uwsgi --ini  t.ini"
     volumes:
       - .:/code
-      - /mnt/RESIS:/data
+      - /Users/chunghung/20220509062303:/data
     ports:
       - "8000:8000"
+      - "8003:8003"

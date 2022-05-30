@@ -65,10 +65,10 @@ export default defineComponent({
         //     date: event.value.date,
         //     time: event.value.time
         // }
-        const stationURLInfo = { 
-        "sensor": sensor.value,
-        "date": "2022-03-22",
-        "time": "17:41:39"
+        const stationURLInfo = {
+            "sensor": sensor.value,
+            "date": "2022-03-22",
+            "time": "17:41:39"
         }
 
         function sacPlotData(Data) {
@@ -111,9 +111,9 @@ export default defineComponent({
 
 
         onMounted(() => {
-            axios.post('http://0.0.0.0:8000/api/onlineWave/', stationURLInfo)
+            axios.post('http://127.0.0.1:8000/api/onlineWave/', stationURLInfo)
                 .then(response => {
-                    plotData=[]
+                    plotData = []
                     plotData.push(response.data)
                     let data = sacPlotData(plotData)
                     const chart = sacPlots()

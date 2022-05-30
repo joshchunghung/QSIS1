@@ -149,7 +149,7 @@ class Building(models.Model):
 class Station(models.Model):
     id = models.AutoField(db_column="stationID",primary_key=True,auto_created=True, editable=False)
     SN= models.IntegerField(blank=False)
-    code=models.CharField(max_length=5, blank=True, null=True)
+    code=models.CharField(max_length=10, blank=True, null=True)
     #buildingID=models.CharField(max_length=10, blank=False, null=True)
     building=models.ForeignKey('Building',related_name='station', on_delete=models.CASCADE,null=True)
     floor=models.IntegerField(blank=True,null=True)
