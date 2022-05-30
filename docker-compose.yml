@@ -6,10 +6,10 @@ services:
     restart: always
     ports:
       # - "8080:80"
-      - "8001:80"
+      - "8000:80"
     volumes:
-      - ../.:/code
-      - ./log:/var/log/nginx
+      - ../QSIS:/code
+      - ./nginx/log:/var/log/nginx
     depends_on:
       - web
 
@@ -24,6 +24,6 @@ services:
     volumes:
       - .:/code
       - /Users/chunghung/20220509062303:/data
-    ports:
-      - "8000:8000"
-      - "8003:8003"
+    # ports:
+    #   - "8000:8000"
+    #   - "8003:8003"
