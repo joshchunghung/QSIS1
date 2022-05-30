@@ -25,6 +25,7 @@ export default defineComponent({
         const station = computed(() =>
             singleSite.value.stations.filter((sta) => sta.code === sensor.value)
         );
+        const isArray = computed(() => store.getters.isArray);
         let plotData = reactive([]);
         let isLoading = ref(false);
 
@@ -119,8 +120,14 @@ export default defineComponent({
             };
         }
 
-        function callData(stationURLInfo) {
-            axios.post("http://127.0.0.1:8000/api/onlineWave/palert/", stationURLInfo)
+        function callData(isArray, stationURLInfo) {
+            let url;
+            if (isArray.value) {
+                url = 'http://127.0.0.1:8000/api/onlineWave/qsis/'
+            } else {
+                url = "http://127.0.0.1:8000/api/onlineWave/palert/"
+            }
+            axios.post(url, stationURLInfo)
                 .then((response) => {
                     plotData = [];
                     plotData.push(response.data);
@@ -140,11 +147,11 @@ export default defineComponent({
 
         onMounted(() => {
             console.log("mounted", stationURLInfo)
-            callData(stationURLInfo)
+            callData(isArray, stationURLInfo)
         })
         onBeforeUpdate(() => {
             console.log("updated", stationURLInfo)
-            callData(stationURLInfo)
+            callData(isArray, stationURLInfo)
         });
 
         return {
