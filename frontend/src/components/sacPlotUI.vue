@@ -1,24 +1,16 @@
 <template>
-    <div id="test"></div>
+    <div id="test">{{ sensor }}</div>
     <br />
-    <div id="sacplot" class='container'>
-    </div>
+    <div id="sacplot" class="container"></div>
 </template>
 
 <script lang="ts">
-import {
-    computed,
-    defineComponent, onMounted, reactive, ref
-} from 'vue'
-import {
-    sacPlots
-} from './sacPlot.js'
-import {
-    useStore
-} from 'vuex'
-import axios from 'axios'
+import { computed, defineComponent, onBeforeUpdate, onMounted, reactive, ref } from "vue";
+import { sacPlots } from "./sacPlot.js";
+import { useStore } from "vuex";
+import axios from "axios";
 export default defineComponent({
-    name: 'sacPlotUI',
+    name: "sacPlotUI",
     setup() {
         // let test = () => {
         //     d3.select("#test")
@@ -26,13 +18,15 @@ export default defineComponent({
         //         .attr("width", 500)
         //         .attr("height", 500)
         // }
-        const store = useStore()
-        const sensor = computed(() => store.getters.sensor)
-        const event = computed(() => store.getters.targetEvent)
-        const singleSite = computed(() => store.getters.singleSite)
-        const station = computed(() => singleSite.value.stations.filter(sta => sta.code === sensor.value))
-        let plotData = reactive([])
-        let isLoading = ref(false)
+        const store = useStore();
+        const sensor = computed(() => store.getters.sensor);
+        const event = computed(() => store.getters.targetEvent);
+        const singleSite = computed(() => store.getters.singleSite);
+        const station = computed(() =>
+            singleSite.value.stations.filter((sta) => sta.code === sensor.value)
+        );
+        let plotData = reactive([]);
+        let isLoading = ref(false);
 
         // function download(data, fileName) {
         //     if (!data) {
@@ -58,74 +52,100 @@ export default defineComponent({
         //     ['HNX', 'HNY', 'HNZ'].forEach((chn) => downloadData(chn))
         // }
 
-
-
         // const stationURLInfo = {
         //     sensor: sensor.value,
         //     date: event.value.date,
         //     time: event.value.time
         // }
-        const stationURLInfo = {
-            "sensor": sensor.value,
-            "date": "2022-03-22",
-            "time": "17:41:39"
-        }
+        let stationURLInfo = reactive({
+            sensor,
+            date: "2022-03-22",
+            time: "17:41:39",
+        });
 
         function sacPlotData(Data) {
-            let tmpDataX = Data[0].time.map((time, i) => { return { x: time, y: Data[0].ampX[i] } })
-            let tmpDataY = Data[0].time.map((time, i) => { return { x: time, y: Data[0].ampY[i] } })
-            let tmpDataZ = Data[0].time.map((time, i) => { return { x: time, y: Data[0].ampZ[i] } })
-            let raw
-            raw = [{ 0: tmpDataX }, { 1: tmpDataY }, { 2: tmpDataZ }]
-            const meanArr = raw.map((data, i) => d3.mean(data[i], d => d.y))
-            console.log('meanArr', meanArr)
-            const demeanArray = raw.map((data, i) => data[i].map(d => new Object({
-                x: d.x,
-                y: d.y - meanArr[i]
-            })))
-            console.log('demeanArray', demeanArray)
-            const [Xmin, Xmax] = d3.extent(Data[0].ampX)
-            const [Ymin, Ymax] = d3.extent(Data[0].ampY)
-            const [Zmin, Zmax] = d3.extent(Data[0].ampZ)
-            const maxAmpX = -1 * Xmin > Xmax ? -1 * Xmin : Xmax
-            const maxAmpY = -1 * Ymin > Ymax ? -1 * Ymin : Ymax
-            const maxAmpZ = -1 * Zmin > Zmax ? -1 * Zmin : Zmax
-            const maxAmpArr = [maxAmpX, maxAmpY, maxAmpZ]
+            let tmpDataX = Data[0].time.map((time, i) => {
+                return { x: time, y: Data[0].ampX[i] };
+            });
+            let tmpDataY = Data[0].time.map((time, i) => {
+                return { x: time, y: Data[0].ampY[i] };
+            });
+            let tmpDataZ = Data[0].time.map((time, i) => {
+                return { x: time, y: Data[0].ampZ[i] };
+            });
+            let raw;
+            raw = [{ 0: tmpDataX }, { 1: tmpDataY }, { 2: tmpDataZ }];
+            const meanArr = raw.map((data, i) => d3.mean(data[i], (d) => d.y));
+            console.log("meanArr", meanArr);
+            const demeanArray = raw.map((data, i) =>
+                data[i].map(
+                    (d) =>
+                        new Object({
+                            x: d.x,
+                            y: d.y - meanArr[i],
+                        })
+                )
+            );
+            console.log("demeanArray", demeanArray);
+            const [Xmin, Xmax] = d3.extent(Data[0].ampX);
+            const [Ymin, Ymax] = d3.extent(Data[0].ampY);
+            const [Zmin, Zmax] = d3.extent(Data[0].ampZ);
+            const maxAmpX = -1 * Xmin > Xmax ? -1 * Xmin : Xmax;
+            const maxAmpY = -1 * Ymin > Ymax ? -1 * Ymin : Ymax;
+            const maxAmpZ = -1 * Zmin > Zmax ? -1 * Zmin : Zmax;
+            const maxAmpArr = [maxAmpX, maxAmpY, maxAmpZ];
 
-            const self = demeanArray.map((data, i) =>
-                new Object({
-                    fileName: 'test',
-                    data: data.map(d => new Object({
-                        x: d.x,
-                        y: d.y / maxAmpArr[i]
-                    }))
-                })
-            )
-            raw = [{ 'fileName': 'test', 'data': demeanArray[0] }, { 'fileName': 'test', 'data': demeanArray[1] }, { 'fileName': 'test', 'data': demeanArray[2] }]
+            const self = demeanArray.map(
+                (data, i) =>
+                    new Object({
+                        fileName: "test",
+                        data: data.map(
+                            (d) =>
+                                new Object({
+                                    x: d.x,
+                                    y: d.y / maxAmpArr[i],
+                                })
+                        ),
+                    })
+            );
+            raw = [
+                { fileName: "test", data: demeanArray[0] },
+                { fileName: "test", data: demeanArray[1] },
+                { fileName: "test", data: demeanArray[2] },
+            ];
             return {
                 raw,
-                self
-            }
-
+                self,
+            };
         }
 
-
-        onMounted(() => {
-            axios.post('http://127.0.0.1:8000/api/onlineWave/', stationURLInfo)
-                .then(response => {
-                    plotData = []
-                    plotData.push(response.data)
-                    let data = sacPlotData(plotData)
+        function callData(stationURLInfo) {
+            axios.post("http://127.0.0.1:8000/api/onlineWave/palert/", stationURLInfo)
+                .then((response) => {
+                    plotData = [];
+                    plotData.push(response.data);
+                    let data = sacPlotData(plotData);
+                    //  console.debug("title", data)
+                    // console.debug("stationURLInfo", stationURLInfo)
                     const chart = sacPlots()
                         .data(data)
-                        .title(`${stationURLInfo.sensor} ${stationURLInfo.date}${stationURLInfo.time}(UTC)`)
-                        .legend('HNX HNY HNZ')
-                        .selector('#sacplot')
-                    chart()
-                })
+                        .title(
+                            `${stationURLInfo.sensor} ${stationURLInfo.date}${stationURLInfo.time}(UTC)`
+                        )
+                        .legend("HNX HNY HNZ")
+                        .selector("#sacplot");
+                    chart();
+                });
+        }
 
-
+        onMounted(() => {
+            console.log("mounted", stationURLInfo)
+            callData(stationURLInfo)
         })
+        onBeforeUpdate(() => {
+            console.log("updated", stationURLInfo)
+            callData(stationURLInfo)
+        });
 
         return {
             sensor,
@@ -133,10 +153,10 @@ export default defineComponent({
             plotData,
             isLoading,
             station,
-        }
-    }
-
-})
+            stationURLInfo
+        };
+    },
+});
 </script>
 
 <style scoped>

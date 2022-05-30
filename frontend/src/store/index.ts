@@ -41,11 +41,13 @@ export default createStore({
             state.site = site
         },
         getSingleSite(state, name) {
-            // state.singleSite = state.site[name]
             state.isArray = state.site[name].isArray
             if (state.isArray) {
                 state.singleSite = name
+                state.sensor = null
             } else {
+                state.singleSite = null
+                state.floor = null
                 state.sensor = name
             }
         },

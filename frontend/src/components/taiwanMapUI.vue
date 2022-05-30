@@ -37,7 +37,7 @@
             </div>
         </LMap>
     </div>
-    <button type="button" class="btn btn-primary" @click="eventList">eventList</button>
+    <button type="button" class="btn btn-primary" @click="eventList">eventPage</button>
 </template>
 
 <script lang="ts">

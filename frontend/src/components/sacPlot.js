@@ -5,190 +5,187 @@ export function sacPlots() {
     let channel = null
     let stationURLInfo = {
     }
-
-    //solve deviation from float calculate
-    let floatCalculate = (method, ...theArgs) => {
-        let result;
+    // solve deviation from float calculate
+    const floatCalculate = (method, ...theArgs) => {
+        let result
         function isFloat(n) {
-            return n.toString().indexOf('.') >= 0;
-        };
+            return n.toString().indexOf('.') >= 0
+        }
 
-        let powerArr = [];
+        const powerArr = []
         theArgs.forEach(d => {
             if (isFloat(d)) {
-                // console.debug(d);
-                // let tmp = d.toString().split('.')[1].length;
-                // if (tmp > power)
-                //     power = tmp;
-                powerArr.push(d.toString().split('.')[1].length);
-            }
-            else
-                powerArr.push(0);
-        });
-        let maxPower = Math.max(...powerArr);
+                powerArr.push(d.toString().split('.')[1].length)
+            } else { powerArr.push(0) }
+        })
+        const maxPower = Math.max(...powerArr)
         // console.debug(maxPower);
-        let newArgs = theArgs.map((d, i) => parseInt(d.toString().replace('.', '')) * Math.pow(10, (maxPower - powerArr[i])));
+        const newArgs = theArgs.map((d, i) => parseInt(d.toString().replace('.', '')) * Math.pow(10, (maxPower - powerArr[i])))
         // console.debug(newArgs);
         switch (method) {
             case 'add':
-                result = 0;
-                newArgs.forEach(d => result += d);
-                result /= Math.pow(10, maxPower);
-                break;
+                result = 0
+                newArgs.forEach(d => result += d)
+                result /= Math.pow(10, maxPower)
+                break
             case 'minus':
-                result = newArgs[0] * 2;
-                newArgs.forEach(d => result -= d);
-                result /= Math.pow(10, maxPower);
-                break;
+                result = newArgs[0] * 2
+                newArgs.forEach(d => result -= d)
+                result /= Math.pow(10, maxPower)
+                break
             case 'times':
-                result = 1;
-                newArgs.forEach(d => result *= d);
-                result /= Math.pow(Math.pow(10, maxPower), newArgs.length);
-                break;
+                result = 1
+                newArgs.forEach(d => result *= d)
+                result /= Math.pow(Math.pow(10, maxPower), newArgs.length)
+                break
             case 'divide':
-                result = Math.pow(newArgs[0], 2);
+                result = Math.pow(newArgs[0], 2)
                 newArgs.forEach((d, i) => {
-                    if (!(result == 0 && i == 0))
-                        result /= d
-                });
+                    if (!(result == 0 && i == 0)) { result /= d }
+                })
                 // console.debug(result);
-                result *= Math.pow(Math.pow(10, maxPower), newArgs.length - 2);
-                break;
+                result *= Math.pow(Math.pow(10, maxPower), newArgs.length - 2)
+                break
             default:
-                result = 0;
-                newArgs.forEach(d => result += d);
-                result /= Math.pow(10, maxPower);
-                break;
+                result = 0
+                newArgs.forEach(d => result += d)
+                result /= Math.pow(10, maxPower)
+                break
         }
-        return result;
-    };
-    chart.selector = (vaule) => {
-        selector = vaule
+        return result
+    }
+    chart.selector = (value) => {
+        selector = value
         return chart
     }
-    chart.stationURLInfo = (vaule) => {
-        stationURLInfo = vaule
+    chart.stationURLInfo = (value) => {
+        console.debug(value)
+        stationURLInfo = value
         return chart
     }
-    chart.data = (vaule) => {
+    chart.data = (value) => {
+        // console.debug(value)
+        // value=JSON.parse(JSON.stringify(value))
         rawData = {
-            'raw': vaule.raw,
-            'self': vaule.self,
-            'all': vaule.self
+            'raw': value.raw,
+            'self': value.self,
+            'all': value.self
         }
         // console.debug(rawData)
         return chart
     }
 
-    chart.title = (vaule) => {
-        titleArr = vaule.split(' ')
+    chart.title = (value) => {
+        // console.debug(value)
+        titleArr = value.split(' ')
         return chart
     }
 
-    chart.legend = (vaule) => {
-        channel = vaule.split(' ')
+    chart.legend = (value) => {
+        // console.debug(value)
+        channel = value.split(' ')
         return chart
     }
-    async function chart() {
 
-        let normalize = 0;//==0:raw 1:self 2:all
-        let pre_xdomain = [];
-        let title = "";
-        let referenceTime, referenceTimeStr;
-
-        rawData = await rawData;
-        let data = rawData.raw;
-        console.debug(rawData, data);
-
+    function chart() {
+        let dataType = $('#normalizeBtn').val()
+        dataType=(dataType ? dataType:'raw')
+        let normalize =(dataType!=='raw')//==false:raw   true:self,all
+        let data = rawData[dataType]
+        let pre_xdomain = null
+        let title = ''
+        let referenceTime, referenceTimeStr
+       
+        // console.debug("dataType",dataType)
+        // console.debug("data",rawData,data)
+        // console.debug("cha", channel,titleArr)
         if (titleArr) {
             for (let i = 0; i < titleArr.length - 1; i++) {
-                title += titleArr[i];
-                if (i != titleArr.length - 2) title += ".";
-            };
-            referenceTimeStr = titleArr[titleArr.length - 1];
+                title += titleArr[i]
+                if (i != titleArr.length - 2) title += '.'
+            }
+            referenceTimeStr = titleArr[titleArr.length - 1]
             // referenceTime = new Date(referenceTimeStr + "Z");
             // referenceTime = referenceTime == "Invalid Date" ? null : referenceTime.getTime();
 
-            //test
+            // test
             // referenceTime = null;
-            //test
+            // test
             // if (referenceTime) data.forEach(d => d.data.forEach(p => p.x = 1000 * p.x + referenceTime));
-        };
+        }
 
-        let getLineColor = (index) => {
+        const getLineColor = (index) => {
             switch (index % 6) {
                 case 0:
-                    return "steelblue";
+                    return 'steelblue'
                 case 1:
-                    return "#AE0000";
+                    return '#AE0000'
                 case 2:
-                    return "#006030";
+                    return '#006030'
                 case 3:
-                    return "#EA7500";
+                    return '#EA7500'
                 case 4:
-                    return "#4B0091";
+                    return '#4B0091'
                 case 5:
-                    return "#272727";
+                    return '#272727'
                 default:
-                    return "steelblue";
+                    return 'steelblue'
             }
-        };
-        let getMargin = (tickLength = 5) => {
-            let left;
-            if (tickLength >= 10)
-                left = 100;
-            else if (tickLength >= 6)
-                left = 75;
-            else
-                left = 50;
-            return ({ top: 20, right: 30, bottom: 30, left: left });
-        };
-        let toScientificNotation = (number, maxIndex = undefined) => {
+        }
+        const getMargin = (tickLength = 5) => {
+            let left
+            if (tickLength >= 10) { left = 100 } else if (tickLength >= 6) { left = 75 } else { left = 50 }
+            return ({
+                top: 20,
+                right: 30,
+                bottom: 30,
+                left: left
+            })
+        }
+        const toScientificNotation = (number, maxIndex = undefined) => {
             // console.debug(number);
-            let singed, numberAbs;
+            let singed, numberAbs
             if (number < 0) {
-                singed = true;
-                numberAbs = Math.abs(number);
+                singed = true
+                numberAbs = Math.abs(number)
+            } else {
+                singed = false
+                numberAbs = number
             }
-            else {
-                singed = false;
-                numberAbs = number;
-            }
-            //maxIndex 轉成指定10的次方
+            // maxIndex 轉成指定10的次方
             if (maxIndex || maxIndex == 0) {
-                let index = number == 0 ? 0 : maxIndex;
-                let constant = floatCalculate('divide', numberAbs, Math.pow(10, index)) * (singed ? -1 : 1);
+                const index = number == 0 ? 0 : maxIndex
+                const constant = floatCalculate('divide', numberAbs, Math.pow(10, index)) * (singed ? -1 : 1)
                 // let constant = numberAbs / Math.pow(10, index) * (singed ? -1 : 1);
                 // console.debug(constant, index);
-                return [constant, index];
-            }
-            else
+                return [constant, index]
+            } else
                 if (numberAbs >= 10) {
-                    let intLength = Math.floor(numberAbs).toString().length;
-                    let index = intLength - 1;
-                    let constant = numberAbs / Math.pow(10, index) * (singed ? -1 : 1);
+                    const intLength = Math.floor(numberAbs).toString().length
+                    const index = intLength - 1
+                    const constant = numberAbs / Math.pow(10, index) * (singed ? -1 : 1)
                     // console.debug(constant, index);
-                    return [constant, index];
+                    return [constant, index]
                 }
-                //tickRange < 1
+                // tickRange < 1
                 else if (numberAbs > 0 && numberAbs < 1) {
-                    let constant = numberAbs;
-                    let index = 0;
+                    let constant = numberAbs
+                    let index = 0
                     while (constant < 0.1) {
-                        constant *= 10;
-                        index--;
+                        constant *= 10
+                        index--
                     }
-                    constant *= (singed ? -1 : 1);
+                    constant *= (singed ? -1 : 1)
                     // console.debug(constant, index);
-                    return [constant, index];
-                }
-                else
-                    return [number, 0];
-
-        };
+                    return [constant, index]
+                } else { return [number, 0] }
+        }
 
         // console.debug(channel);
+
+      
         function init() {
+              //增加圖表類型選擇按鈕
             $(selector).append(`
                 <form id="form-chart">
             <div class="form-group" id="chartsOptions" style="display: inline;">
@@ -208,7 +205,7 @@ export function sacPlots() {
                        
                        
                             <div class="btn-group" role="group" >
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="normalizeBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="normalizeBtn" data-bs-toggle="dropdown" aria-expanded="false"">
                                     Data
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="normalizeBtn">
@@ -232,31 +229,6 @@ export function sacPlots() {
             </div>
         </form>
                 `);
-
-            $('button[name ="normalize"]').click(function (e) {
-                // console.debug(pre_xdomain);
-                // console.debug(this.value);
-
-                data = rawData[this.value];
-                normalize = !(this.value === 'raw');
-                $('#normalizeBtn').text(this.value);
-
-
-                //x+referenceTime
-                // console.debug("referenceTime=" + referenceTime);
-                // if (referenceTime) data.forEach(d => d.data.forEach(p => p.x = 1000 * p.x + referenceTime));
-
-                printChart();
-            });
-            $('input[name ="plotType"]').change(function (e) {
-                // console.debug(this.value);
-                if (this.value == 'trace')
-                    pre_xdomain = [];
-                else
-                    pre_xdomain = null;
-
-                printChart();
-            });
         };
         async function printChart() {
             $('#charts').children().remove();
@@ -269,97 +241,128 @@ export function sacPlots() {
                 div.setAttribute("class", "chart col-md-12 col-sm-12");
                 div.setAttribute("style", "position:relative");
 
-                let nav = document.createElement('nav');
-                nav.setAttribute("id", "nav" + i);
-                nav.setAttribute("class", "toggle-menu");
-                nav.setAttribute("style", "position:absolute");
-                nav.style.right = "0";
+                // let nav = document.createElement('nav');
+                // nav.setAttribute("id", "nav" + i);
+                // nav.setAttribute("class", "toggle-menu");
+                // nav.setAttribute("style", "position:absolute");
+                // nav.style.right = "0";
 
-                let a = document.createElement('a');
-                a.setAttribute("class", "toggle-nav");
-                a.setAttribute("href", "#");
-                a.innerHTML = "&#9776;";
-                nav.append(a);
+                // let a = document.createElement('a');
+                // a.setAttribute("class", "toggle-nav");
+                // a.setAttribute("href", "#");
+                // a.innerHTML = "&#9776;";
+                // nav.append(a);
 
-                let ul = document.createElement("ul");
-                ul.classList.add("active");
-                nav.append(ul);
+                // let ul = document.createElement("ul");
+                // ul.classList.add("active");
+                // nav.append(ul);
 
-                let chartDropDown = ['bigimg', 'svg', 'png', 'jpg'];
-                chartDropDown.forEach(option => {
-                    let li = document.createElement("li");
-                    let item = document.createElement("a");
-                    item.href = "javascript:void(0)";
+                // let chartDropDown = ['bigimg', 'svg', 'png', 'jpg'];
+                // chartDropDown.forEach(option => {
+                //     let li = document.createElement("li");
+                //     let item = document.createElement("a");
+                //     item.href = "javascript:void(0)";
 
-                    if (option != chartDropDown[0])
-                        item.innerHTML = "下載圖表爲" + option;
-                    else
-                        item.innerHTML = "檢視圖片";
+                //     if (option != chartDropDown[0])
+                //         item.innerHTML = "下載圖表爲" + option;
+                //     else
+                //         item.innerHTML = "檢視圖片";
 
-                    item.addEventListener("click", (e, a) => {
-                        let svgArr = [];
-                        let svg = $("#" + $(e.target).parents('.chart')[0].id).children('svg')[0];
-                        // console.debug(svg);
-                        svgArr.push(svg);
-                        downloadSvg(svgArr, title, option);
-                    });
+                //     item.addEventListener("click", (e, a) => {
+                //         let svgArr = [];
+                //         let svg = $("#" + $(e.target).parents('.chart')[0].id).children('svg')[0];
+                //         // console.debug(svg);
+                //         svgArr.push(svg);
+                //         downloadSvg(svgArr, title, option);
+                //     });
 
-                    li.append(item);
-                    ul.append(li);
-                });
+                //     li.append(item);
+                //     ul.append(li);
+                // });
                 $('#charts').append(div);
-                $('#chart' + i).append(nav);
+                // $('#chart' + i).append(nav);
             };
             let MenuEvents = () => {
-                let charts = document.getElementById('charts');
-                let stopPropagation = (e) => {
-                    e.stopPropagation();
-                }
-
-                //start or stop DOM event capturing
-                function chartEventControl(control) {
-                    if (control == 'stop') {
-                        // console.debug('add');
-                        charts.addEventListener('mousemove', stopPropagation, true);
-                        charts.addEventListener('mouseenter', stopPropagation, true);
+                //漢堡選單點擊開關事件
+                let burgerMenu = () => {
+                    let charts = document.getElementById('charts');
+                    let stopPropagation = (e) => {
+                        e.stopPropagation();
                     }
-                    else {
-                        // console.debug('remove');
-                        charts.removeEventListener('mousemove', stopPropagation, true);
-                        charts.removeEventListener('mouseenter', stopPropagation, true);
-                    }
-                }
-
-                $('.toggle-nav').off('click');
-                $('.toggle-nav').click(function (e) {
-                    // console.debug(e.target === this);//e.target===this
-
-                    $(this).toggleClass('active');
-                    $(this).next().toggleClass('active');
-                    e.preventDefault();
-
-                    //選單打開後阻止事件Capture到SVG(選單打開後svg反應mousemove,mouseenter圖片會有問題)
-                    if ($(this).hasClass('active'))
-                        chartEventControl('stop');
-                    else
-                        chartEventControl('start');
-
-
-                });
-                // console.debug($(".toggle-nav"));
-                $('body').off('click');
-                $('body').click(function (e) {
-                    $(".toggle-nav").each((i, d) => {
-                        // console.debug(e.target == d);
-                        // console.debug(e.target);
-                        if (e.target != d && $(d).hasClass('active')) {
-                            $(d).toggleClass('active');
-                            $(d).next().toggleClass('active');
-
-                            setTimeout(() => chartEventControl('start'), 100);
+    
+                    //start or stop DOM event capturing
+                    function chartEventControl(control) {
+                        if (control == 'stop') {
+                            // console.debug('add');
+                            charts.addEventListener('mousemove', stopPropagation, true);
+                            charts.addEventListener('mouseenter', stopPropagation, true);
                         }
+                        else {
+                            // console.debug('remove');
+                            charts.removeEventListener('mousemove', stopPropagation, true);
+                            charts.removeEventListener('mouseenter', stopPropagation, true);
+                        }
+                    }
+    
+                    $('.toggle-nav').off('click');
+                    $('.toggle-nav').click(function (e) {
+                        // console.debug(e.target === this);//e.target===this
+    
+                        $(this).toggleClass('active');
+                        $(this).next().toggleClass('active');
+                        e.preventDefault();
+    
+                        //選單打開後阻止事件Capture到SVG(選單打開後svg反應mousemove,mouseenter圖片會有問題)
+                        if ($(this).hasClass('active'))
+                            chartEventControl('stop');
+                        else
+                            chartEventControl('start');
+    
+    
                     });
-                });
+                    // console.debug($(".toggle-nav"));
+                    $('body').off('click');
+                    $('body').click(function (e) {
+                        $(".toggle-nav").each((i, d) => {
+                            // console.debug(e.target == d);
+                            // console.debug(e.target);
+                            if (e.target != d && $(d).hasClass('active')) {
+                                $(d).toggleClass('active');
+                                $(d).next().toggleClass('active');
+    
+                                setTimeout(() => chartEventControl('start'), 100);
+                            }
+                        });
+                    });
+                };
+                //圖表類型切換事件
+                let chartMenu = () => {
+                    $('button[name ="normalize"]').off()
+                        .click(function (e) {
+                        // console.debug(pre_xdomain);
+                        // console.debug(this.value);
+        
+                        data = rawData[this.value];
+                        normalize = (this.value!== 'raw');
+                            $('#normalizeBtn')
+                                .val(this.value)
+                                .text(this.value);
+        
+        
+                        //x+referenceTime
+                        // console.debug("referenceTime=" + referenceTime);
+                        // if (referenceTime) data.forEach(d => d.data.forEach(p => p.x = 1000 * p.x + referenceTime));
+        
+                        printChart();
+                    });
+                    $('input[name ="plotType"]').off()
+                        .change(function (e) {
+                            pre_xdomain = null;
+                        printChart();
+                    });
+                };
+                // burgerMenu();
+                chartMenu();
             };
             let downloadSvg = (svgArr, fileName, option) => {
                 // console.debug(svgArr, fileName, option);
@@ -964,6 +967,7 @@ export function sacPlots() {
                         let update_Axis = (x_domain, trans = false) => {
                             // console.debug(pre_xdomain);
                             // console.debug(x_domain);
+                            pre_xdomain = [];
                             if (x_domain.toString() == origin_x_domain.toString()) {
                                 pre_xdomain[index] = origin_x_domain;
                                 x.domain(origin_x_domain);
@@ -1152,7 +1156,6 @@ export function sacPlots() {
                                 if (finalAttributes.x2 - finalAttributes.x1 > 1 && finalAttributes.y2 - finalAttributes.y1 > 1) {
                                     // console.log("range selected");
                                     // range selected
-                                    event.preventDefault();
 
                                     //-------- Update x_domain
                                     let x_domain = [x.invert(finalAttributes.x1), x.invert(finalAttributes.x2)];
@@ -1203,7 +1206,7 @@ export function sacPlots() {
                         //update if xdomain had been change
                         // console.debug(pre_xdomain);
 
-                        if (pre_xdomain.length > 0) {
+                        if (pre_xdomain) {
                             // console.debug('index=' + index);
                             pre_xdomain.forEach((d, i) => {
                                 if (i == index) {
@@ -2952,6 +2955,7 @@ export function sacPlots() {
                         event_rect.call(dragBehavior);
 
                         //zoom to pre_xdomain before normalize
+                        // console.debug(pre_xdomain)
                         if (pre_xdomain) {
                             brush_g.call(brush.move, [x2(pre_xdomain[0]), x2(pre_xdomain[1])]);
                             update_xAxis(pre_xdomain, false);
@@ -3037,19 +3041,18 @@ export function sacPlots() {
                     break;
                 case 'overlay':
                     getChartMenu('wf_plot');
-                    // let cloneArray = data.slice(0);
                     $('#chart' + i).append(overlayChart());
                     contextSelectionSide();
                     break;
 
             };
-
+            MenuEvents();
         };
 
         if (!($('#form-chart').length >= 1))
             init();
         printChart();
-    };
+    }
 
-    return chart;
-};
+    return chart
+}
