@@ -68,7 +68,7 @@ export function sacPlots() {
 
         const promises = paths.map((path) => {
             stationURLInfo.chn = path
-            return axios.post('http://127.0.0.1:8000/api/test/', stationURLInfo
+            return axios.post('http://140.109.82.44:8000/api/test/', stationURLInfo
             ).then(success => {
                 const fileName = 'test'
                 const xyArr = []

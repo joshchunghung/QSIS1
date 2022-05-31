@@ -29,7 +29,7 @@ ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', [])
 
 ## admin RESTRICT
 RESTRICT_ADMIN=os.environ.get('RESTRICT_ADMIN','')
-#ALLOWED_ADMIN_IPS=['127.0.0.1', '::1']
+#ALLOWED_ADMIN_IPS=['140.109.82.44', '::1']
 ALLOWED_ADMIN_IP_RANGES=os.environ.get('ALLOWED_ADMIN_IP_RANGES',[])
 RESTRICTED_APP_NAMES=os.environ.get('RESTRICTED_APP_NAMES',[])
 TRUST_PRIVATE_IP=os.environ.get('TRUST_PRIVATE_IP','')
@@ -151,4 +151,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
-# CORS_ALLOWED_ORIGINS = ['http://localhost:8081','http://127.0.0.1:8000',]
+# CORS_ALLOWED_ORIGINS = ['http://localhost:8081','http://140.109.82.44:8000',]

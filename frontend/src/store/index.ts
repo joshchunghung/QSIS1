@@ -70,7 +70,7 @@ export default createStore({
     },
     actions: {
         getDBEvent({ commit }) {
-            axios.post('http://127.0.0.1:8000/graphql/', {
+            axios.post('http://140.109.82.44:8000/graphql/', {
                 query: `query {
                     event (isOpen : true){
                         id
@@ -88,7 +88,7 @@ export default createStore({
         },
         getDBStation({ dispatch, commit }, eventid) {
             commit('getEventID', eventid)
-            axios.post('http://127.0.0.1:8000/graphql/', {
+            axios.post('http://140.109.82.44:8000/graphql/', {
                 query: `query {
                     pga(event:${eventid}){
                         station{

@@ -47,7 +47,7 @@ export default defineComponent({
         }
         const downloadData = (chn) => {
             const filename = `${event.value.date.toString().replace("-", "")}${event.value.time.toString().replace(":", "")}.${sensor.value}.${chn}.csv`
-            axios.post('http://127.0.0.1:8000/api/download/', { sensor: sensor.value, date: event.value.date, time: event.value.time, chn: chn }, { responseType: 'blob' })
+            axios.post('http://140.109.82.44:8000/api/download/', { sensor: sensor.value, date: event.value.date, time: event.value.time, chn: chn }, { responseType: 'blob' })
                 .then(response => download(response.data, filename))
                 .catch(error => console.log(error))
         }
