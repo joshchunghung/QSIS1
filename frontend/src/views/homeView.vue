@@ -42,7 +42,7 @@ import {
     useStore
 } from 'vuex'
 export default defineComponent({
-    name: 'teamView',
+    name: 'homeView',
     components: {
         twMapUI,
         buildingArrayUI,
@@ -64,6 +64,7 @@ export default defineComponent({
         let isMapViewOpen = ref(false)
         let isWaveFormOpen = ref(false)
         const changeBuildingOpen = () => {
+            console.log("qqqq")
             isBuildingOpen.value = true
             isMapViewOpen.value = false
             isWaveFormOpen.value = false

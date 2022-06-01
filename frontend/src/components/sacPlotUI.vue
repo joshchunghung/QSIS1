@@ -12,23 +12,12 @@ import axios from "axios";
 export default defineComponent({
     name: "sacPlotUI",
     setup() {
-        // let test = () => {
-        //     d3.select("#test")
-        //         .append("svg")
-        //         .attr("width", 500)
-        //         .attr("height", 500)
-        // }
         const store = useStore();
-        const sensor = computed(() => store.getters.sensor);
+        let sensor = computed(() => store.getters.sensor);
         const event = computed(() => store.getters.targetEvent);
-        const singleSite = computed(() => store.getters.singleSite);
-        const station = computed(() =>
-            singleSite.value.stations.filter((sta) => sta.code === sensor.value)
-        );
         const isArray = computed(() => store.getters.isArray);
         let plotData = reactive([]);
         let isLoading = ref(false);
-
         // function download(data, fileName) {
         //     if (!data) {
         //         return
@@ -53,16 +42,21 @@ export default defineComponent({
         //     ['HNX', 'HNY', 'HNZ'].forEach((chn) => downloadData(chn))
         // }
 
-        // const stationURLInfo = {
-        //     sensor: sensor.value,
-        //     date: event.value.date,
-        //     time: event.value.time
-        // }
-        let stationURLInfo = reactive({
-            sensor,
-            date: "2022-03-22",
-            time: "17:41:39",
-        });
+        let stationURLInfo = computed(() => {
+            return {
+                'sensor': sensor.value,
+                'date': event.value.date,
+                'time': event.value.time
+            }
+
+
+        })
+
+        // let stationURLInfo = reactive({
+        //     sensor: computed(() => store.getters.sensor).value,
+        //     date: "2022-03-22",
+        //     time: "17:41:39",
+        // });
 
         function sacPlotData(Data) {
             let tmpDataX = Data[0].time.map((time, i) => {
@@ -127,7 +121,7 @@ export default defineComponent({
             } else {
                 url = "http://140.109.82.44:8000/api/onlineWave/palert/"
             }
-            axios.post(url, stationURLInfo)
+            axios.post(url, stationURLInfo.value)
                 .then((response) => {
                     plotData = [];
                     plotData.push(response.data);
@@ -137,7 +131,7 @@ export default defineComponent({
                     const chart = sacPlots()
                         .data(data)
                         .title(
-                            `${stationURLInfo.sensor} ${stationURLInfo.date}${stationURLInfo.time}(UTC)`
+                            `${stationURLInfo.value.sensor} ${stationURLInfo.value.date}${stationURLInfo.value.time}(UTC)`
                         )
                         .legend("HNX HNY HNZ")
                         .selector("#sacplot");
@@ -159,7 +153,6 @@ export default defineComponent({
             // uploadAllData,
             plotData,
             isLoading,
-            station,
             stationURLInfo
         };
     },

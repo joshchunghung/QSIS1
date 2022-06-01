@@ -1,6 +1,4 @@
 <template>
-    <h4>{{ targetEvent.date }} {{ targetEvent.time }}(UTC+8), depth: {{ targetEvent.depth }}km, ML{{ targetEvent.ML }}
-    </h4>
     <h3> Site: {{ name }}</h3>
     <div id="building">
         <svg height="300" width="600" viewbox="0,0,900,900">

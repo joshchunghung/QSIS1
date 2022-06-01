@@ -19,7 +19,7 @@ export default createStore({
     },
     getters: {
         event: (state) => state.event,
-        targetEvent: (state) => state.event[state.eventid - 1],
+        targetEvent: (state) => state.event.filter(event => event.id === state.eventid)[0],
         site: (state) => state.site,
         buildingState: (state) => state.buildingState,
         singleSiteName: (state) => state.singleSite,
