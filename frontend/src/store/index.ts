@@ -15,7 +15,8 @@ export default createStore({
         floor: null,
         waveFormState: null,
         sensor: null,
-        isArray: null
+        isArray: null,
+        isLoading: false
     },
     getters: {
         event: (state) => state.event,
@@ -28,7 +29,9 @@ export default createStore({
         floor: (state) => state.floor,
         waveFormState: (state) => state.waveFormState,
         sensor: (state) => state.sensor,
-        isArray: (state) => state.isArray
+        isArray: (state) => state.isArray,
+        isLoading: (state) => state.isLoading,
+        stationInfo: (state) => state.site[state.singleSite].stations.filter(station => station.code === state.sensor)[0]
     },
     mutations: {
         getEvent(state, event) {
@@ -65,6 +68,9 @@ export default createStore({
         },
         changeWaveFormState(state, isOpen) {
             state.waveFormState = isOpen
+        },
+        changeLoading(state, isLoading) {
+            state.isLoading = isLoading
         }
 
     },

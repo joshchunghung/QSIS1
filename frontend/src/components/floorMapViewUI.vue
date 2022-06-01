@@ -1,4 +1,6 @@
 <template>
+    <br />
+
     <h3>{{ name }} {{ floor }}F</h3>
     <!-- <div>{{ buildingArray.stations.filter((item) => item.floor === floor) }}</div> -->
     <svg height="300" width="600" viewBox="0 0 600 300">

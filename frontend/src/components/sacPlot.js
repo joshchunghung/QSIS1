@@ -59,7 +59,6 @@ export function sacPlots() {
         return chart
     }
     chart.stationURLInfo = (value) => {
-        console.debug(value)
         stationURLInfo = value
         return chart
     }
@@ -89,13 +88,13 @@ export function sacPlots() {
 
     function chart() {
         let dataType = $('#normalizeBtn').val()
-        dataType=(dataType ? dataType:'raw')
-        let normalize =(dataType!=='raw')//==false:raw   true:self,all
+        dataType = (dataType ? dataType : 'raw')
+        let normalize = (dataType !== 'raw')//==false:raw   true:self,all
         let data = rawData[dataType]
         let pre_xdomain = null
         let title = ''
         let referenceTime, referenceTimeStr
-       
+
         // console.debug("dataType",dataType)
         // console.debug("data",rawData,data)
         // console.debug("cha", channel,titleArr)
@@ -183,9 +182,9 @@ export function sacPlots() {
 
         // console.debug(channel);
 
-      
+
         function init() {
-              //增加圖表類型選擇按鈕
+            //增加圖表類型選擇按鈕
             $(selector).append(`
                 <form id="form-chart">
             <div class="form-group" id="chartsOptions" style="display: inline;">
@@ -289,7 +288,7 @@ export function sacPlots() {
                     let stopPropagation = (e) => {
                         e.stopPropagation();
                     }
-    
+
                     //start or stop DOM event capturing
                     function chartEventControl(control) {
                         if (control == 'stop') {
@@ -303,22 +302,22 @@ export function sacPlots() {
                             charts.removeEventListener('mouseenter', stopPropagation, true);
                         }
                     }
-    
+
                     $('.toggle-nav').off('click');
                     $('.toggle-nav').click(function (e) {
                         // console.debug(e.target === this);//e.target===this
-    
+
                         $(this).toggleClass('active');
                         $(this).next().toggleClass('active');
                         e.preventDefault();
-    
+
                         //選單打開後阻止事件Capture到SVG(選單打開後svg反應mousemove,mouseenter圖片會有問題)
                         if ($(this).hasClass('active'))
                             chartEventControl('stop');
                         else
                             chartEventControl('start');
-    
-    
+
+
                     });
                     // console.debug($(".toggle-nav"));
                     $('body').off('click');
@@ -329,7 +328,7 @@ export function sacPlots() {
                             if (e.target != d && $(d).hasClass('active')) {
                                 $(d).toggleClass('active');
                                 $(d).next().toggleClass('active');
-    
+
                                 setTimeout(() => chartEventControl('start'), 100);
                             }
                         });
@@ -339,27 +338,27 @@ export function sacPlots() {
                 let chartMenu = () => {
                     $('button[name ="normalize"]').off()
                         .click(function (e) {
-                        // console.debug(pre_xdomain);
-                        // console.debug(this.value);
-        
-                        data = rawData[this.value];
-                        normalize = (this.value!== 'raw');
+                            // console.debug(pre_xdomain);
+                            // console.debug(this.value);
+
+                            data = rawData[this.value];
+                            normalize = (this.value !== 'raw');
                             $('#normalizeBtn')
                                 .val(this.value)
                                 .text(this.value);
-        
-        
-                        //x+referenceTime
-                        // console.debug("referenceTime=" + referenceTime);
-                        // if (referenceTime) data.forEach(d => d.data.forEach(p => p.x = 1000 * p.x + referenceTime));
-        
-                        printChart();
-                    });
+
+
+                            //x+referenceTime
+                            // console.debug("referenceTime=" + referenceTime);
+                            // if (referenceTime) data.forEach(d => d.data.forEach(p => p.x = 1000 * p.x + referenceTime));
+
+                            printChart();
+                        });
                     $('input[name ="plotType"]').off()
                         .change(function (e) {
                             pre_xdomain = null;
-                        printChart();
-                    });
+                            printChart();
+                        });
                 };
                 // burgerMenu();
                 chartMenu();

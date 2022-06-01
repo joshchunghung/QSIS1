@@ -26,8 +26,8 @@
             </div>
             <div v-else>
                 <div v-for="(site, name, index) in sites" :key="index">
-                    <LCircle :lat-lng="[site.latitude, site.longitude]" :weight="8" color="red" fill="red"
-                        @click="changeSite(name)">
+                    <LCircle :lat-lng="[site.latitude, site.longitude]" :weight="8" :color="getColor(site.MAXpga)"
+                        :fill="getColor(site.MAXpga)" @click="changeSite(name)">
                         <LPopup>
                             {{ name }}<br />
                             MaxPGA: {{ site.MAXpga }} gal
@@ -38,6 +38,7 @@
         </LMap>
     </div>
     <button type="button" class="btn btn-primary" @click="eventList">eventPage</button>
+
 </template>
 
 <script lang="ts">
@@ -58,7 +59,8 @@ import {
 import {
     tileProviders
 } from '../../public/data/mapUrl'
-
+import { getColor } from './color.js'
+import loadingUI from './loadingUI.vue'
 export default defineComponent({
     name: 'twMapUI',
     components: {
@@ -66,7 +68,8 @@ export default defineComponent({
         LTileLayer,
         LControlLayers,
         LCircle,
-        LPopup
+        LPopup,
+        loadingUI
     },
     setup() {
         const mapStates = ref(tileProviders)
@@ -87,12 +90,12 @@ export default defineComponent({
             store.commit('changeWaveFormState', false)
         }
         const changeSite = (site: string) => {
-            console.log(site)
             store.commit('getSingleSite', site)
             store.commit('changeBuildingState', true)
             store.commit('changeFloorMapViewState', false)
             store.commit('changeWaveFormState', false)
         }
+
         onBeforeUnmount(() => eventList())
         return {
             mapStates,
@@ -101,7 +104,8 @@ export default defineComponent({
             openSitePage,
             sites,
             eventList,
-            changeSite
+            changeSite,
+            getColor
         }
     }
 })

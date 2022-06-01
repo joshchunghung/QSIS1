@@ -19,7 +19,7 @@ services:
     env_file:
       - .env
     # command: bash -c "python manage.py migrate --noinput && python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
-    command: bash -c "python manage.py migrate --noinput && python manage.py collectstatic --noinput && uwsgi --ini  t.ini"
+    command: bash -c "python manage.py migrate --noinput && python manage.py collectstatic --noinput && uwsgi --ini  uwsgi.ini"
     volumes:
       - .:/code
       - /Users/chunghung/20220509062303:/data

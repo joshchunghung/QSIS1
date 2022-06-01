@@ -1,5 +1,6 @@
 <template>
-    <div id="test">{{ sensor }}</div>
+    <br />
+    <div>station: {{ sensor }}, PGA-3comp: {{ stationInfo.pga3comp }}gal</div>
     <br />
     <div id="sacplot" class="container"></div>
 </template>
@@ -16,8 +17,9 @@ export default defineComponent({
         let sensor = computed(() => store.getters.sensor);
         const event = computed(() => store.getters.targetEvent);
         const isArray = computed(() => store.getters.isArray);
+        const stationInfo = computed(() => store.getters.stationInfo);
         let plotData = reactive([]);
-        let isLoading = ref(false);
+        console.log(stationInfo.value)
         // function download(data, fileName) {
         //     if (!data) {
         //         return
@@ -48,15 +50,8 @@ export default defineComponent({
                 'date': event.value.date,
                 'time': event.value.time
             }
-
-
         })
 
-        // let stationURLInfo = reactive({
-        //     sensor: computed(() => store.getters.sensor).value,
-        //     date: "2022-03-22",
-        //     time: "17:41:39",
-        // });
 
         function sacPlotData(Data) {
             let tmpDataX = Data[0].time.map((time, i) => {
@@ -71,7 +66,7 @@ export default defineComponent({
             let raw;
             raw = [{ 0: tmpDataX }, { 1: tmpDataY }, { 2: tmpDataZ }];
             const meanArr = raw.map((data, i) => d3.mean(data[i], (d) => d.y));
-            console.log("meanArr", meanArr);
+
             const demeanArray = raw.map((data, i) =>
                 data[i].map(
                     (d) =>
@@ -81,7 +76,7 @@ export default defineComponent({
                         })
                 )
             );
-            console.log("demeanArray", demeanArray);
+
             const [Xmin, Xmax] = d3.extent(Data[0].ampX);
             const [Ymin, Ymax] = d3.extent(Data[0].ampY);
             const [Zmin, Zmax] = d3.extent(Data[0].ampZ);
@@ -131,20 +126,22 @@ export default defineComponent({
                     const chart = sacPlots()
                         .data(data)
                         .title(
-                            `${stationURLInfo.value.sensor} ${stationURLInfo.value.date}${stationURLInfo.value.time}(UTC)`
+                            `${stationURLInfo.value.sensor} ${stationURLInfo.value.date}${stationURLInfo.value.time}(UTC+8)`
                         )
-                        .legend("HNX HNY HNZ")
+                        .legend("HLX HLY HLZ")
                         .selector("#sacplot");
                     chart();
+                    store.commit('changeLoading', false)
                 });
         }
 
         onMounted(() => {
-            console.log("mounted", stationURLInfo)
+            store.commit('changeLoading', true)
             callData(isArray, stationURLInfo)
         })
         onBeforeUpdate(() => {
-            console.log("updated", stationURLInfo)
+            store.commit('changeLoading', true)
+            console.log("update")
             callData(isArray, stationURLInfo)
         });
 
@@ -152,8 +149,7 @@ export default defineComponent({
             sensor,
             // uploadAllData,
             plotData,
-            isLoading,
-            stationURLInfo
+            stationInfo
         };
     },
 });

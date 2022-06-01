@@ -48,7 +48,6 @@ export default defineComponent({
         const store = useStore()
         const buildingArray = computed(() => store.getters.singleSite)
         const name = computed(() => store.getters.singleSiteName)
-        const targetEvent = computed(() => store.getters.targetEvent)
         const openFloor = (floor) => {
             store.commit('changeFloorMapViewState', true)
             store.commit('getFloor', floor)
@@ -59,7 +58,6 @@ export default defineComponent({
             name,
             pgaColor,
             openFloor,
-            targetEvent
         }
     }
 })
