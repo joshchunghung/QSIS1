@@ -9,9 +9,8 @@ class Sacfile(APIView):
         time=request.data.get('time')
         folder=f"{date.replace('-','')}{time.replace(':','')}"  
         year=request.data.get('date').split('-')[0]
-        print(sensor)
-        # file=glob(f'/data/{year}/{folder}/*/*{sensor}*.csv')
-        file=glob(f'/data/*/*{sensor}*.csv')
+        file=glob(f'/data/{year}/{folder}/*/*{sensor}*.csv')
+        #file=glob(f'/data/*/*{sensor}*.csv')
         f=open(file[0], 'r', encoding='UTF-8')
         log_content={}
         times=[]
@@ -51,8 +50,8 @@ class PalertFile(APIView):
         time=request.data.get('time')
         folder=f"{date.replace('-','')}{time.replace(':','')}"
         year=date.split('-')[0]
-        # file=glob(f'/data/{year}/{folder}/*/*{sensor}*.csv')
-        file=glob(f'/data/*/*{sensor}*.csv')
+        file=glob(f'/data/{year}/{folder}/*/*{sensor}*.csv')
+        #file=glob(f'/data/*/*{sensor}*.csv')
         f=open(file[0], 'r', encoding='UTF-8')
         log_content={}
         times=[]
