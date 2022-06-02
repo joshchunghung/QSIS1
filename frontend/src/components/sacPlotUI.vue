@@ -6,19 +6,25 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeUpdate, onMounted, reactive, ref } from "vue";
-import { sacPlots } from "./sacPlot.js";
-import { useStore } from "vuex";
-import axios from "axios";
+import {
+    computed, defineComponent, onBeforeUpdate, onMounted, reactive, ref
+} from 'vue'
+import {
+    sacPlots
+} from './sacPlot.js'
+import {
+    useStore
+} from 'vuex'
+import axios from 'axios'
 export default defineComponent({
-    name: "sacPlotUI",
-    setup() {
-        const store = useStore();
-        let sensor = computed(() => store.getters.sensor);
-        const event = computed(() => store.getters.targetEvent);
-        const isArray = computed(() => store.getters.isArray);
-        const stationInfo = computed(() => store.getters.stationInfo);
-        let plotData = reactive([]);
+    name: 'sacPlotUI',
+    setup () {
+        const store = useStore()
+        const sensor = computed(() => store.getters.sensor)
+        const event = computed(() => store.getters.targetEvent)
+        const isArray = computed(() => store.getters.isArray)
+        const stationInfo = computed(() => store.getters.stationInfo)
+        let plotData = reactive([])
         console.log(stationInfo.value)
         // function download(data, fileName) {
         //     if (!data) {
@@ -44,83 +50,106 @@ export default defineComponent({
         //     ['HNX', 'HNY', 'HNZ'].forEach((chn) => downloadData(chn))
         // }
 
-        let stationURLInfo = computed(() => {
+        const stationURLInfo = computed(() => {
             return {
-                'sensor': sensor.value,
-                'date': event.value.date,
-                'time': event.value.time
+                sensor: sensor.value,
+                date: event.value.date,
+                time: event.value.time
             }
         })
 
-
-        function sacPlotData(Data) {
-            let tmpDataX = Data[0].time.map((time, i) => {
-                return { x: time, y: Data[0].ampX[i] };
-            });
-            let tmpDataY = Data[0].time.map((time, i) => {
-                return { x: time, y: Data[0].ampY[i] };
-            });
-            let tmpDataZ = Data[0].time.map((time, i) => {
-                return { x: time, y: Data[0].ampZ[i] };
-            });
-            let raw;
-            raw = [{ 0: tmpDataX }, { 1: tmpDataY }, { 2: tmpDataZ }];
-            const meanArr = raw.map((data, i) => d3.mean(data[i], (d) => d.y));
+        function sacPlotData (Data) {
+            const tmpDataX = Data[0].time.map((time, i) => {
+                return {
+                    x: time,
+                    y: Data[0].ampX[i]
+                }
+            })
+            const tmpDataY = Data[0].time.map((time, i) => {
+                return {
+                    x: time,
+                    y: Data[0].ampY[i]
+                }
+            })
+            const tmpDataZ = Data[0].time.map((time, i) => {
+                return {
+                    x: time,
+                    y: Data[0].ampZ[i]
+                }
+            })
+            let raw
+            raw = [{
+                0: tmpDataX
+            }, {
+                1: tmpDataY
+            }, {
+                2: tmpDataZ
+            }]
+            const meanArr = raw.map((data, i) => d3.mean(data[i], (d) => d.y))
 
             const demeanArray = raw.map((data, i) =>
                 data[i].map(
                     (d) =>
                         new Object({
                             x: d.x,
-                            y: d.y - meanArr[i],
+                            y: d.y - meanArr[i]
                         })
                 )
-            );
+            )
 
-            const [Xmin, Xmax] = d3.extent(Data[0].ampX);
-            const [Ymin, Ymax] = d3.extent(Data[0].ampY);
-            const [Zmin, Zmax] = d3.extent(Data[0].ampZ);
-            const maxAmpX = -1 * Xmin > Xmax ? -1 * Xmin : Xmax;
-            const maxAmpY = -1 * Ymin > Ymax ? -1 * Ymin : Ymax;
-            const maxAmpZ = -1 * Zmin > Zmax ? -1 * Zmin : Zmax;
-            const maxAmpArr = [maxAmpX, maxAmpY, maxAmpZ];
+            const [Xmin, Xmax] = d3.extent(Data[0].ampX)
+            const [Ymin, Ymax] = d3.extent(Data[0].ampY)
+            const [Zmin, Zmax] = d3.extent(Data[0].ampZ)
+            const maxAmpX = -1 * Xmin > Xmax ? -1 * Xmin : Xmax
+            const maxAmpY = -1 * Ymin > Ymax ? -1 * Ymin : Ymax
+            const maxAmpZ = -1 * Zmin > Zmax ? -1 * Zmin : Zmax
+            const maxAmpArr = [maxAmpX, maxAmpY, maxAmpZ]
 
             const self = demeanArray.map(
                 (data, i) =>
                     new Object({
-                        fileName: "test",
+                        fileName: 'test',
                         data: data.map(
                             (d) =>
                                 new Object({
                                     x: d.x,
-                                    y: d.y / maxAmpArr[i],
+                                    y: d.y / maxAmpArr[i]
                                 })
-                        ),
+                        )
                     })
-            );
+            )
             raw = [
-                { fileName: "test", data: demeanArray[0] },
-                { fileName: "test", data: demeanArray[1] },
-                { fileName: "test", data: demeanArray[2] },
-            ];
+                {
+                    fileName: 'test',
+                    data: demeanArray[0]
+                },
+                {
+                    fileName: 'test',
+                    data: demeanArray[1]
+                },
+                {
+                    fileName: 'test',
+                    data: demeanArray[2]
+                }
+            ]
             return {
                 raw,
-                self,
-            };
+                self
+            }
         }
 
-        function callData(isArray, stationURLInfo) {
-            let url;
+        function callData (isArray, stationURLInfo) {
+            let url
             if (isArray.value) {
                 url = 'http://140.109.82.44:8000/api/onlineWave/qsis/'
             } else {
-                url = "http://140.109.82.44:8000/api/onlineWave/palert/"
+                url = 'http://140.109.82.44:8000/api/onlineWave/palert/'
             }
             axios.post(url, stationURLInfo.value)
                 .then((response) => {
-                    plotData = [];
-                    plotData.push(response.data);
-                    let data = sacPlotData(plotData);
+                    plotData = []
+                    plotData.push(response.data)
+                    const data = sacPlotData(plotData)
                     //  console.debug("title", data)
                     // console.debug("stationURLInfo", stationURLInfo)
                     const chart = sacPlots()
@@ -128,11 +157,11 @@ export default defineComponent({
                         .title(
                             `${stationURLInfo.value.sensor} ${stationURLInfo.value.date}${stationURLInfo.value.time}(UTC+8)`
                         )
-                        .legend("HLX HLY HLZ")
-                        .selector("#sacplot");
-                    chart();
+                        .legend('HLX HLY HLZ')
+                        .selector('#sacplot')
+                    chart()
                     store.commit('changeLoading', false)
-                });
+                })
         }
 
         onMounted(() => {
@@ -141,18 +170,18 @@ export default defineComponent({
         })
         onBeforeUpdate(() => {
             store.commit('changeLoading', true)
-            console.log("update")
+            console.log('update')
             callData(isArray, stationURLInfo)
-        });
+        })
 
         return {
             sensor,
             // uploadAllData,
             plotData,
             stationInfo
-        };
-    },
-});
+        }
+    }
+})
 </script>
 
 <style scoped>

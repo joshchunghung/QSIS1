@@ -35,47 +35,61 @@ export default createStore({
     },
     mutations: {
         getEvent(state, event) {
+            // 降冪排列
+            event.sort((a, b) => parseFloat(b.ML) - parseFloat(a.ML))
             state.event = event
         },
-        getEventID(state, eventID) {
+        getEventID (state, eventID) {
             state.eventid = eventID
         },
-        getSite(state, site) {
+        getSite (state, site) {
             state.site = site
         },
-        getSingleSite(state, name) {
+        getSingleSite (state, name) {
             state.isArray = state.site[name].isArray
             if (state.isArray) {
                 state.singleSite = name
                 state.sensor = null
             } else {
-                state.singleSite = null
+                state.singleSite = name
                 state.floor = null
                 state.sensor = name
             }
         },
-        getSensor(state, name) {
+        getSensor (state, name) {
             state.sensor = name
         },
-        changeBuildingState(state, isOpen) {
+        changeBuildingState (state, isOpen) {
             state.buildingState = isOpen
         },
-        changeFloorMapViewState(state, isOpen) {
+        changeFloorMapViewState (state, isOpen) {
             state.floorMapViewState = isOpen
         },
-        getFloor(state, floor) {
+        getFloor (state, floor) {
             state.floor = floor
         },
-        changeWaveFormState(state, isOpen) {
+        changeWaveFormState (state, isOpen) {
             state.waveFormState = isOpen
         },
-        changeLoading(state, isLoading) {
+        changeLoading (state, isLoading) {
             state.isLoading = isLoading
-        }
+        },
+        Orginal(state) {
+            state.eventid=0,
+            state.site= null,
+            state.buildingState= null,
+            state.singleSite= null,
+            state.floorMapViewState= null,
+            state.floor= null,
+            state.waveFormState= null,
+            state.sensor= null,
+            state.isArray= null,
+            state. isLoading= false
+         }
 
     },
     actions: {
-        getDBEvent({ commit }) {
+        getDBEvent ({ commit }) {
             axios.post('http://140.109.82.44:8000/graphql/', {
                 query: `query {
                     event (isOpen : true){
@@ -92,7 +106,7 @@ export default createStore({
                 commit('getEvent', response.data.data.event)
             }).catch((err) => { console.log(err) })
         },
-        getDBStation({ dispatch, commit }, eventid) {
+        getDBStation ({ dispatch, commit }, eventid) {
             commit('getEventID', eventid)
             axios.post('http://140.109.82.44:8000/graphql/', {
                 query: `query {
@@ -119,7 +133,7 @@ export default createStore({
                 dispatch('filterPGA', response.data.data.pga)
             }).catch((err) => { console.log(err) })
         },
-        filterPGA({ commit }, pga) {
+        filterPGA ({ commit }, pga) {
             const buidings = {
             }
             pga.forEach(({ station, pga3comp }) => {

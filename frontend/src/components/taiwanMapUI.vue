@@ -5,14 +5,27 @@
         <LMap ref="map" :center="[23, 121]" :zoom="7">
             <LControlLayers />
             <!--layer-type="base" for LControlLayers  -->
-            <LTileLayer v-for="mapState in mapStates" layer-type="base" :minZoom="6" :key="mapState.name"
-                :url="mapState.url" :attribution="mapState.attribution" :name="mapState.name"
-                :maxZoom="mapState.maxZoom" :visible="mapState.visible" />
+            <LTileLayer
+                v-for="mapState in mapStates"
+                layer-type="base"
+                :minZoom="6"
+                :key="mapState.name"
+                :url="mapState.url"
+                :attribution="mapState.attribution"
+                :name="mapState.name"
+                :maxZoom="mapState.maxZoom"
+                :visible="mapState.visible"
+            />
 
             <!-- event  -->
             <div v-if="isEventOpen">
-                <LCircle v-for="event in events" :key="event.id" :lat-lng="[event.latitude, event.longitude]"
-                    :weight="13" color="yellow">
+                <LCircle
+                    v-for="event in events"
+                    :key="event.id"
+                    :lat-lng="[event.latitude, event.longitude]"
+                    :weight="13"
+                    color="yellow"
+                >
                     <LPopup>
                         {{ event.date }}<br />
                         {{ event.time }} (UTC+8)<br />
@@ -26,8 +39,13 @@
             </div>
             <div v-else>
                 <div v-for="(site, name, index) in sites" :key="index">
-                    <LCircle :lat-lng="[site.latitude, site.longitude]" :weight="8" :color="getColor(site.MAXpga)"
-                        :fill="getColor(site.MAXpga)" @click="changeSite(name)">
+                    <LCircle
+                        :lat-lng="[site.latitude, site.longitude]"
+                        :weight="8"
+                        :color="getColor(site.MAXpga)"
+                        :fill="getColor(site.MAXpga)"
+                        @click="changeSite(name)"
+                    >
                         <LPopup>
                             {{ name }}<br />
                             MaxPGA: {{ site.MAXpga }} gal
@@ -37,8 +55,34 @@
             </div>
         </LMap>
     </div>
-    <button type="button" class="btn btn-primary" @click="eventList">eventPage</button>
+    <!-- colorbar -->
+    <button class="btn btn-success mt-2 me-2" @click="openPGAColorBar">pgaColor</button>
+    <button type="button" class="btn btn-primary mt-2 me-2" @click="eventPage">
+        eventPage
+    </button>
+    <select
+        id="eventSelect"
+        style="position: relative; top: 5px"
+        class="me-2"
+        v-model="id"
+        @change="openSitePage(id)"
+    >
+        <option value="">Event List</option>
+        <option v-for="event in events" :key="event.id" :value="event.id">
+            {{ event.date }}T{{ event.time }}, ML{{ event.ML }}
+        </option>
+    </select>
 
+    <select
+        style="position: relative; top: 5px"
+        v-model="staName"
+        @change="changeSite(staName)"
+    >
+        <option value="">Station List</option>
+        <option v-for="(site, name, index) in sites" :key="index">
+            {{ site.stations.length === 1 ? name : `${name} (Array) ` }}
+        </option>
+    </select>
 </template>
 
 <script lang="ts">
@@ -59,8 +103,10 @@ import {
 import {
     tileProviders
 } from '../../public/data/mapUrl'
-import { getColor } from './color.js'
-import loadingUI from './loadingUI.vue'
+import {
+    getColor
+} from './color.js'
+
 export default defineComponent({
     name: 'twMapUI',
     components: {
@@ -68,10 +114,9 @@ export default defineComponent({
         LTileLayer,
         LControlLayers,
         LCircle,
-        LPopup,
-        loadingUI
+        LPopup
     },
-    setup() {
+    setup () {
         const mapStates = ref(tileProviders)
         const store = useStore()
         store.dispatch('getDBEvent')
@@ -80,32 +125,48 @@ export default defineComponent({
         const isEventOpen = ref(true)
 
         const openSitePage = (event) => {
+            if(event===''){
+              eventPage()
+              return
+            }
             isEventOpen.value = false
             store.dispatch('getDBStation', event)
         }
-        const eventList = () => {
+        const eventPage = () => {
             isEventOpen.value = true
+            store.commit('Orginal')
             store.commit('changeBuildingState', false)
             store.commit('changeFloorMapViewState', false)
             store.commit('changeWaveFormState', false)
         }
         const changeSite = (site: string) => {
+            site = site.trim().split(' ')[0]
             store.commit('getSingleSite', site)
             store.commit('changeBuildingState', true)
             store.commit('changeFloorMapViewState', false)
             store.commit('changeWaveFormState', false)
         }
+        const openPGAColorBar = () => {
+            window.open(
+                require('../../public/colorBar.jpg'),
+                'PGA colorBar222',
+                'location=1,status=1,scrollbars=1, width=1472,height=640'
+            )
+        }
 
-        onBeforeUnmount(() => eventList())
+        onBeforeUnmount(() => eventPage())
         return {
             mapStates,
             events,
             isEventOpen,
             openSitePage,
             sites,
-            eventList,
+            eventPage,
             changeSite,
-            getColor
+            getColor,
+            id:'',
+            staName:'',
+            openPGAColorBar
         }
     }
 })
@@ -113,12 +174,12 @@ export default defineComponent({
 
 <style scoped>
 .container {
-    width: 80%;
-    height: 500px;
+  width: 80%;
+  height: 500px;
 }
 
 .myMouse {
-    cursor: pointer;
-    color: blue;
+  cursor: pointer;
+  color: blue;
 }
 </style>

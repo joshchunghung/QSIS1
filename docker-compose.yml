@@ -22,7 +22,7 @@ services:
     command: bash -c "python manage.py migrate --noinput && python manage.py collectstatic --noinput && uwsgi --ini  uwsgi.ini"
     volumes:
       - .:/code
-      - /Users/chunghung/20220509062303:/data
+      - /mnt/RESIS:/data
     # ports:
     #   - "8000:8000"
     #   - "8003:8003"
