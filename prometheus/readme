@@ -1,0 +1,4 @@
+# 讓prometheus 有權寫入
+＃ red hat 
+sudo chown -R nobody:nobody data
+
