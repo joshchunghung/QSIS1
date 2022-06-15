@@ -125,9 +125,9 @@ export default defineComponent({
         const isEventOpen = ref(true)
 
         const openSitePage = (event) => {
-            if(event===''){
-              eventPage()
-              return
+            if (event === '') {
+                eventPage()
+                return
             }
             isEventOpen.value = false
             store.dispatch('getDBStation', event)
@@ -164,8 +164,8 @@ export default defineComponent({
             eventPage,
             changeSite,
             getColor,
-            id:'',
-            staName:'',
+            id: '',
+            staName: '',
             openPGAColorBar
         }
     }

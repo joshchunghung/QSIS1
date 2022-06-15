@@ -12,21 +12,6 @@ services:
     depends_on:
       - web
 
-  prometheus:
-    image: prom/prometheus
-    volumes:
-      - ./prometheus/config:/etc/prometheus
-      - ./prometheus/data:/prometheus
-    ports: 
-      - "9090:9090"
-    depends_on:
-      - web
-      - nginx
-    # networks:
-    #   default:
-    #   name: normal-oj_default
-    #   external: true
-
   web:
     container_name: "Django3-Vue"
     build: .
@@ -38,9 +23,6 @@ services:
     volumes:
       - .:/code
       - /mnt/RESIS:/data
-
-
-# networks:
-#   default:
-#     name: normal-oj_default
-#     external: true
+    # ports:
+    #   - "8000:8000"
+    #   - "8003:8003"

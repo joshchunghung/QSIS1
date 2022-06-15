@@ -34,7 +34,7 @@ export default createStore({
         stationInfo: (state) => state.site[state.singleSite].stations.filter(station => station.code === state.sensor)[0]
     },
     mutations: {
-        getEvent(state, event) {
+        getEvent (state, event) {
             // 降冪排列
             event.sort((a, b) => parseFloat(b.ML) - parseFloat(a.ML))
             state.event = event
@@ -74,18 +74,18 @@ export default createStore({
         changeLoading (state, isLoading) {
             state.isLoading = isLoading
         },
-        Orginal(state) {
-            state.eventid=0,
-            state.site= null,
-            state.buildingState= null,
-            state.singleSite= null,
-            state.floorMapViewState= null,
-            state.floor= null,
-            state.waveFormState= null,
-            state.sensor= null,
-            state.isArray= null,
-            state. isLoading= false
-         }
+        Orginal (state) {
+            state.eventid = 0,
+            state.site = null,
+            state.buildingState = null,
+            state.singleSite = null,
+            state.floorMapViewState = null,
+            state.floor = null,
+            state.waveFormState = null,
+            state.sensor = null,
+            state.isArray = null,
+            state.isLoading = false
+        }
 
     },
     actions: {

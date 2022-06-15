@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'corsheaders',
     ### definition
     'backend.apps.BackendConfig',
-    'queryOnlineWaveform.apps.QueryonlinewaveformConfig'
+    'queryOnlineWaveform.apps.QueryonlinewaveformConfig',
+    'account.apps.AccountConfig'
 ]
 # graphene-django settings
 GRAPHENE = {
