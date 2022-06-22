@@ -96,7 +96,7 @@ export default defineComponent({
 })
 </script>
 <style scoped>
-#signUp{
+#signUp {
     text-align: left;
 }
 </style>

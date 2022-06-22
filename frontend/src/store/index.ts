@@ -1,4 +1,8 @@
 import {
+    event
+} from './../../public/data/event'
+/* eslint-disable no-unused-expressions */
+import {
     createStore
 } from 'vuex'
 import axios from '../../node_modules/axios'
@@ -16,7 +20,9 @@ export default createStore({
         waveFormState: null,
         sensor: null,
         isArray: null,
-        isLoading: false
+        isLoading: false,
+        sortType: 'Event',
+        isReverse: false
     },
     getters: {
         event: (state) => state.event,
@@ -35,8 +41,12 @@ export default createStore({
     },
     mutations: {
         getEvent (state, event) {
-            // 降冪排列
-            event.sort((a, b) => parseFloat(b.ML) - parseFloat(a.ML))
+            // 按照時間排列
+            event.sort((a, b) => {
+                const timeA = `${a.date.replaceAll('-', '/')} ${a.time}`
+                const timeB = `${b.date.replaceAll('-', '/')} ${b.time}`
+                return new Date(timeB).getTime() - new Date(timeA).getTime()
+            })
             state.event = event
         },
         getEventID (state, eventID) {
@@ -85,6 +95,19 @@ export default createStore({
             state.sensor = null,
             state.isArray = null,
             state.isLoading = false
+        },
+        sortEventByType(state, { type,order}) {
+            if (type !== 'Event') {
+                state.event.sort((a, b) => {
+                    return (b[type] - a[type]) * order
+                })
+            } else {
+                state.event.sort((a, b) => {
+                    const timeA = `${a.date.replaceAll('-', '/')} ${a.time}`
+                    const timeB = `${b.date.replaceAll('-', '/')} ${b.time}`
+                    return (new Date(timeB).getTime() - new Date(timeA).getTime()) * order
+                })
+            }
         }
 
     },

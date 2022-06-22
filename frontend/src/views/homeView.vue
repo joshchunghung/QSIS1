@@ -3,7 +3,7 @@
         <twMapUI />
         <br />
         <br />
-
+        <eventListUI />
         <eventTitleUI />
 
         <!-- building Array -->
@@ -104,6 +104,7 @@ import floorMapViewUI from '@/components/floorMapViewUI.vue'
 import sacPlotUI from '@/components/sacPlotUI.vue'
 import loadingUI from '@/components/loadingUI.vue'
 import eventTitleUI from '@/components/eventTitleUI.vue'
+import eventListUI from '../components/eventListUI.vue'
 import {
     useStore
 } from 'vuex'
@@ -115,7 +116,8 @@ export default defineComponent({
         floorMapViewUI,
         sacPlotUI,
         loadingUI,
-        eventTitleUI
+        eventTitleUI,
+        eventListUI
     },
     setup () {
         const store = useStore()
@@ -201,11 +203,11 @@ export default defineComponent({
 })
 </script>
 <style  scoped>
-#colorBar{
-    width:50px;
-    height: 20px;
+#colorBar {
     position: absolute;
     z-index: 100000;
+    width: 50px;
+    height: 20px;
 }
 </style>>
 
@@ -213,57 +215,57 @@ export default defineComponent({
 $speed: 0.5s;
 
 .btn-flip {
-  opacity: 1;
-  outline: 0;
-  color: #fff;
-  line-height: 40px;
-  position: relative;
-  text-align: center;
-  letter-spacing: 1px;
-  display: inline-block;
-  text-decoration: none;
-  font-family: "Open Sans";
-  text-transform: uppercase;
-
-  &:hover {
-    &:after {
-      opacity: 1;
-      transform: translateY(0) rotateX(0);
-    }
-
-    &:before {
-      opacity: 0;
-      transform: translateY(50%) rotateX(90deg);
-    }
-  }
-
-  &:after {
-    top: 0;
-    left: 0;
-    opacity: 0;
-    width: 100%;
-    color: black;
-    display: block;
-    transition: $speed;
-    position: absolute;
-    background: #7882f0;
-    content: attr(data-back);
-    transform: translateY(-50%) rotateX(90deg);
-  }
-
-  &:before {
-    top: 0;
-    left: 0;
-    opacity: 1;
-    color: black;
-    display: block;
-    padding: 0 30px;
-    line-height: 40px;
-    transition: $speed;
     position: relative;
-    background: #92f060;
-    content: attr(data-front);
-    transform: translateY(0) rotateX(0);
-  }
+    display: inline-block;
+    font-family: "Open Sans";
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    opacity: 1;
+    outline: 0;
+    line-height: 40px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+
+    &:hover {
+        &::after {
+            opacity: 1;
+            transform: translateY(0) rotateX(0);
+        }
+
+        &::before {
+            opacity: 0;
+            transform: translateY(50%) rotateX(90deg);
+        }
+    }
+
+    &::after {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+        width: 100%;
+        color: black;
+        background: #7882f0;
+        opacity: 0;
+        transition: $speed;
+        content: attr(data-back);
+        transform: translateY(-50%) rotateX(90deg);
+    }
+
+    &::before {
+        position: relative;
+        top: 0;
+        left: 0;
+        display: block;
+        padding: 0 30px;
+        color: black;
+        background: #92f060;
+        opacity: 1;
+        transition: $speed;
+        line-height: 40px;
+        content: attr(data-front);
+        transform: translateY(0) rotateX(0);
+    }
 }
 </style>

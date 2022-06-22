@@ -5,26 +5,16 @@
         <LMap ref="map" :center="[23, 121]" :zoom="7">
             <LControlLayers />
             <!--layer-type="base" for LControlLayers  -->
-            <LTileLayer
-                v-for="mapState in mapStates"
-                layer-type="base"
-                :minZoom="6"
-                :key="mapState.name"
-                :url="mapState.url"
-                :attribution="mapState.attribution"
-                :name="mapState.name"
-                :maxZoom="mapState.maxZoom"
-                :visible="mapState.visible"
+            <LTileLayer v-for="mapState in mapStates" layer-type="base" :minZoom="6" :key="mapState.name"
+                        :url="mapState.url" :attribution="mapState.attribution" :name="mapState.name"
+                        :maxZoom="mapState.maxZoom" :visible="mapState.visible"
             />
 
-            <!-- event  -->
+            <!-- event  :color="getMLColor(event.ML)"-->
             <div v-if="isEventOpen">
-                <LCircle
-                    v-for="event in events"
-                    :key="event.id"
-                    :lat-lng="[event.latitude, event.longitude]"
-                    :weight="13"
-                    color="yellow"
+                <LCircleMarker v-for="event in events" :key="event.id" :lat-lng="[event.latitude, event.longitude]"
+                               :radius="8" :color="getMLColor(event.ML)" :fill="true" :fillColor="getMLColor(event.ML)"
+                               :fillOpacity="0.5"
                 >
                     <LPopup>
                         {{ event.date }}<br />
@@ -35,54 +25,42 @@
                         ML:{{ event.ML }} <br />
                         <div class="myMouse" @click="openSitePage(event.id)">Stations</div>
                     </LPopup>
-                </LCircle>
+                </LCircleMarker>
             </div>
             <div v-else>
                 <div v-for="(site, name, index) in sites" :key="index">
-                    <LCircle
-                        :lat-lng="[site.latitude, site.longitude]"
-                        :weight="8"
-                        :color="getColor(site.MAXpga)"
-                        :fill="getColor(site.MAXpga)"
-                        @click="changeSite(name)"
+                    <LPolygon :lat-lngs="StationIconShape(site.stations.length, site.latitude, site.longitude, 0.06)"
+                              :color="getColor(site.MAXpga)" :fill="true" :fillOpacity="0.5"
+                              :fillColor="getColor(site.MAXpga)" @click="changeSite(name)"
                     >
                         <LPopup>
                             {{ name }}<br />
                             MaxPGA: {{ site.MAXpga }} gal
                         </LPopup>
-                    </LCircle>
+                    </LPolygon>
                 </div>
             </div>
         </LMap>
     </div>
+
     <!-- colorbar -->
     <button class="btn btn-success mt-2 me-2" @click="openPGAColorBar">pgaColor</button>
     <button type="button" class="btn btn-primary mt-2 me-2" @click="eventPage">
         eventPage
     </button>
-    <select
-        id="eventSelect"
-        style="position: relative; top: 5px"
-        class="me-2"
-        v-model="id"
-        @change="openSitePage(id)"
-    >
+    <!-- <select id="eventSelect" style="position: relative; top: 5px;" class="me-2" v-model="id" @change="openSitePage(id)">
         <option value="">Event List</option>
         <option v-for="event in events" :key="event.id" :value="event.id">
             {{ event.date }}T{{ event.time }}, ML{{ event.ML }}
         </option>
-    </select>
+    </select> -->
 
-    <select
-        style="position: relative; top: 5px"
-        v-model="staName"
-        @change="changeSite(staName)"
-    >
+    <!-- <select style="position: relative; top: 5px;" v-model="staName" @change="changeSite(staName)">
         <option value="">Station List</option>
         <option v-for="(site, name, index) in sites" :key="index">
             {{ site.stations.length === 1 ? name : `${name} (Array) ` }}
         </option>
-    </select>
+    </select> -->
 </template>
 
 <script lang="ts">
@@ -97,8 +75,9 @@ import {
     LMap,
     LTileLayer,
     LControlLayers,
-    LCircle,
-    LPopup
+    LCircleMarker,
+    LPopup,
+    LPolygon
 } from '@vue-leaflet/vue-leaflet'
 import {
     tileProviders
@@ -113,8 +92,9 @@ export default defineComponent({
         LMap,
         LTileLayer,
         LControlLayers,
-        LCircle,
-        LPopup
+        LCircleMarker,
+        LPopup,
+        LPolygon
     },
     setup () {
         const mapStates = ref(tileProviders)
@@ -153,7 +133,35 @@ export default defineComponent({
                 'location=1,status=1,scrollbars=1, width=1472,height=640'
             )
         }
-
+        const getMLColor = (mag) => {
+            if (mag <= 4) {
+                return 'green'
+            } else if (mag <= 5) {
+                return 'orange'
+            } else {
+                return 'red'
+            }
+        }
+        function StationIconShape (sationNum, lat, lon, radius) {
+            const R = parseFloat(radius)
+            if (sationNum === 1) {
+                //  'triangle'
+                const X = R / 2.0
+                const Y = R / Math.sqrt(3)
+                const pointA = [parseFloat(lat) + Y, parseFloat(lon)]
+                const pointB = [parseFloat(lat) + Y / (-2), parseFloat(lon) + X]
+                const pointC = [parseFloat(lat) + Y / (-2), parseFloat(lon) - X]
+                return [pointA, pointB, pointC]
+            } else {
+                // rectangle
+                const X = R / (2 * Math.sqrt(2))
+                const pointA = [parseFloat(lat) + X, parseFloat(lon) + X]
+                const pointB = [parseFloat(lat) + X, parseFloat(lon) - X]
+                const pointC = [parseFloat(lat) - X, parseFloat(lon) - X]
+                const pointD = [parseFloat(lat) - X, parseFloat(lon) + X]
+                return [pointA, pointB, pointC, pointD]
+            }
+        }
         onBeforeUnmount(() => eventPage())
         return {
             mapStates,
@@ -166,7 +174,9 @@ export default defineComponent({
             getColor,
             id: '',
             staName: '',
-            openPGAColorBar
+            openPGAColorBar,
+            getMLColor,
+            StationIconShape
         }
     }
 })
@@ -174,12 +184,18 @@ export default defineComponent({
 
 <style scoped>
 .container {
-  width: 80%;
-  height: 500px;
+    width: 80%;
+    height: 500px;
 }
 
 .myMouse {
-  cursor: pointer;
-  color: blue;
+    cursor: pointer;
+    color: blue;
 }
+
+path.leaflet-interactive:first-child {
+    /* color:rgb(182, 32, 182); */
+    fill-opacity: 1;
+}
+
 </style>

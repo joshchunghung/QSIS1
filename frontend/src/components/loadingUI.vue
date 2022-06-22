@@ -19,20 +19,20 @@ export default defineComponent({
 </script>
 <style scoped>
 #load {
-    z-index: 10000000;
     position: absolute;
-    background: white;
+    z-index: 10000000;
     width: 70%;
     height: 800px;
+    background: white;
 }
 
 .site {
-    margin-top: auto;
     left: 15%;
+    margin-top: auto;
 }
 
 span.align-middle {
-    top: 90px;
     position: absolute;
+    top: 90px;
 }
 </style>

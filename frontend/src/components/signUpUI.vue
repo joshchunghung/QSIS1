@@ -16,7 +16,7 @@
             placeholder="Password"
             v-model="password"
             type="password"
-             class="form-control"
+            class="form-control"
         />
         <span>{{ errors.password }}</span>
 
@@ -25,16 +25,15 @@
             placeholder="PasswordConfirmation"
             v-model="passwordConfirmation"
             type="password"
-             class="form-control"
+            class="form-control"
         />
         <span>{{ errors.passwordConfirmation }}</span>
 
-
     </form>
-            <button type="submit" class="btn btn-primary" @click="onSubmit">Submit</button>
+    <button type="submit" class="btn btn-primary" @click="onSubmit">Submit</button>
     &nbsp;
-        <!-- 半形的不換行空格  -->
-        <button type="reset" class="btn btn-danger" @click="onReset">Reset</button>
+    <!-- 半形的不換行空格  -->
+    <button type="reset" class="btn btn-danger" @click="onReset">Reset</button>
 </template>
 
 <script lang="ts">
@@ -42,19 +41,14 @@ import {
     defineComponent, markRaw
 } from 'vue'
 import {
-    useField, useForm, Form, Field, ErrorMessage
+    useField, useForm
 } from 'vee-validate'
 import {
-    object, string,ref
+    object, string, ref
 } from 'yup'
 
 export default defineComponent({
     name: 'signUpUI',
-    components: {
-        Form,
-        Field,
-        ErrorMessage
-    },
     setup () {
         const onSubmit = (values) => {
             console.log('onSubmit', JSON.stringify(values, null, 2))
@@ -96,13 +90,15 @@ export default defineComponent({
 </script>
 <style scoped>
 #signUp {
-  text-align: left;
+    text-align: left;
 }
+
 input {
-      margin-bottom: 10px;
+    margin-bottom: 10px;
 }
+
 input + span {
-  display: block;
-  margin-bottom: 0;
+    display: block;
+    margin-bottom: 0;
 }
 </style>
