@@ -11,10 +11,10 @@
             />
 
             <!-- event  :color="getMLColor(event.ML)"-->
-            <div   v-if="isEventOpen">
-                <LCircleMarker ref="circle" v-for="(event,index) in events" :key="event.id" :lat-lng="[event.latitude, event.longitude]"
+            <div v-if="isEventOpen">
+                <LCircleMarker v-for="event in events" :key="event.id" :lat-lng="[event.latitude, event.longitude]"
                                :radius="8" :color="getMLColor(event.ML)" :fill="true" :fillColor="getMLColor(event.ML)"
-                               :fillOpacity="0.5"  style="fill:black;" 
+                               :fillOpacity="0.5"
                 >
                     <LPopup>
                         {{ event.date }}<br />
@@ -40,7 +40,7 @@
                     </LPolygon>
                 </div>
                 <LMarker :lat-lng="[23 ,121]">
-                    <LIcon :icon-url="svgUrl('triangle')" :icon-size="[45,45]" />
+                    <LIcon :icon-url="require('./device-electronic-machine-24-svgrepo-com.svg')" :icon-size="[45,90]" />
                 </LMarker>
             </div>
         </LMap>
@@ -51,33 +51,24 @@
     <button type="button" class="btn btn-primary mt-2 me-2" @click="eventPage">
         eventPage
     </button>
-<div v-show="isTableOpen">
-     <table id="eveTable" class="table table-striped" >
-        <thead>
-            <tr>
-                <th style="text-align:center">Event</th>
-                <th style="text-align:center">Latitude</th>
-                <th style="text-align:center">Longitude</th>
-                <th style="text-align:center">Depth</th>
-                <th style="text-align:center">ML</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="event in events" :key="event.id" class="hoverStyle" @click="openSitePage(event.id)" >
-                <td>{{event.date}}T{{event.time}}</td>
-                <td>{{event.latitude}}</td>
-                <td>{{ event.longitude}}</td>
-                <td>{{event.depth}}</td>
-                <td>{{ event.ML }}</td>
-            </tr>
-        </tbody>
-    </table>    
-    </div>
+    <!-- <select id="eventSelect" style="position: relative; top: 5px;" class="me-2" v-model="id" @change="openSitePage(id)">
+        <option value="">Event List</option>
+        <option v-for="event in events" :key="event.id" :value="event.id">
+            {{ event.date }}T{{ event.time }}, ML{{ event.ML }}
+        </option>
+    </select> -->
+
+    <!-- <select style="position: relative; top: 5px;" v-model="staName" @change="changeSite(staName)">
+        <option value="">Station List</option>
+        <option v-for="(site, name, index) in sites" :key="index">
+            {{ site.stations.length === 1 ? name : `${name} (Array) ` }}
+        </option>
+    </select> -->
 </template>
 
 <script lang="ts">
 import {
-    computed, defineComponent, onBeforeUnmount, onMounted, onUpdated, ref
+    computed, defineComponent, onBeforeUnmount, ref
 } from 'vue'
 import 'leaflet/dist/leaflet.css'
 import {
@@ -119,7 +110,7 @@ export default defineComponent({
         const events = computed(() => store.getters.event)
         const sites = computed(() => store.getters.site)
         const isEventOpen = ref(true)
-        const isTableOpen = ref(true)
+
         const openSitePage = (event) => {
             if (event === '') {
                 eventPage()
@@ -130,7 +121,6 @@ export default defineComponent({
         }
         const eventPage = () => {
             isEventOpen.value = true
-            isTableOpen.value = true
             store.commit('Orginal')
             store.commit('changeBuildingState', false)
             store.commit('changeFloorMapViewState', false)
@@ -138,7 +128,6 @@ export default defineComponent({
         }
         const changeSite = (site: string) => {
             site = site.trim().split(' ')[0]
-            isTableOpen.value = false
             store.commit('getSingleSite', site)
             store.commit('changeBuildingState', true)
             store.commit('changeFloorMapViewState', false)
@@ -180,20 +169,6 @@ export default defineComponent({
                 return [pointA, pointB, pointC, pointD]
             }
         }
-
-        const svgUrl = (shape) => {
-            if (shape === 'triangle') {
-                const svgString = '<svg xmlns=\'http://www.w3.org/2000/svg\' version=\'1.1\'  width=\'100\' height=\'100\'><path d=\'M 50,5 95,97.5 5,97.5 z\' /></svg>'
-                return 'data:image/svg+xml,' + svgString
-            }
-        }
-
-        onMounted(() => {
-            // 等資料載好
-        setTimeout((() => $('#eveTable').DataTable({ order: [0, 'desc'] })), 100)
-        })
-
-
         onBeforeUnmount(() => eventPage())
         return {
             mapStates,
@@ -208,9 +183,7 @@ export default defineComponent({
             staName: '',
             openPGAColorBar,
             getMLColor,
-            StationIconShape,
-            svgUrl,
-            isTableOpen
+            StationIconShape
         }
     }
 })
@@ -227,18 +200,9 @@ export default defineComponent({
     color: blue;
 }
 
-svg g path:first-child {
+path.leaflet-interactive:first-child {
     /* color:rgb(182, 32, 182); */
     fill-opacity: 1;
-    fill: black;
 }
-/* .leaflet-pane img:first-child {
-  stroke-width: 5;
-  stroke: black;
-  fill: orange;
-} */
-.hoverStyle:hover{
-    background-color:palegoldenrod;
-    cursor: pointer;
-}
+
 </style>

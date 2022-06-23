@@ -3,7 +3,6 @@
         <twMapUI />
         <br />
         <br />
-        <eventListUI />
         <eventTitleUI />
 
         <!-- building Array -->
@@ -96,7 +95,7 @@
 
 <script lang="ts">
 import {
-    computed, defineComponent, onMounted, ref, watch
+    computed, defineComponent, onMounted, onUpdated, ref, watch
 } from 'vue'
 import twMapUI from '@/components/taiwanMapUI.vue' // @ is an alias to /src
 import buildingArrayUI from '@/components/buildingArrayUI.vue'
@@ -104,7 +103,6 @@ import floorMapViewUI from '@/components/floorMapViewUI.vue'
 import sacPlotUI from '@/components/sacPlotUI.vue'
 import loadingUI from '@/components/loadingUI.vue'
 import eventTitleUI from '@/components/eventTitleUI.vue'
-import eventListUI from '../components/eventListUI.vue'
 import {
     useStore
 } from 'vuex'
@@ -116,8 +114,7 @@ export default defineComponent({
         floorMapViewUI,
         sacPlotUI,
         loadingUI,
-        eventTitleUI,
-        eventListUI
+        eventTitleUI
     },
     setup () {
         const store = useStore()

@@ -96,7 +96,7 @@ export default createStore({
             state.isArray = null,
             state.isLoading = false
         },
-        sortEventByType(state, { type,order}) {
+        sortEventByType (state, { type, order }) {
             if (type !== 'Event') {
                 state.event.sort((a, b) => {
                     return (b[type] - a[type]) * order
