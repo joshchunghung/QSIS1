@@ -1,10 +1,15 @@
 from django.contrib import admin
 # Register your models here.
-from .models import  Building, Station,Event,PGA
+from .models import  Building, Station,Event,CustomUser,PGA
 
 admin.site.site_header = 'Quake Structural Integrity System Backend'
 admin.site.index_title = 'QSIS'
 
+
+@admin.register(CustomUser)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ['username', 'email','is_approved','date_joined']
+    fields = ['username', 'email',  'is_approved','date_joined']
 
 @admin.register(Event)
 class StationAdmin(admin.ModelAdmin):

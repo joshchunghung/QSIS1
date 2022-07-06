@@ -1,7 +1,8 @@
 import graphene
 from graphene_django.types import DjangoObjectType
 from django.db.models import Q
-from backend.models import Building,Station,Event,PGA
+from backend.models import Building,Station,Event,PGA,CustomUser
+from django.db import models
 
 class buildingType(DjangoObjectType):
     class Meta:
@@ -51,3 +52,35 @@ class Query(graphene.ObjectType):
         if event:
             return PGA.objects.filter(event__id=event).filter(station__isOpen__exact=True)
         return PGA.objects.all()
+
+### User
+class CustomUserType(DjangoObjectType):
+    class Meta:
+        model = CustomUser
+
+        
+class UserInput(graphene.InputObjectType):
+    userName = graphene.String()
+    email = graphene.String()
+    password = graphene.String()
+    
+class CreateUser(graphene.Mutation):
+    class Arguments:
+        user_data =UserInput()
+    
+    # 返回的資料
+    success = graphene.Boolean()
+    article = graphene.Field(CustomUserType)
+    
+    @staticmethod
+    def mutate(self, info, user_data):
+        user = CustomUser(
+            username=user_data.userName,
+            email=user_data.email,
+            password=user_data.password
+        )
+        user.save() #存檔
+        return CreateUser(article=user, success=True)
+    
+class Mutation(graphene.ObjectType):
+    create_user = CreateUser.Field()

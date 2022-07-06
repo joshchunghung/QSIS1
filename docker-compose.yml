@@ -23,6 +23,6 @@ services:
     volumes:
       - .:/code
       - /mnt/RESIS:/data
-    # ports:
-    #   - "8000:8000"
-    #   - "8003:8003"
+    ports:
+      - "8001:8000"
+      - "8003:8003"

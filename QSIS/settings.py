@@ -48,25 +48,28 @@ INSTALLED_APPS = [
     'graphene_django',
     'rest_framework',
     'corsheaders',
+    'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
+    'graphql_auth',
     ### definition
     'backend.apps.BackendConfig',
     'queryOnlineWaveform.apps.QueryonlinewaveformConfig',
-    'account.apps.AccountConfig'
+    'account.apps.AccountConfig',
+
 ]
-# graphene-django settings
-GRAPHENE = {
-    'SCHEMA': 'QSIS.schema.schema',
-}
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'admin_ip_restrictor.middleware.AdminIPRestrictorMiddleware',
 ]
 
@@ -124,6 +127,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -137,6 +142,49 @@ USE_L10N = True
 
 USE_TZ = False
 
+# graphene-django settings
+GRAPHENE = {
+    'SCHEMA': 'QSIS.schema.schema',
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
+}
+AUTHENTICATION_BACKENDS = [
+    # "graphql_jwt.backends.JSONWebTokenBackend",
+    "graphql_auth.backends.GraphQLAuthBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+AUTH_USER_MODEL = 'backend.CustomUser'
+GRAPHQL_JWT = {
+    "JWT_VERIFY_EXPIRATION": True,
+    # optional
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+
+    "JWT_ALLOW_ANY_CLASSES": [
+        "graphql_auth.mutations.Register",
+        "graphql_auth.mutations.VerifyAccount",
+        "graphql_auth.mutations.ObtainJSONWebToken",
+        "graphql_auth.mutations.VerifyToken",
+        "graphql_auth.mutations.RefreshToken",
+        "graphql_auth.mutations.RevokeToken",
+        "graphql_auth.mutations.SendPasswordResetEmail",
+        "graphql_auth.mutations.PasswordReset",
+    ],
+
+}
+
+# GRAPHQL_AUTH = {
+#     'ALLOW_LOGIN_NOT_VERIFIED': False,
+#     'REGISTER_MUTATION_FIELDS': [
+#         'email', 'full_name', 'affiliation',
+#     ],
+#     'REGISTER_MUTATION_FIELDS_OPTIONAL': [
+#         'username', 'position',
+#     ],
+#     'EMAIL_TEMPLATE_VARIABLES': {
+#         'protocol': 'http'  # switch to http, you should use https in the future!
+#     },
+# }
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/

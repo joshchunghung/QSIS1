@@ -155,7 +155,7 @@ export default defineComponent({
                     const chart = sacPlots()
                         .data(data)
                         .title(
-                            `${stationURLInfo.value.sensor} ${stationURLInfo.value.date}${stationURLInfo.value.time}(UTC+8)`
+                            `${stationURLInfo.value.sensor} ${stationURLInfo.value.date}T${stationURLInfo.value.time}(UTC+8)`
                         )
                         .legend('HLX HLY HLZ')
                         .selector('#sacplot')

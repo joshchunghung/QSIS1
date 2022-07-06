@@ -14,7 +14,7 @@
             <div   v-if="isEventOpen">
                 <LCircleMarker ref="circle" v-for="(event,index) in events" :key="event.id" :lat-lng="[event.latitude, event.longitude]"
                                :radius="8" :color="getMLColor(event.ML)" :fill="true" :fillColor="getMLColor(event.ML)"
-                               :fillOpacity="0.5"  style="fill:black;" 
+                               :fillOpacity="0.5"  style="fill:black;"
                 >
                     <LPopup>
                         {{ event.date }}<br />
@@ -23,55 +23,66 @@
                         Longitude:{{ event.longitude }}° <br />
                         Depth:{{ event.depth }} km <br />
                         ML:{{ event.ML }} <br />
-                        <div class="myMouse" @click="openSitePage(event.id)">Stations</div>
+                        <div class="myMouse" @click="openSitePage(event)">Stations</div>
                     </LPopup>
                 </LCircleMarker>
             </div>
             <div v-else>
+                <LMarker :lat-lng="[eventSelected.lat ,eventSelected.lon]">
+                    <LIcon :icon-url="require('./Epicenter_map_sign_by_Juhele.svg')" :icon-size="[45,45]" />
+                </LMarker>
                 <div v-for="(site, name, index) in sites" :key="index">
-                    <LPolygon :lat-lngs="StationIconShape(site.stations.length, site.latitude, site.longitude, 0.06)"
-                              :color="getColor(site.MAXpga)" :fill="true" :fillOpacity="0.5"
-                              :fillColor="getColor(site.MAXpga)" @click="changeSite(name)"
-                    >
+                    <LMarker :lat-lng="[site.latitude, site.longitude]" @click="changeSite(name)">
+                        <LIcon :icon-url="svgUrl('triangle',site.MAXpga)" :icon-size="[20,20]"  />
                         <LPopup>
                             {{ name }}<br />
                             MaxPGA: {{ site.MAXpga }} gal
                         </LPopup>
-                    </LPolygon>
+                    </LMarker>
                 </div>
-                <LMarker :lat-lng="[23 ,121]">
-                    <LIcon :icon-url="svgUrl('triangle')" :icon-size="[45,45]" />
-                </LMarker>
+
             </div>
+
         </LMap>
+
     </div>
+    <img  id="colorBar" :src='require("../../public/colorIntensity.jpg")' alt="pgaColor"  v-show="!isEventOpen" />
 
     <!-- colorbar -->
-    <button class="btn btn-success mt-2 me-2" @click="openPGAColorBar">pgaColor</button>
-    <button type="button" class="btn btn-primary mt-2 me-2" @click="eventPage">
-        eventPage
-    </button>
-<div v-show="isTableOpen">
-     <table id="eveTable" class="table table-striped" >
-        <thead>
-            <tr>
-                <th style="text-align:center">Event</th>
-                <th style="text-align:center">Latitude</th>
-                <th style="text-align:center">Longitude</th>
-                <th style="text-align:center">Depth</th>
-                <th style="text-align:center">ML</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="event in events" :key="event.id" class="hoverStyle" @click="openSitePage(event.id)" >
-                <td>{{event.date}}T{{event.time}}</td>
-                <td>{{event.latitude}}</td>
-                <td>{{ event.longitude}}</td>
-                <td>{{event.depth}}</td>
-                <td>{{ event.ML }}</td>
-            </tr>
-        </tbody>
-    </table>    
+    <div class="mt-2 ms-2">
+        <button type="button" class="btn btn-primary " @click="eventPage()">
+            eventPage
+        </button>
+
+        <select style="position: relative; top: 5px;"  class="mt-2 ms-2" v-model="staName" @change="changeSite(staName)">
+            <option value="">Station List</option>
+            <option v-for="(site, name, index) in sites" :key="index">
+                {{ site.stations.length === 1 ? name : `${name} (Array) ` }}
+            </option>
+        </select>
+    </div>
+    <!-- data table -->
+    <div v-show="isTableOpen">
+        <table id="eveTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th style="text-align:center">Event</th>
+                    <th style="text-align:center">Latitude (°)</th>
+                    <th style="text-align:center">Longitude (°)</th>
+                    <th style="text-align:center">Depth (km)</th>
+                    <th style="text-align:center">ML</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="event in events" :key="event.id" class="hoverStyle" @click="openSitePage(event)">
+                    <td>{{event.date}}T{{event.time}}</td>
+                    <td>{{event.latitude}}</td>
+                    <td>{{ event.longitude}}</td>
+                    <td>{{event.depth}}</td>
+                    <td>{{ event.ML }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 
@@ -89,7 +100,6 @@ import {
     LControlLayers,
     LCircleMarker,
     LPopup,
-    LPolygon,
     LIcon,
     LMarker
 } from '@vue-leaflet/vue-leaflet'
@@ -108,7 +118,6 @@ export default defineComponent({
         LControlLayers,
         LCircleMarker,
         LPopup,
-        LPolygon,
         LIcon,
         LMarker
     },
@@ -120,13 +129,14 @@ export default defineComponent({
         const sites = computed(() => store.getters.site)
         const isEventOpen = ref(true)
         const isTableOpen = ref(true)
+        const eventSelected = ref(null)
         const openSitePage = (event) => {
-            if (event === '') {
-                eventPage()
-                return
-            }
             isEventOpen.value = false
-            store.dispatch('getDBStation', event)
+            eventSelected.value = {
+                lat: event.latitude,
+                lon: event.longitude
+            }
+            store.dispatch('getDBStation', event.id)
         }
         const eventPage = () => {
             isEventOpen.value = true
@@ -146,9 +156,9 @@ export default defineComponent({
         }
         const openPGAColorBar = () => {
             window.open(
-                require('../../public/colorBar.jpg'),
+                require('../../public/colorIntensity.jpg'),
                 'PGA colorBar222',
-                'location=1,status=1,scrollbars=1, width=1472,height=640'
+                'location=1,status=1,scrollbars=1, width=250,height=50'
             )
         }
         const getMLColor = (mag) => {
@@ -160,39 +170,33 @@ export default defineComponent({
                 return 'red'
             }
         }
-        function StationIconShape (sationNum, lat, lon, radius) {
-            const R = parseFloat(radius)
-            if (sationNum === 1) {
-                //  'triangle'
-                const X = R / 2.0
-                const Y = R / Math.sqrt(3)
-                const pointA = [parseFloat(lat) + Y, parseFloat(lon)]
-                const pointB = [parseFloat(lat) + Y / (-2), parseFloat(lon) + X]
-                const pointC = [parseFloat(lat) + Y / (-2), parseFloat(lon) - X]
-                return [pointA, pointB, pointC]
-            } else {
-                // rectangle
-                const X = R / (2 * Math.sqrt(2))
-                const pointA = [parseFloat(lat) + X, parseFloat(lon) + X]
-                const pointB = [parseFloat(lat) + X, parseFloat(lon) - X]
-                const pointC = [parseFloat(lat) - X, parseFloat(lon) - X]
-                const pointD = [parseFloat(lat) - X, parseFloat(lon) + X]
-                return [pointA, pointB, pointC, pointD]
-            }
-        }
 
-        const svgUrl = (shape) => {
+        const svgUrl = (shape, pga) => {
+            const color = getColor(pga)
             if (shape === 'triangle') {
-                const svgString = '<svg xmlns=\'http://www.w3.org/2000/svg\' version=\'1.1\'  width=\'100\' height=\'100\'><path d=\'M 50,5 95,97.5 5,97.5 z\' /></svg>'
+                const svgString = `<svg xmlns=\'http://www.w3.org/2000/svg\' version=\'1.1\'  width=\'100\' height=\'100\'><path d=\'M 50,5 95,97.5 5,97.5 z\'  stroke=\'${color}\' stroke-width=\'10\'  fill=\'${color}\' fill-opacity=\'0.5\' /></svg>`
                 return 'data:image/svg+xml,' + svgString
             }
         }
 
         onMounted(() => {
+            // let dataTable = $('#eveTable')
+            // nextTick(() => {
+            // console.log(dataTable.children().get(1).childNodes.length)
+            // dataTable.DataTable({ order: [0, 'desc'] })
+            // })
             // 等資料載好
-        setTimeout((() => $('#eveTable').DataTable({ order: [0, 'desc'] })), 100)
+            setTimeout(() => {
+                $('#eveTable').DataTable({
+                    order: [0, 'desc']
+                })
+                console.log($('#eveTable').children().get(1).childNodes)
+            }, 200)
         })
-
+        onUpdated(() => {
+            console.log('aaa')
+            $('#colorBar').draggable()
+        })
 
         onBeforeUnmount(() => eventPage())
         return {
@@ -208,9 +212,9 @@ export default defineComponent({
             staName: '',
             openPGAColorBar,
             getMLColor,
-            StationIconShape,
             svgUrl,
-            isTableOpen
+            isTableOpen,
+            eventSelected
         }
     }
 })
@@ -227,16 +231,13 @@ export default defineComponent({
     color: blue;
 }
 
-svg g path:first-child {
-    /* color:rgb(182, 32, 182); */
-    fill-opacity: 1;
-    fill: black;
+#colorBar {
+    left:-20%;
+    top:-92px;
+    width:300px;
+    height:40px;
+    z-index:10000;
 }
-/* .leaflet-pane img:first-child {
-  stroke-width: 5;
-  stroke: black;
-  fill: orange;
-} */
 .hoverStyle:hover{
     background-color:palegoldenrod;
     cursor: pointer;

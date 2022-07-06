@@ -3,7 +3,10 @@ db.sqlite3
 *png
 *jpg
 *log
+*svg
+*xcf
 .env
+.dockerignore
 backend/migrations/*
 
 */__pycache__/*

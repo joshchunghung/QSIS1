@@ -21,8 +21,7 @@
 <script lang="ts">
 import {
     computed,
-    defineComponent,
-    ref
+    defineComponent
 } from 'vue'
 import {
     useStore

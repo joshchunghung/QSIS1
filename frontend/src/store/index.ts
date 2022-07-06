@@ -1,6 +1,3 @@
-import {
-    event
-} from './../../public/data/event'
 /* eslint-disable no-unused-expressions */
 import {
     createStore
@@ -42,11 +39,11 @@ export default createStore({
     mutations: {
         getEvent (state, event) {
             // 按照時間排列
-            event.sort((a, b) => {
-                const timeA = `${a.date.replaceAll('-', '/')} ${a.time}`
-                const timeB = `${b.date.replaceAll('-', '/')} ${b.time}`
-                return new Date(timeB).getTime() - new Date(timeA).getTime()
-            })
+            // event.sort((a, b) => {
+            //     const timeA = `${a.date.replaceAll('-', '/')} ${a.time}`
+            //     const timeB = `${b.date.replaceAll('-', '/')} ${b.time}`
+            //     return new Date(timeB).getTime() - new Date(timeA).getTime()
+            // })
             state.event = event
         },
         getEventID (state, eventID) {
@@ -139,6 +136,7 @@ export default createStore({
                             floor
                             rx
                             ry
+                            InstrumentType
                             building{
                             abbreviation
                             latitude
@@ -161,7 +159,7 @@ export default createStore({
             }
             pga.forEach(({ station, pga3comp }) => {
                 const MAXpga = -1
-                const { code, floor, rx, ry, building } = station
+                const { code, floor, rx, ry, InstrumentType, building } = station
                 const { abbreviation, latitude, longitude, basement, floor: height, isArray } = building
                 if (!buidings[abbreviation]) {
                     buidings[abbreviation] = {
@@ -179,6 +177,7 @@ export default createStore({
                     floor,
                     rx,
                     ry,
+                    InstrumentType,
                     pga3comp
                 })
                 if (pga3comp > buidings[abbreviation].MAXpga) { buidings[abbreviation].MAXpga = pga3comp }
