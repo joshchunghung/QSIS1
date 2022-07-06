@@ -154,7 +154,9 @@ AUTHENTICATION_BACKENDS = [
     "graphql_auth.backends.GraphQLAuthBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
+
 AUTH_USER_MODEL = 'backend.CustomUser'
+
 GRAPHQL_JWT = {
     "JWT_VERIFY_EXPIRATION": True,
     # optional
@@ -163,12 +165,14 @@ GRAPHQL_JWT = {
     "JWT_ALLOW_ANY_CLASSES": [
         "graphql_auth.mutations.Register",
         "graphql_auth.mutations.VerifyAccount",
+        "graphql_auth.mutations.ResendActivationEmail",
+        "graphql_auth.mutations.SendPasswordResetEmail",
+        "graphql_auth.mutations.PasswordReset",
         "graphql_auth.mutations.ObtainJSONWebToken",
         "graphql_auth.mutations.VerifyToken",
         "graphql_auth.mutations.RefreshToken",
         "graphql_auth.mutations.RevokeToken",
-        "graphql_auth.mutations.SendPasswordResetEmail",
-        "graphql_auth.mutations.PasswordReset",
+        "graphql_auth.mutations.VerifySecondaryEmail",
     ],
 
 }

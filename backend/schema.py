@@ -53,34 +53,35 @@ class Query(graphene.ObjectType):
             return PGA.objects.filter(event__id=event).filter(station__isOpen__exact=True)
         return PGA.objects.all()
 
-### User
-class CustomUserType(DjangoObjectType):
-    class Meta:
-        model = CustomUser
+# ### User
+# class CustomUserType(DjangoObjectType):
+#     class Meta:
+#         model = CustomUser
 
         
-class UserInput(graphene.InputObjectType):
-    userName = graphene.String()
-    email = graphene.String()
-    password = graphene.String()
+# class UserInput(graphene.InputObjectType):
+#     userName = graphene.String()
+#     email = graphene.String()
+#     password = graphene.String()
     
-class CreateUser(graphene.Mutation):
-    class Arguments:
-        user_data =UserInput()
+# class Register(graphene.Mutation):
+#     class Arguments:
+#         user_data =UserInput()
     
-    # 返回的資料
-    success = graphene.Boolean()
-    article = graphene.Field(CustomUserType)
+#     # 返回的資料
+#     success = graphene.Boolean()
+#     createUser = graphene.Field(CustomUserType)
     
-    @staticmethod
-    def mutate(self, info, user_data):
-        user = CustomUser(
-            username=user_data.userName,
-            email=user_data.email,
-            password=user_data.password
-        )
-        user.save() #存檔
-        return CreateUser(article=user, success=True)
+#     @staticmethod
+#     def mutate(self, info, user_data):
+#         user = CustomUser(
+#             username=user_data.userName,
+#             email=user_data.email,
+#             password=user_data.password
+#         )
+#         user.save() #存檔
+#         return Register(createUser=user, success=True)
     
-class Mutation(graphene.ObjectType):
-    create_user = CreateUser.Field()
+# class Mutation(graphene.ObjectType):
+#     create_user = Register.Field()
+    
