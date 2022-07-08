@@ -86,10 +86,10 @@ import {
 } from '@vue-leaflet/vue-leaflet'
 import {
     tileProviders
-} from '../../public/data/mapUrl'
+} from './statics/mapUrl'
 import {
     getColor
-} from './color.js'
+} from './statics/color.js'
 
 export default defineComponent({
     name: 'twMapUI',

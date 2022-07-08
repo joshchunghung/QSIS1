@@ -28,9 +28,9 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../views/dataDownloadView.vue')
     },
     {
-        path: '/building',
-        name: 'building',
-        component: () => import('../views/buildingView.vue')
+        path: '/register',
+        name: 'register',
+        component: () => import('../views/registerView.vue')
     },
     {
         path: '/team',

@@ -1,6 +1,6 @@
 <template>
-    <div class="building">
-        <h1>This is an Register page</h1>
+    <div class="Register">
+        <h1>This is a Register page</h1>
         <signUpUI />
     </div>
 </template>
@@ -11,7 +11,7 @@ import {
 } from 'vue'
 import signUpUI from '@/components/signUpUI.vue'
 export default defineComponent({
-    name: 'BuildingView',
+    name: 'registerView',
     components: {
         signUpUI
     }

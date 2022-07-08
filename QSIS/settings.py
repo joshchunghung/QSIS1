@@ -78,7 +78,9 @@ ROOT_URLCONF = 'QSIS.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'frontend/dist')],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'frontend/dist'),
+            os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -165,14 +167,12 @@ GRAPHQL_JWT = {
     "JWT_ALLOW_ANY_CLASSES": [
         "graphql_auth.mutations.Register",
         "graphql_auth.mutations.VerifyAccount",
-        "graphql_auth.mutations.ResendActivationEmail",
-        "graphql_auth.mutations.SendPasswordResetEmail",
-        "graphql_auth.mutations.PasswordReset",
         "graphql_auth.mutations.ObtainJSONWebToken",
         "graphql_auth.mutations.VerifyToken",
         "graphql_auth.mutations.RefreshToken",
         "graphql_auth.mutations.RevokeToken",
-        "graphql_auth.mutations.VerifySecondaryEmail",
+        "graphql_auth.mutations.SendPasswordResetEmail",
+        "graphql_auth.mutations.PasswordReset",
     ],
 
 }
@@ -189,6 +189,16 @@ GRAPHQL_JWT = {
 #         'protocol': 'http'  # switch to http, you should use https in the future!
 #     },
 # }
+
+### mutations.SendPasswordResetEmail 存在，所以需要
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.environ.get('DJANGO_EMAIL_HOST', '')
+EMAIL_PORT = os.environ.get('DJANGO_EMAIL_PORT', '')
+EMAIL_USE_SSL = bool(os.environ.get('DJANGO_EMAIL_USE_SSL', True))
+EMAIL_HOST_USER = os.environ.get('DJANGO_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('DJANGO_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+MANAGERS = [('TEC Data Center', 'chunghunglo@earth.sinica.edu.tw'),]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/

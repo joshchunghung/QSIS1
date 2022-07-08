@@ -14,7 +14,7 @@
             <div   v-if="isEventOpen">
                 <LCircleMarker ref="circle" v-for="(event,index) in events" :key="event.id" :lat-lng="[event.latitude, event.longitude]"
                                :radius="8" :color="getMLColor(event.ML)" :fill="true" :fillColor="getMLColor(event.ML)"
-                               :fillOpacity="0.5"  style="fill:black;"
+                               :fillOpacity="0.5"  style="fill: black;"
                 >
                     <LPopup>
                         {{ event.date }}<br />
@@ -29,7 +29,7 @@
             </div>
             <div v-else>
                 <LMarker :lat-lng="[eventSelected.lat ,eventSelected.lon]">
-                    <LIcon :icon-url="require('./Epicenter_map_sign_by_Juhele.svg')" :icon-size="[45,45]" />
+                    <LIcon :icon-url="require('../../public/Epicenter_map_sign_by_Juhele.svg')" :icon-size="[45,45]" />
                 </LMarker>
                 <div v-for="(site, name, index) in sites" :key="index">
                     <LMarker :lat-lng="[site.latitude, site.longitude]" @click="changeSite(name)">
@@ -42,7 +42,6 @@
                 </div>
 
             </div>
-
         </LMap>
 
     </div>
@@ -66,11 +65,11 @@
         <table id="eveTable" class="table table-striped">
             <thead>
                 <tr>
-                    <th style="text-align:center">Event</th>
-                    <th style="text-align:center">Latitude (°)</th>
-                    <th style="text-align:center">Longitude (°)</th>
-                    <th style="text-align:center">Depth (km)</th>
-                    <th style="text-align:center">ML</th>
+                    <th style="text-align: center;">Event</th>
+                    <th style="text-align: center;">Latitude (°)</th>
+                    <th style="text-align: center;">Longitude (°)</th>
+                    <th style="text-align: center;">Depth (km)</th>
+                    <th style="text-align: center;">ML</th>
                 </tr>
             </thead>
             <tbody>
@@ -105,10 +104,10 @@ import {
 } from '@vue-leaflet/vue-leaflet'
 import {
     tileProviders
-} from '../../public/data/mapUrl'
+} from './statics/mapUrl'
 import {
     getColor
-} from './color.js'
+} from './statics/color.js'
 
 export default defineComponent({
     name: 'twMapUI',
@@ -130,6 +129,7 @@ export default defineComponent({
         const isEventOpen = ref(true)
         const isTableOpen = ref(true)
         const eventSelected = ref(null)
+
         const openSitePage = (event) => {
             isEventOpen.value = false
             eventSelected.value = {
@@ -147,19 +147,18 @@ export default defineComponent({
             store.commit('changeWaveFormState', false)
         }
         const changeSite = (site: string) => {
-            site = site.trim().split(' ')[0]
-            isTableOpen.value = false
-            store.commit('getSingleSite', site)
-            store.commit('changeBuildingState', true)
+            if (site === '') {
+                console.log('vvvv')
+                store.commit('changeBuildingState', false)
+                store.commit('clickEventList')
+            } else {
+                site = site.trim().split(' ')[0]
+                isTableOpen.value = false
+                store.commit('getSingleSite', site)
+                store.commit('changeBuildingState', true)
+            }
             store.commit('changeFloorMapViewState', false)
             store.commit('changeWaveFormState', false)
-        }
-        const openPGAColorBar = () => {
-            window.open(
-                require('../../public/colorIntensity.jpg'),
-                'PGA colorBar222',
-                'location=1,status=1,scrollbars=1, width=250,height=50'
-            )
         }
         const getMLColor = (mag) => {
             if (mag <= 4) {
@@ -210,7 +209,6 @@ export default defineComponent({
             getColor,
             id: '',
             staName: '',
-            openPGAColorBar,
             getMLColor,
             svgUrl,
             isTableOpen,
@@ -232,14 +230,15 @@ export default defineComponent({
 }
 
 #colorBar {
-    left:-20%;
-    top:-92px;
-    width:300px;
-    height:40px;
-    z-index:10000;
+    top: -92px;
+    left: -20%;
+    z-index: 10000;
+    width: 300px;
+    height: 40px;
 }
-.hoverStyle:hover{
-    background-color:palegoldenrod;
+
+.hoverStyle:hover {
+    background-color: palegoldenrod;
     cursor: pointer;
 }
 </style>

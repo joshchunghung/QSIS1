@@ -10,7 +10,6 @@ COPY requirements.txt /code/
 RUN pip install -r requirements.txt
 COPY . /code/
 
-
-RUN groupadd -g ${GID} ${USERNAME}
-RUN useradd -ms /bin/bash -g ${GID} -u ${UID} ${USERNAME}
-USER ${USERNAME}
+# RUN groupadd -g ${GID} ${USERNAME}
+# RUN useradd -ms /bin/bash -g ${GID} -u ${UID} ${USERNAME}
+# USER ${USERNAME}

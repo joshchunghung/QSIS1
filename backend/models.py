@@ -17,7 +17,8 @@ class CustomUser(AbstractUser):
     class Meta:
         managed = True
         db_table = 'backend_customuser'
-
+        verbose_name_plural = 'User' #後臺的顯示名稱
+        
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=150)
 

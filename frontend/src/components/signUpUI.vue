@@ -41,6 +41,9 @@ import {
     defineComponent, markRaw
 } from 'vue'
 import {
+    useStore
+} from 'vuex'
+import {
     useField, useForm
 } from 'vee-validate'
 import {
@@ -50,13 +53,7 @@ import {
 export default defineComponent({
     name: 'signUpUI',
     setup () {
-        const onSubmit = (values) => {
-            console.log('onSubmit', JSON.stringify(values, null, 2))
-        }
-        const onReset = (values) => {
-            console.log('onReset')
-        }
-
+        const store = useStore()
         // yup 不需要是響應式的，所以使用markRaw
         const schema = markRaw(
             object({
@@ -76,6 +73,21 @@ export default defineComponent({
         const { value: email } = useField('email')
         const { value: password } = useField('password')
         const { value: passwordConfirmation } = useField('passwordConfirmation')
+
+        const onSubmit = (values) => {
+            console.log('onSubmit', JSON.stringify(values, null, 2))
+            const formData = {
+                name: name.value,
+                email: email.value,
+                password1: password.value,
+                password2: passwordConfirmation.value
+            }
+            store.dispatch('createUser', formData)
+        }
+        const onReset = (values) => {
+            console.log('onReset')
+        }
+
         return {
             onSubmit,
             onReset,

@@ -45,7 +45,7 @@ import {
 } from 'vuex'
 import {
     pgaColor
-} from './color.js'
+} from './statics/color.js'
 export default defineComponent({
     name: 'buildingArrayUI',
 

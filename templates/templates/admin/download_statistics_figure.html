@@ -1,0 +1,57 @@
+{% extends "admin/change_list.html" %}
+{% load static %}
+
+{% block extrahead %}
+{{ block.super }}
+<script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+<script src="{% static 'js/d3.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/pie.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/pie.css' %}">
+{% endblock %}
+
+{% block content_title %}
+<h1> Download Statistics Figure</h1>
+{% endblock %}
+
+{% block content %}
+<main class='container'></main>
+    <script>
+      const chartData = {{ chart_data | safe }};
+      const dataColor = {{ data_color | safe }};
+      
+      var data = {
+          "count": {
+              "TSMIP": 231,
+              "CWBSN": 1037,
+              "MAGNET": 68,
+              "GNSS": 72,
+              "GW": 27,
+              "total": 1435
+          },
+          "file_size": {
+              "TSMIP": "138.53 GB",
+              "CWBSN": "153.17 GB",
+              "MAGNET": "7.91 GB",
+              "GNSS": "39.85 GB",
+              "GW": "3.93 GB",
+              "total": "343.4 GB"
+          }
+      };
+
+      var title = '全體下載量';
+      obj = { data: chartData, title: title, subtitle: "TAPS" };
+
+      var Data = [obj,];
+
+      var chart = pieChart()
+          .data(Data)
+          .color(dataColor['color'])
+          .selector('.container');
+      chart();
+
+    </script>
+{% endblock %}
+
+{% block pagination %}{% endblock %}

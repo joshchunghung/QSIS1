@@ -11,7 +11,7 @@ import {
 } from 'vue'
 import {
     sacPlots
-} from './sacPlot.js'
+} from './statics/sacPlot.js'
 import {
     useStore
 } from 'vuex'
