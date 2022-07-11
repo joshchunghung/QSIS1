@@ -1,17 +1,18 @@
 import axios from '../node_modules/axios'
 import store from './store/index'
-// import {
-//   useStore
-// } from 'vuex'
 
-// const store = useStore()
+
+
 
 const instance = axios.create({
-    baseURL: 'http://140.109.82.44:8001/graphql/',
+    baseURL: 'http://140.109.82.44:8000/graphql/',
     headers: {
         'Content-Type': 'application/json'
     }
 })
+// https://israynotarray.com/nodejs/20210527/2874571028/
+// instance.defaults.xsrfCookieName = 'XSRF-TOKEN' // 名稱請與儲存在 cookies 相同，axios 預設是 'XSRF-TOKEN'
+// instance.defaults.xsrfHeaderName = 'X-XSRF-TOKEN' // 這一個主要是請求時，會帶在 header 的名稱，建議與後端溝通，有些後端接收是接收 XSRF-TOKEN，axios 預設是 'X-XSRF-TOKEN'
 
 // Reference for loader
 // https://www.youtube.com/watch?v=scEfxXINTCo

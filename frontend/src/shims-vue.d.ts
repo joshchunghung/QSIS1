@@ -10,3 +10,4 @@ declare let d3: any;
 declare let $ : any;
 declare module '*.png'
 declare module '*.jpg'
+declare module '*.svg'

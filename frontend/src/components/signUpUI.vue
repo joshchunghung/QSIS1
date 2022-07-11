@@ -17,6 +17,7 @@
             v-model="password"
             type="password"
             class="form-control"
+            autocomplete="off"
         />
         <span>{{ errors.password }}</span>
 
@@ -26,6 +27,7 @@
             v-model="passwordConfirmation"
             type="password"
             class="form-control"
+            autocomplete="off"
         />
         <span>{{ errors.passwordConfirmation }}</span>
 
@@ -77,7 +79,7 @@ export default defineComponent({
         const onSubmit = (values) => {
             console.log('onSubmit', JSON.stringify(values, null, 2))
             const formData = {
-                name: name.value,
+                username: name.value,
                 email: email.value,
                 password1: password.value,
                 password2: passwordConfirmation.value

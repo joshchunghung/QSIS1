@@ -15,61 +15,39 @@ import {
     ApolloLink,
     InMemoryCache,
     from,
-    createHttpLink
+    createHttpLink,
+    HttpLink
 } from '@apollo/client/core'
 import {
     DefaultApolloClient
 } from '@vue/apollo-composable'
+
 // HTTP connection to the API
+// const httpLink = createHttpLink({
+//     // You should use an absolute URL here
+//     uri: 'http://140.109.82.44:8000/graphql/'
+// })
 
-const httpLink = createHttpLink({
-    // You should use an absolute URL here
-    uri: 'http://140.109.82.44:8000/graphql/'
-})
+// // Cache implementation
+// const cache = new InMemoryCache()
 
-// Cache implementation
-const cache = new InMemoryCache()
-
-// Create the apollo client
-const apolloClient = new ApolloClient({
-    link: httpLink,
-    cache
-})
-
-const app = createApp({
-    setup () {
-        provide(DefaultApolloClient, apolloClient)
-    },
-
-    render: () => h(App)
-})
-
-// 參考https://www.newline.co/@kchan/building-a-graphql-application-with-vue-3-and-apollo--4679b402
-
-// const additiveLink = from([
-//     new ApolloLink((operation, forward) => {
-//         operation.setContext(({ headers }) => ({
-//             const token = localStorage.getItem('token')
-//             headers: {
-//                 ...headers,
-//                 authorization: token ? `JWT ${token}` : ''
-//             }
-//         }))
-//         return forward(operation) // Go to the next link in the chain. Similar to `next` in Express.js middleware.
-//     }),
-//     httpLink
-// ])
-
+// // Create the apollo client
 // const apolloClient = new ApolloClient({
-//     link: additiveLink,
-//     cache: new InMemoryCache()
+//     link: httpLink,
+//     cache: new InMemoryCache(),
+//     headers: {
+//         authorization: localStorage.getItem('token')
+//     }
 // })
 
 // const app = createApp({
 //     setup () {
 //         provide(DefaultApolloClient, apolloClient)
 //     },
+
 //     render: () => h(App)
 // })
 
+// 參考https://www.newline.co/@kchan/building-a-graphql-application-with-vue-3-and-apollo--4679b402
+const app = createApp({render: () => h(App)})
 app.use(store).use(router).mount('#app')

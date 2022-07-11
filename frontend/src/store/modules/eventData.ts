@@ -1,5 +1,5 @@
-import axios from '../../../node_modules/axios'
-
+// import axios from '../../../node_modules/axios'
+import axios from '../../axios-auth'
 const state = {
     event: null,
     eventid: 0,
@@ -110,7 +110,7 @@ const mutations = {
 
 const actions = {
     getDBEvent ({ commit }) {
-        axios.post('http://140.109.82.44:8000/graphql/', {
+        axios.post('', {
             query: `query {
                 event (isOpen : true){
                     id
