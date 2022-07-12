@@ -53,7 +53,6 @@ const actions = {
         //     variables: formData});
     }
 
-
 }
 
 export default {

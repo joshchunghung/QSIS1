@@ -49,5 +49,7 @@ import {
 // })
 
 // 參考https://www.newline.co/@kchan/building-a-graphql-application-with-vue-3-and-apollo--4679b402
-const app = createApp({render: () => h(App)})
+const app = createApp({
+    render: () => h(App)
+})
 app.use(store).use(router).mount('#app')

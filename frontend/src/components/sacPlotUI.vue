@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import {
-    computed, defineComponent, onBeforeUpdate, onMounted, reactive, ref
+    computed, defineComponent, onBeforeUpdate, onMounted, reactive
 } from 'vue'
 import {
     sacPlots
@@ -25,31 +25,6 @@ export default defineComponent({
         const isArray = computed(() => store.getters.isArray)
         const stationInfo = computed(() => store.getters.stationInfo)
         let plotData = reactive([])
-        console.log(stationInfo.value)
-        // function download(data, fileName) {
-        //     if (!data) {
-        //         return
-        //     }
-        //     let url = window.URL.createObjectURL(new Blob([data]))
-        //     let link = document.createElement('a')
-        //     link.style.display = 'none'
-        //     link.href = url
-        //     link.setAttribute('download', fileName)
-
-        //     document.body.appendChild(link)
-        //     link.click()
-        //     link.remove()
-        // }
-        // const downloadData = (chn) => {
-        //     const filename = `${event.value.date.toString().replace("-", "")}${event.value.time.toString().replace(":", "")}.${sensor.value}.${chn}.csv`
-        //     axios.post('http://140.109.82.44:8000/api/download/', { sensor: sensor.value, date: event.value.date, time: event.value.time, chn: chn }, { responseType: 'blob' })
-        //         .then(response => download(response.data, filename))
-        //         .catch(error => console.log(error))
-        // }
-        // const uploadAllData = () => {
-        //     ['HNX', 'HNY', 'HNZ'].forEach((chn) => downloadData(chn))
-        // }
-
         const stationURLInfo = computed(() => {
             return {
                 sensor: sensor.value,
@@ -170,13 +145,11 @@ export default defineComponent({
         })
         onBeforeUpdate(() => {
             store.commit('changeLoading', true)
-            console.log('update')
             callData(isArray, stationURLInfo)
         })
 
         return {
             sensor,
-            // uploadAllData,
             plotData,
             stationInfo
         }

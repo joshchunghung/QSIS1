@@ -10,10 +10,10 @@
                         :maxZoom="mapState.maxZoom" :visible="mapState.visible"
             />
 
-            <!-- event  :color="getMLColor(event.ML)"-->
+            <!-- event  :color="getDepColor(event.depth)"-->
             <div   v-if="isEventOpen">
                 <LCircleMarker ref="circle" v-for="(event,index) in events" :key="event.id" :lat-lng="[event.latitude, event.longitude]"
-                               :radius="8" :color="getMLColor(event.ML)" :fill="true" :fillColor="getMLColor(event.ML)"
+                               :radius="getSize(event.ML)" :color="getDepColor(event.depth)" :fill="true" :fillColor="getDepColor(event.depth)"
                                :fillOpacity="0.5"  style="fill: black;"
                 >
                     <LPopup>
@@ -45,6 +45,9 @@
         </LMap>
 
     </div>
+    <!-- lengend -->
+    <div id="MLscale" v-show="isEventOpen"></div>
+    <div id="depscale" v-show="isEventOpen"></div>
     <img  id="colorBar" :src='require("../../public/colorIntensity.jpg")' alt="pgaColor"  v-show="!isEventOpen" />
 
     <!-- colorbar -->
@@ -105,6 +108,7 @@ import {
 import {
     tileProviders
 } from './statics/mapUrl'
+import {mlLegend } from './statics/lengend.js'
 import {
     getColor
 } from './statics/color.js'
@@ -148,7 +152,6 @@ export default defineComponent({
         }
         const changeSite = (site: string) => {
             if (site === '') {
-                console.log('vvvv')
                 store.commit('changeBuildingState', false)
                 store.commit('clickEventList')
             } else {
@@ -160,14 +163,21 @@ export default defineComponent({
             store.commit('changeFloorMapViewState', false)
             store.commit('changeWaveFormState', false)
         }
-        const getMLColor = (mag) => {
-            if (mag <= 4) {
-                return 'green'
-            } else if (mag <= 5) {
-                return 'orange'
-            } else {
-                return 'red'
+
+        const dep = [10, 35, 70, 150]
+        const s100Color = [
+                '#DB453F', '#F2B53A', '#97E838', '#26D2EB', '#7B3AF2'
+            ]
+        function getDepColor (depth) {
+            for (let i = 0; i < s100Color.length - 1; i++) {
+                if (depth <= dep[i]) { return s100Color[i] } else { continue }
             }
+            return s100Color[s100Color.length - 1]
+        }
+
+        function getSize (ML, circleSize = 5) {
+            const mlBase = 3
+            if (ML > mlBase) { return (ML - mlBase) * circleSize + 0.1 } else { return 0.1 }
         }
 
         const svgUrl = (shape, pga) => {
@@ -179,21 +189,19 @@ export default defineComponent({
         }
 
         onMounted(() => {
-            // let dataTable = $('#eveTable')
-            // nextTick(() => {
-            // console.log(dataTable.children().get(1).childNodes.length)
-            // dataTable.DataTable({ order: [0, 'desc'] })
-            // })
             // 等資料載好
             setTimeout(() => {
                 $('#eveTable').DataTable({
                     order: [0, 'desc']
                 })
-                console.log($('#eveTable').children().get(1).childNodes)
+                // console.log($('#eveTable').children().get(1).childNodes)
             }, 200)
+
+            mlLegend(5, dep, s100Color)
+            $('#MLscale').draggable()
+            $('#depscale').draggable()
         })
         onUpdated(() => {
-            console.log('aaa')
             $('#colorBar').draggable()
         })
 
@@ -209,7 +217,8 @@ export default defineComponent({
             getColor,
             id: '',
             staName: '',
-            getMLColor,
+            getDepColor,
+            getSize,
             svgUrl,
             isTableOpen,
             eventSelected
@@ -237,8 +246,32 @@ export default defineComponent({
     height: 40px;
 }
 
+#depscale {
+  width: 100px;
+  position: absolute;
+  border-left: 30%;
+  z-index: 10000;
+  left: 39%;
+  bottom: 25%;
+  padding: 0px;
+    stroke:white;
+stroke-width: 0.6;
+}
+#MLscale {
+  width: 230px;
+  position: absolute;
+  height: 64px;
+  left: 39%;
+  bottom: 22%;
+  padding: 0px;
+  z-index: 10000;            
+  stroke: white;
+stroke-width: 0.6;
+
+}
 .hoverStyle:hover {
     background-color: palegoldenrod;
     cursor: pointer;
 }
+
 </style>

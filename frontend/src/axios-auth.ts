@@ -1,9 +1,6 @@
 import axios from '../node_modules/axios'
 import store from './store/index'
 
-
-
-
 const instance = axios.create({
     baseURL: 'http://140.109.82.44:8000/graphql/',
     headers: {
