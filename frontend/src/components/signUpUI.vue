@@ -3,18 +3,14 @@
         <form id="signUp">
             <div class="input-group mb-3">
                 <span class="input-group-text"><i class="fa fa-user"></i></span>
-                <input name="name" placeholder="Name" v-model="name" class="form-control" />
-                <span v-if="errors.name">
-                    {{ errors.name }}
-                </span>
+                <input name="name" placeholder="Name" v-model="name" class="form-control" >
+                <div>{{ errors.name }} </div>
             </div>
 
             <div class="input-group mb-3">
                 <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
-                <input name="email" placeholder="Email" v-model="email"  class="form-control" />
-                <span v-if="errors.email">
-                    {{ errors.email }}
-                </span>
+                <input name="email" placeholder="Email" v-model="email"  class="form-control" >
+                <div>{{ errors.email }} </div>
             </div>
 
             <div class="input-group mb-3">
@@ -27,7 +23,7 @@
                     class="form-control"
                     autocomplete="off"
                 >
-                <span>{{ errors.password }}</span>
+                <div>{{ errors.password }}</div>
             </div>
 
             <div class="input-group mb-3">
@@ -40,7 +36,7 @@
                     class="form-control"
                     autocomplete="off"
                 >
-                <span>{{ errors.passwordConfirmation }}</span>
+                <div>{{ errors.passwordConfirmation }}</div>
             </div>
 
         </form>
@@ -134,7 +130,10 @@ export default defineComponent({
         }
 
         const onReset = (values) => {
-            console.log('onReset')
+                name.value =""
+                email.value =""
+                password.value= ""
+                passwordConfirmation.value=""
         }
 
         return {
