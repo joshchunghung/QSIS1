@@ -76,15 +76,55 @@ export default defineComponent({
         const { value: password } = useField('password')
         const { value: passwordConfirmation } = useField('passwordConfirmation')
 
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'center-center',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        })
+        const successHint = () => {
+            Swal.fire({
+                title: 'Welcome you to join us!',
+                width: 600,
+                padding: '3em',
+                color: '#716add',
+                background: '#fff',
+                timer: 3000,
+                backdrop: `
+                    rgba(0,0,123,0.4)
+                    left top
+                    no-repeat
+                `
+            })
+            setTimeout(() => {
+                store.commit('changeLogInState', true)
+            }, 3000)
+        }
+
+        const errorHint = (text) => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: text
+            })
+        }
+
         const onSubmit = (values) => {
-            console.log('onSubmit', JSON.stringify(values, null, 2))
+            // console.log('onSubmit', JSON.stringify(values, null, 2))
             const formData = {
                 username: name.value,
                 email: email.value,
                 password1: password.value,
                 password2: passwordConfirmation.value
             }
-            store.dispatch('createUser', formData)
+            store.dispatch('createUser', formData).then((response) => {
+                if (response === 'success') {
+                    successHint()
+                } else {
+                    errorHint(response)
+                }
+            })
         }
         const onReset = (values) => {
             console.log('onReset')

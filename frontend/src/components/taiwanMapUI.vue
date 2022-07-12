@@ -108,7 +108,9 @@ import {
 import {
     tileProviders
 } from './statics/mapUrl'
-import {mlLegend } from './statics/lengend.js'
+import {
+    mlLegend
+} from './statics/lengend.js'
 import {
     getColor
 } from './statics/color.js'
@@ -166,8 +168,8 @@ export default defineComponent({
 
         const dep = [10, 35, 70, 150]
         const s100Color = [
-                '#DB453F', '#F2B53A', '#97E838', '#26D2EB', '#7B3AF2'
-            ]
+            '#DB453F', '#F2B53A', '#97E838', '#26D2EB', '#7B3AF2'
+        ]
         function getDepColor (depth) {
             for (let i = 0; i < s100Color.length - 1; i++) {
                 if (depth <= dep[i]) { return s100Color[i] } else { continue }
@@ -264,7 +266,7 @@ stroke-width: 0.6;
   left: 39%;
   bottom: 22%;
   padding: 0px;
-  z-index: 10000;            
+  z-index: 10000;
   stroke: white;
 stroke-width: 0.6;
 

@@ -7,7 +7,8 @@ declare module '*.vue' {
 
 declare module '@vue-leaflet/vue-leaflet'
 declare let d3: any;
-declare let $ : any;
+declare let $: any;
+declare let Swal: any;
 declare module '*.png'
 declare module '*.jpg'
 declare module '*.svg'
