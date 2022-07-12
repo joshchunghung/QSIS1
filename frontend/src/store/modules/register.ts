@@ -51,7 +51,7 @@ const actions = {
                         resolve('Sorry, something went wrong!')
                     }
                 })
-                .catch((err) => { console.log(err) })
+                .catch((err) => { reject(err) })
         }
         )
     }

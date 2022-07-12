@@ -124,7 +124,7 @@ export default defineComponent({
                 } else {
                     errorHint(response)
                 }
-            })
+            }).catch(() => {errorHint("Something went wrong! Please try again later!") })
         }
         const onReset = (values) => {
             console.log('onReset')
