@@ -1,41 +1,54 @@
 <template>
-    <form id="signUp" class="mb-3">
+    <div class="col-6 offset-3">
+        <form id="signUp">
+            <div class="input-group mb-3">
+                <span class="input-group-text"><i class="fa fa-user"></i></span>
+                <input name="name" placeholder="Name" v-model="name" class="form-control" />
+                <span v-if="errors.name">
+                    {{ errors.name }}
+                </span>
+            </div>
 
-        <input name="name" placeholder="Name" v-model="name" class="form-control" />
-        <span v-if="errors.name">
-            {{ errors.name }}
-        </span>
+            <div class="input-group mb-3">
+                <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+                <input name="email" placeholder="Email" v-model="email"  class="form-control" />
+                <span v-if="errors.email">
+                    {{ errors.email }}
+                </span>
+            </div>
 
-        <input name="email" placeholder="Email" v-model="email"  class="form-control" />
-        <span v-if="errors.email">
-            {{ errors.email }}
-        </span>
+            <div class="input-group mb-3">
+                <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                <input
+                    name="password"
+                    placeholder="Password"
+                    v-model="password"
+                    type="password"
+                    class="form-control"
+                    autocomplete="off"
+                >
+                <span>{{ errors.password }}</span>
+            </div>
 
-        <input
-            name="password"
-            placeholder="Password"
-            v-model="password"
-            type="password"
-            class="form-control"
-            autocomplete="off"
-        />
-        <span>{{ errors.password }}</span>
+            <div class="input-group mb-3">
+                <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                <input
+                    name="passwordConfirmation"
+                    placeholder="PasswordConfirmation"
+                    v-model="passwordConfirmation"
+                    type="password"
+                    class="form-control"
+                    autocomplete="off"
+                >
+                <span>{{ errors.passwordConfirmation }}</span>
+            </div>
 
-        <input
-            name="passwordConfirmation"
-            placeholder="PasswordConfirmation"
-            v-model="passwordConfirmation"
-            type="password"
-            class="form-control"
-            autocomplete="off"
-        />
-        <span>{{ errors.passwordConfirmation }}</span>
-
-    </form>
-    <button type="submit" class="btn btn-primary" @click="onSubmit">Submit</button>
+        </form>
+        <button type="submit" class="btn btn-primary" @click="onSubmit">Submit</button>
     &nbsp;
-    <!-- 半形的不換行空格  -->
-    <button type="reset" class="btn btn-danger" @click="onReset">Reset</button>
+        <!-- 半形的不換行空格  -->
+        <button type="reset" class="btn btn-danger" @click="onReset">Reset</button>
+    </div>
 </template>
 
 <script lang="ts">
@@ -76,13 +89,6 @@ export default defineComponent({
         const { value: password } = useField('password')
         const { value: passwordConfirmation } = useField('passwordConfirmation')
 
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'center-center',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true
-        })
         const successHint = () => {
             Swal.fire({
                 title: 'Welcome you to join us!',
@@ -124,8 +130,9 @@ export default defineComponent({
                 } else {
                     errorHint(response)
                 }
-            }).catch(() => {errorHint("Something went wrong! Please try again later!") })
+            }).catch(() => { errorHint('Something went wrong! Please try again later!') })
         }
+
         const onReset = (values) => {
             console.log('onReset')
         }
@@ -143,16 +150,5 @@ export default defineComponent({
 })
 </script>
 <style scoped>
-#signUp {
-    text-align: left;
-}
 
-input {
-    margin-bottom: 10px;
-}
-
-input + span {
-    display: block;
-    margin-bottom: 0;
-}
 </style>
