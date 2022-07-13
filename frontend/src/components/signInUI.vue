@@ -23,8 +23,17 @@
             <!-- 半形的不換行空格  -->
             </div>
         </form>
-        <div class="myMouse" align="start" @click="changeState">Register</div>
-        <div class="myMouse" align="end" @click="">Forgot password</div>
+        <div class="row align-items-center">
+            <div class="col">
+                <div class="myMouse" align="start" @click="changeState()">Register</div>
+            </div>
+            <div class="col">
+            </div>
+            <div class="col">
+                <div class="myMouse" align="end" @click="">Forgot password</div>
+            </div>
+        </div>
+
     </div>
 
 </template>

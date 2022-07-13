@@ -3,13 +3,13 @@
         <form id="signUp">
             <div class="input-group mb-3">
                 <span class="input-group-text"><i class="fa fa-user"></i></span>
-                <input name="name" placeholder="Name" v-model="name" class="form-control" >
+                <input name="name" placeholder="Name" v-model="name" class="form-control">
                 <div>{{ errors.name }} </div>
             </div>
 
             <div class="input-group mb-3">
                 <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
-                <input name="email" placeholder="Email" v-model="email"  class="form-control" >
+                <input name="email" placeholder="Email" v-model="email"  class="form-control">
                 <div>{{ errors.email }} </div>
             </div>
 
@@ -43,8 +43,10 @@
         <button type="submit" class="btn btn-primary" @click="onSubmit">Submit</button>
     &nbsp;
         <!-- 半形的不換行空格  -->
-        <button type="reset" class="btn btn-danger" @click="onReset">Reset</button>
+        <button type="reset" class="btn btn-danger" @click="onReset()">Reset</button>
+        <div class="myMouse" align="start" @click="changeState()">Go back to sign in</div>
     </div>
+
 </template>
 
 <script lang="ts">
@@ -65,6 +67,9 @@ export default defineComponent({
     name: 'signUpUI',
     setup () {
         const store = useStore()
+        const changeState = () => {
+            store.commit('changeLogInState', true)
+        }
         // yup 不需要是響應式的，所以使用markRaw
         const schema = markRaw(
             object({
@@ -100,7 +105,7 @@ export default defineComponent({
                 `
             })
             setTimeout(() => {
-                store.commit('changeLogInState', true)
+                changeState()
             }, 3000)
         }
 
@@ -130,10 +135,10 @@ export default defineComponent({
         }
 
         const onReset = (values) => {
-                name.value =""
-                email.value =""
-                password.value= ""
-                passwordConfirmation.value=""
+            name.value = ''
+            email.value = ''
+            password.value = ''
+            passwordConfirmation.value = ''
         }
 
         return {
@@ -143,11 +148,16 @@ export default defineComponent({
             password,
             passwordConfirmation,
             errors,
-            name
+            name,
+            changeState
         }
     }
 })
 </script>
 <style scoped>
-
+.myMouse {
+    cursor: pointer;
+    color: blue;
+    margin-top: 20px;
+}
 </style>
