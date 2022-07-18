@@ -249,28 +249,28 @@ export default defineComponent({
 }
 
 #depscale {
-  width: 100px;
-  position: absolute;
-  border-left: 30%;
-  z-index: 10000;
-  left: 39%;
-  bottom: 25%;
-  padding: 0px;
-    stroke:white;
-stroke-width: 0.6;
+    position: relative;
+    bottom: 320px;
+    left: 120px;
+    z-index: 10000;
+    padding: 0;
+    width: 100px;
+    border-left: 30%;
+    stroke: white;
+    stroke-width: 0.6;
 }
-#MLscale {
-  width: 230px;
-  position: absolute;
-  height: 64px;
-  left: 39%;
-  bottom: 22%;
-  padding: 0px;
-  z-index: 10000;
-  stroke: white;
-stroke-width: 0.6;
 
+#MLscale {
+    position: relative;
+    bottom: 98px;
+    left: 150px;
+    z-index: 10000;
+    padding: 0;
+    width: 230px;
+    stroke: white;
+    stroke-width: 0.6;
 }
+
 .hoverStyle:hover {
     background-color: palegoldenrod;
     cursor: pointer;

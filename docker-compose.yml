@@ -1,7 +1,7 @@
 version: "3"
 services:
   nginx:
-    container_name: nginx_container
+    container_name: nginx
     build: ./nginx
     restart: always
     ports:
@@ -11,6 +11,8 @@ services:
       - ./nginx/log:/var/log/nginx
     depends_on:
       - web
+      - grafana
+
 
   web:
     container_name: "Django3-Vue"
@@ -26,3 +28,23 @@ services:
     ports:
       - "8001:8000"
       - "8003:8003"
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    user: "0"
+    volumes:
+      - ./grafana:/var/lib/grafana/ # Volume to persist configuration between restarts
+      # - ./grafana/provisioning:/usr/share/grafana/conf/provisioning
+    environment:
+     - GF_SECURITY_ADMIN_USER=${GRAFANA_USERNAME}
+     - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      # - GF_SERVER_HTTP_PORT=3000
+      # - GF_SERVER_PROTOCOL=http
+      # # - GF_SERVER_DOMAIN=140.109.82.44:8000
+      # - GF_SERVER_ROOT_URL=http://140.109.82.44:8000/grafana/
+    ports:
+      - "3000:3000"
+    # networks:
+    #   - influxdb
+

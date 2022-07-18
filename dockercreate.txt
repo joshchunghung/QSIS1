@@ -1,0 +1,43 @@
+docker network create influxdb
+###### grafana ######
+# --user 1000 沒加的話會權限不符
+docker run -d --user 1000 --name=grafana --volume "`pwd`/grafana:/var/lib/grafana" -p 3000:3000 grafana/grafana
+
+###### influxdb2 ######
+# reference
+#https://medium.com/geekculture/deploying-influxdb-2-0-using-docker-6334ced65b6c
+
+# create config file
+docker run --rm influxdb:latest influxd print-config > config.yml
+# create the container
+docker run --name influxdb2 -d \
+  -p 8086:8086 \
+  --net influxdb \
+  --volume `pwd`/influxdb:/var/lib/influxdb2 \
+  --volume `pwd`/config.yml:/etc/influxdb2/config.yml \
+  influxdb:latest
+# wait until the database server is ready
+until docker exec influxdb influx ping
+do
+  echo "Retrying..."
+  sleep 5
+done
+# configure influxdb
+docker exec influxdb2 influx setup \
+  --bucket BUCKET \
+  --org ORG \
+  --password yxul45j/vup7005 \
+  --username dmc \
+  --force
+# get the token
+docker exec influxdb influx auth list | \
+awk -v username=$INFLUXDB_USERNAME '$5 ~ username {print $4 " "}'
+
+###### Telegraf ######
+docker run -d --name=telegraf \
+      --net=influxdb \
+      -v /var/run/docker.sock:/var/run/docker.sock \
+      -v $PWD/telegraf.conf:/etc/telegraf/telegraf.conf:ro \
+      -e INFLUX_TOKEN=IfvrhCcP8xSM3eAbEbb1q8ojaoobdnih8E0utfHnbTBXh1ZWu_vnwRdbC3RhpnnUENl-EkRGLQz7eaiOcFC5Bg== \
+      telegraf
+

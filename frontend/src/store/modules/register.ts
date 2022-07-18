@@ -20,7 +20,7 @@ const mutations = {
     }
 }
 const actions = {
-    createUser ({ commit }, formData) {
+    createUser({ },formData) {
         return new Promise(function (resolve, reject) {
             axios.post('', {
                 query: print(REGISTER_USER),
@@ -37,15 +37,8 @@ const actions = {
                         resolve('success')
                     }
                     const errors = payload.errors
-                    const code = errors[Object.keys(errors)[0]][0].code
                     const msg = errors[Object.keys(errors)[0]][0].message
-                    if (code === 'unique') {
-                        // 'A user with that username already exists.'
-                        resolve('The email has been registered.')
-                    } else if (msg !== undefined) {
-                        // 'This password is too short. It must contain at least 8 characters.'
-                        // 'This password is too common.'
-                        // 'This password is entirely numeric.'
+                    if (msg !== undefined) {
                         resolve(msg)
                     } else {
                         resolve('Sorry, something went wrong!')

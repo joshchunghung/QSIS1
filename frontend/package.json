@@ -28,7 +28,7 @@
     "stylelint-config-recommended-vue": "^1.4.0",
     "stylelint-config-standard-scss": "^3.0.0",
     "stylelint-order": "^5.0.0",
-    "vee-validate": "^4.5.11",
+    "vee-validate": "^4.6.1",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.2",

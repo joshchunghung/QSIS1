@@ -1,7 +1,7 @@
 <template>
     <div class="Register">
         <div v-if="isLogIn">
-            <signInUI />
+            <logInUI />
         </div>
         <div v-else>
             <h1>This is a Register page</h1>
@@ -17,13 +17,13 @@ import {
 import {
     useStore
 } from 'vuex'
-import signUpUI from '@/components/signUpUI.vue'
-import signInUI from '../components/signInUI.vue'
+import signUpUI from '../components/signUpUI.vue'
+import logInUI from '../components/logInUI.vue'
 export default defineComponent({
     name: 'registerView',
     components: {
         signUpUI,
-        signInUI
+        logInUI
     },
     setup () {
         const store = useStore()
