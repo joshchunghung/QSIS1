@@ -56,3 +56,4 @@ services:
 
 networks:
   mynet:
+    external: true
