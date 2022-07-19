@@ -9,6 +9,7 @@ services:
     volumes:
       - ../QSIS:/code
       - ./nginx/log:/var/log/nginx
+      - ./nginx/docker_nginx_qsis.conf:/etc/nginx/sites-available/docker_nginx_qsis.conf:ro
     networks:
       - mynet
     depends_on:
@@ -41,18 +42,10 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_USERNAME}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
-      # - GF_USERS_ALLOW_SIGN_UP=false
-      # - GF_SERVER_HTTP_PORT=3000
-      # - GF_SERVER_PROTOCOL=http
-      # - GF_SERVER_DOMAIN=140.109.82.44:3000
-      # - GF_SERVER_ROOT_URL=http://140.109.82.44:3000/grafana/
-      # - GF_SERVER_SERVE_FROM_SUB_PATH=true
     networks:
       - mynet
     expose:
       - 3000
-    ports:
-      - 3000:3000
 
 networks:
   mynet:
