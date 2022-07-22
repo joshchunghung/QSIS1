@@ -34,6 +34,8 @@ docker exec influxdb influx auth list | \
 awk -v username=$INFLUXDB_USERNAME '$5 ~ username {print $4 " "}'
 
 ###### Telegraf ######
+docker run --rm telegraf telegraf config > telegraf.conf
+
 docker run -d --name=telegraf \
       --net=influxdb \
       -v /var/run/docker.sock:/var/run/docker.sock \

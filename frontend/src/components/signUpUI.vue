@@ -121,7 +121,7 @@ export default defineComponent({
                 password1: password.value,
                 password2: passwordConfirmation.value
             }
-            
+
             store.dispatch('createUser', formData).then((response) => {
                 if (response === 'success') {
                     successHint()

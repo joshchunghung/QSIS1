@@ -27,7 +27,7 @@ export default defineComponent({
 }
 
 .site {
-    left: 15%;
+    /* left: 10%; */
     margin-top: auto;
 }
 

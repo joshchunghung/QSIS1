@@ -20,7 +20,7 @@ const mutations = {
     }
 }
 const actions = {
-    createUser({ },formData) {
+    createUser ({ }, formData) {
         return new Promise(function (resolve, reject) {
             axios.post('', {
                 query: print(REGISTER_USER),

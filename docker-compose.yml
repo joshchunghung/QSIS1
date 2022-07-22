@@ -11,7 +11,7 @@ services:
       - ./nginx/log:/var/log/nginx
       - ./nginx/docker_nginx_qsis.conf:/etc/nginx/sites-available/docker_nginx_qsis.conf:ro
     networks:
-      - mynet
+      - influxdb_net
     depends_on:
       - web
       - grafana
@@ -43,10 +43,10 @@ services:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_USERNAME}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
     networks:
-      - mynet
+      - influxdb_net
     expose:
       - 3000
 
 networks:
-  mynet:
+  influxdb_net:
     external: true

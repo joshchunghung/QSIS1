@@ -16,6 +16,9 @@ import {
     useStore
 } from 'vuex'
 import axios from 'axios'
+import {
+    errorHint
+} from './statics/hint'
 export default defineComponent({
     name: 'sacPlotUI',
     setup () {
@@ -125,8 +128,6 @@ export default defineComponent({
                     plotData = []
                     plotData.push(response.data)
                     const data = sacPlotData(plotData)
-                    //  console.debug("title", data)
-                    // console.debug("stationURLInfo", stationURLInfo)
                     const chart = sacPlots()
                         .data(data)
                         .title(
@@ -136,6 +137,10 @@ export default defineComponent({
                         .selector('#sacplot')
                     chart()
                     store.commit('changeLoading', false)
+                })
+                .catch(() => {
+                    store.commit('changeLoading', false)
+                    errorHint('System busy! Please try again later!')
                 })
         }
 
