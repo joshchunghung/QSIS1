@@ -5,7 +5,7 @@
     <!-- <div>{{ buildingArray.stations.filter((item) => item.floor === floor) }}</div> -->
     <svg height="300" width="600" viewBox="0 0 600 300">
         <foreignObject x="0" y="0" width="600" height="300">
-            <img :src="require(`../../public/${singleSiteName}600x300.png`)" alt="RCEC" />
+            <img :src="require(`../../public/${singleSiteName}600x300.png`)" alt="RCEC">
         </foreignObject>
         <g v-for="station in buildingArray.stations.filter((item) => item.floor === floor)" :key="station.code">
             <rect :x="station.rx" :y="station.ry" :width="10" :height="10" :fill="pgaColor('station', station)"

@@ -35,9 +35,13 @@ ALLOWED_ADMIN_IP_RANGES=['140.109.80.0/24', '140.109.81.0/24', '140.109.82.0/24'
 RESTRICTED_APP_NAMES=os.environ.get('RESTRICTED_APP_NAMES',[])
 TRUST_PRIVATE_IP=os.environ.get('TRUST_PRIVATE_IP','')
 
+
 # Application definition
 
-INSTALLED_APPS = [
+INSTALLED_APPS = [    
+    ### definition
+    'backend.apps.BackendConfig',
+    'queryOnlineWaveform.apps.QueryonlinewaveformConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -49,12 +53,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
-    'graphql_auth',
-    ### definition
-    'backend.apps.BackendConfig',
-    'queryOnlineWaveform.apps.QueryonlinewaveformConfig',
-    'account.apps.AccountConfig',
-
+    'graphql_auth'
 ]
 
 
@@ -71,6 +70,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'admin_ip_restrictor.middleware.AdminIPRestrictorMiddleware',
+
 ]
 
 ROOT_URLCONF = 'QSIS.urls'
@@ -209,6 +209,20 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        # 'backend.authentication.TokenAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    # 'URL_FORMAT_OVERRIDE': None,
+    # 'EXCEPTION_HANDLER': 'projects.utils.custom_exception_handler'
+}
+
+
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -216,3 +230,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 # CORS_ALLOWED_ORIGINS = ['http://localhost:8081','http://140.109.82.44:8000',]
+

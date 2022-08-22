@@ -11,7 +11,7 @@ services:
       - ./nginx/log:/var/log/nginx
       - ./nginx/docker_nginx_qsis.conf:/etc/nginx/sites-available/docker_nginx_qsis.conf:ro
     networks:
-      - influxdb_net
+      - qsis_net
     depends_on:
       - web
       - grafana
@@ -42,11 +42,35 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_USERNAME}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      - GF_DATABASE_HOST=influxdb:8086
+      # - GF_DATABASE_NAME=station
     networks:
+      - qsis_net
       - influxdb_net
     expose:
       - 3000
 
+  influxdb2:
+    image: influxdb:latest
+    container_name: influxdb2
+    networks:
+      - influxdb_net
+    ports:
+      - "8086:8086"
+    volumes:
+      - ./influxdb/data:/var/lib/influxdb2
+      - ./influxdb/config:/etc/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=dmc
+      - DOCKER_INFLUXDB_INIT_PASSWORD=yxul45j/vup7005
+      - DOCKER_INFLUXDB_INIT_ORG=ORG
+      - DOCKER_INFLUXDB_INIT_BUCKET=Bucket
+      # 資料保存時間1week
+      - DOCKER_INFLUXDB_INIT_RETENTION=1w
+    restart: always
+
 networks:
-  influxdb_net:
+  qsis_net:
     external: true
+  influxdb_net:

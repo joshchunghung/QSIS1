@@ -17,8 +17,8 @@ import {
 import {
     useStore
 } from 'vuex'
-import signUpUI from '../components/signUpUI.vue'
-import logInUI from '../components/logInUI.vue'
+import signUpUI from '@/components/signUpUI.vue'
+import logInUI from '@/components/logInUI.vue'
 export default defineComponent({
     name: 'registerView',
     components: {

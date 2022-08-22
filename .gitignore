@@ -5,6 +5,7 @@ db.sqlite3
 *log
 *svg
 *xcf
+*/queryOnlineWaveform/connect.json
 .env
 .dockerignore
 backend/migrations/*

@@ -1,8 +1,7 @@
 import graphene
+# from graphene.validation import depth_limit_validator
 from graphene_django.types import DjangoObjectType
-from django.db.models import Q
-from backend.models import Building,Station,Event,PGA,CustomUser
-from django.db import models
+from backend.models import Building,Station,Event,PGA
 
 class buildingType(DjangoObjectType):
     class Meta:

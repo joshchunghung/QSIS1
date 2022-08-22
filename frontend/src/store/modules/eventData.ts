@@ -4,40 +4,48 @@ const state = {
     event: null,
     eventid: 0,
     site: null,
-    buildingState: null,
+    buildingState: false,
     singleSite: null,
-    floorMapViewState: null,
+    floorMapViewState: false,
     floor: null,
-    waveFormState: null,
+    waveFormState: false,
     sensor: null,
     isArray: null,
     isLoading: false,
-    sortType: 'Event',
-    isReverse: false
+    eventRange: [20, 25, 119, 123],
+    hoverid: 0
 }
 const getters = {
     event: (state) => state.event,
-    targetEvent: (state) => state.event.filter(event => event.id === state.eventid)[0],
+    targetEvent: (state) => {
+        if (state.eventid === 0) {
+            return '{ id: 0, latitude: 0, longitude: 0, date: "0000-00-00", time: "00:00:00", depth: 0, ML: 0 }'
+        } else {
+            return state.event.filter(event => event.id === state.eventid)[0]
+        }
+    },
     site: (state) => state.site,
-    buildingState: (state) => state.buildingState,
     singleSiteName: (state) => state.singleSite,
-    singleSite: (state) => state.site[state.singleSite],
-    floorMapViewState: (state) => state.floorMapViewState,
-    floor: (state) => state.floor,
-    waveFormState: (state) => state.waveFormState,
+    singleSite: (state) => {
+        if (state.singleSite === null) {
+            return '0'
+        } else {
+            return state.site[state.singleSite]
+        }
+    },
     sensor: (state) => state.sensor,
+    floor: (state) => state.floor,
+    buildingState: (state) => state.buildingState,
+    floorMapViewState: (state) => state.floorMapViewState,
+    waveFormState: (state) => state.waveFormState,
     isArray: (state) => state.isArray,
     isLoading: (state) => state.isLoading,
-    stationInfo: (state) => state.site[state.singleSite].stations.filter(station => station.code === state.sensor)[0]
+    stationInfo: (state) => state.site[state.singleSite].stations.filter(station => station.code === state.sensor)[0],
+    eventRange: (state) => state.eventRange,
+    hoverid: (state) => state.hoverid
 }
 const mutations = {
     getEvent (state, event) {
-        // 按照時間排列
-        // event.sort((a, b) => {
-        //     const timeA = `${a.date.replaceAll('-', '/')} ${a.time}`
-        //     const timeB = `${b.date.replaceAll('-', '/')} ${b.time}`
-        //     return new Date(timeB).getTime() - new Date(timeA).getTime()
-        // })
         state.event = event
     },
     getEventID (state, eventID) {
@@ -78,14 +86,15 @@ const mutations = {
     Orginal (state) {
         state.eventid = 0,
         state.site = null,
-        state.buildingState = null,
+        state.buildingState = false,
         state.singleSite = null,
-        state.floorMapViewState = null,
+        state.floorMapViewState = false,
         state.floor = null,
-        state.waveFormState = null,
+        state.waveFormState = false,
         state.sensor = null,
         state.isArray = null,
-        state.isLoading = false
+        state.isLoading = false,
+        state.hoverid = 0
     },
     clickEventList (state) {
         state.isArray = null,
@@ -93,18 +102,11 @@ const mutations = {
         state.singleSite = null,
         state.floor = null
     },
-    sortEventByType (state, { type, order }) {
-        if (type !== 'Event') {
-            state.event.sort((a, b) => {
-                return (b[type] - a[type]) * order
-            })
-        } else {
-            state.event.sort((a, b) => {
-                const timeA = `${a.date.replaceAll('-', '/')} ${a.time}`
-                const timeB = `${b.date.replaceAll('-', '/')} ${b.time}`
-                return (new Date(timeB).getTime() - new Date(timeA).getTime()) * order
-            })
-        }
+    changeEventRange (state, eventRange) {
+        state.eventRange = eventRange
+    },
+    changeHoverID (state, hoverid) {
+        state.hoverid = hoverid
     }
 }
 
@@ -128,7 +130,7 @@ const actions = {
     },
     getDBStation ({ dispatch, commit }, eventid) {
         commit('getEventID', eventid)
-        axios.post('http://140.109.82.44:8000/graphql/', {
+        axios.post('', {
             query: `query {
                 pga(event:${eventid}){
                     station{

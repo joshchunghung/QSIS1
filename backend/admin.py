@@ -12,7 +12,7 @@ class UserAdmin(admin.ModelAdmin):
     fields = ['username', 'email',  'is_approved','date_joined']
 
 @admin.register(Event)
-class StationAdmin(admin.ModelAdmin):
+class EventAdmin(admin.ModelAdmin):
     list_display =[f.name for f in Event._meta.fields]
     
 @admin.register(Building)
@@ -22,6 +22,7 @@ class BuildingAdmin(admin.ModelAdmin):
 @admin.register(Station)
 class StationAdmin(admin.ModelAdmin):
     list_display =[f.name for f in Station._meta.fields]
+    search_fields = ['code',]
     list_per_page = 25
     
 @admin.register(PGA)

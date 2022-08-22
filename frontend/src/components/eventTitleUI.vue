@@ -1,9 +1,10 @@
 <template>
     <div v-if="buildingState">
-        <h3>{{ targetEvent.date }} {{ targetEvent.time }}(UTC+8), Depth: {{ targetEvent.depth }}km, ML{{ targetEvent.ML
+        <h3>{{ targetEvent.date }} {{ targetEvent.time }}(UTC), Depth: {{ targetEvent.depth }}km, ML{{ targetEvent.ML
         }}
         </h3>
     </div>
+    <br />
 </template>
 <script lang="ts">
 import {
@@ -12,12 +13,14 @@ import {
 import {
     useStore
 } from 'vuex'
+
 export default defineComponent({
     name: 'eventTitleUI',
     setup () {
         const store = useStore()
         const buildingState = computed(() => store.getters.buildingState)
         const targetEvent = computed(() => store.getters.targetEvent)
+
         return {
             targetEvent,
             buildingState

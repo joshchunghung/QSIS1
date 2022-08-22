@@ -2,14 +2,13 @@
     <div class="row">
         <div class="col-lg-3 col-md-12">
             <ul class="nav flex-column">
-                <li v-for="(page, index) in pageItem" :key="index" class="nav-item">
+                <li v-for="(page, index) in pageItem" :key="page.name" class="nav-item">
                     <router-link :to="page.path">{{ page.name }}</router-link>
                 </li>
             </ul>
         </div>
-        <!-- 頁面在這 -->
         <div class="col-lg-9 col-md-12">
-            <router-view />
+            <router-view :key="$route.fullPath + Math.random()"></router-view>
         </div>
     </div>
 </template>
@@ -25,6 +24,7 @@ export default defineComponent({
     setup () {
     // .filter 過濾陣列的
         const pageItem = router.getRoutes().filter((page) => page.name !== 'redirect')
+
         return {
             pageItem
         }

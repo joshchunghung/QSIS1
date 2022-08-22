@@ -18,8 +18,8 @@ const instance = axios.create({
 instance.interceptors.request.use(x => {
     // Do something before request is sent
 //   store.commit('LOADER', true)
-    const JWT = store.getters.getJWT
-    JWT && (x.headers.Authorization = 'JWT ' + JWT)
+    // const JWT = store.getters.getJWT
+    // JWT && (x.headers.Authorization = 'JWT ' + JWT)
     return x
 }, function (error) {
     // Do something with request error

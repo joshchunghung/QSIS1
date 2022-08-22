@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from glob import glob 
 from rest_framework.response import Response
+import json
 
 class Sacfile(APIView):
     def post(self,request):
@@ -84,3 +85,9 @@ class PalertFile(APIView):
         log_content['ampY']=ampYs
         log_content['ampZ']=ampZs
         return Response(log_content)
+
+class StationInfo(APIView):
+    def get(self,request):
+        with open('/code/queryOnlineWaveform/connect.json','r') as f:
+            data=json.load(f)
+        return Response(data)
